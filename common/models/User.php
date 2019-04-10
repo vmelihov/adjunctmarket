@@ -2,6 +2,7 @@
 namespace common\models;
 
 use Yii;
+use yii\base\Exception;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -11,7 +12,6 @@ use yii\web\IdentityInterface;
  * User model
  *
  * @property integer $id
- * @property string $username
  * @property string $password_hash
  * @property string $password_reset_token
  * @property string $verification_token
@@ -24,15 +24,20 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED = 0;
-    const STATUS_INACTIVE = 9;
-    const STATUS_ACTIVE = 10;
+    public const STATUS_DELETED = 0;
+    public const STATUS_INACTIVE = 9;
+    public const STATUS_ACTIVE = 10;
 
+    public const SEX_MALE = 1;
+    public const SEX_FEMALE = 2;
+
+    public const USER_TYPE_ADJUNCT = 1;
+    public const USER_TYPE_INSTITUTION = 2;
 
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%user}}';
     }
@@ -40,21 +45,41 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
+            ['email', 'email'],
+            [['password_reset_token'], 'unique'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            ['status', 'in', 'range' => array_keys(self::getStatuses())],
+            ['user_type', 'in', 'range' => array_keys(self::getUserTypes())],
+        ];
+    }
+
+    public static function getUserTypes(): array
+    {
+        return [
+            self::USER_TYPE_ADJUNCT => 'adjunct',
+            self::USER_TYPE_INSTITUTION => 'institution',
+        ];
+    }
+
+    public static function getStatuses(): array
+    {
+        return [
+            self::STATUS_DELETED => 'deleted',
+            self::STATUS_INACTIVE => 'inactive',
+            self::STATUS_ACTIVE => 'active',
         ];
     }
 
@@ -75,14 +100,14 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds user by username
+     * Finds user by email
      *
-     * @param string $username
+     * @param string $email
      * @return static|null
      */
-    public static function findByUsername($username)
+    public static function findByEmail(string $email): ?User
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -172,6 +197,7 @@ class User extends ActiveRecord implements IdentityInterface
      * Generates password hash from password and sets it to the model
      *
      * @param string $password
+     * @throws Exception
      */
     public function setPassword($password)
     {
@@ -180,6 +206,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Generates "remember me" authentication key
+     * @throws Exception
      */
     public function generateAuthKey()
     {
@@ -188,12 +215,16 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Generates new password reset token
+     * @throws Exception
      */
     public function generatePasswordResetToken()
     {
         $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
+    /**
+     * @throws Exception
+     */
     public function generateEmailVerificationToken()
     {
         $this->verification_token = Yii::$app->security->generateRandomString() . '_' . time();
