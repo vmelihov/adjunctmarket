@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -11,8 +10,6 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property string $name
  * @property int $min_age
- *
- * @property Profile[] $profiles
  */
 class Education extends ActiveRecord
 {
@@ -48,11 +45,4 @@ class Education extends ActiveRecord
         ];
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getProfiles(): ActiveQuery
-    {
-        return $this->hasMany(Profile::className(), ['education_id' => 'id']);
-    }
 }

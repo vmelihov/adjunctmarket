@@ -1,36 +1,34 @@
 <?php
 
-/* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
-/* @var $model SignupForm */
-
-use frontend\models\SignupForm;
+use common\models\User;
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
+use yii\widgets\ActiveForm;
 
-$this->title = 'Signup';
-$this->params['breadcrumbs'][] = $this->title;
+/* @var $this yii\web\View */
+/* @var $model frontend\forms\SignupForm */
+/* @var $form ActiveForm */
 ?>
-<div class="site-signup">
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="signup">
 
-    <p>Please fill out the following fields to signup:</p>
+    <?php $form = ActiveForm::begin(); ?>
 
-    <div class="row">
-        <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
+    <?= $form->field($model, 'user_type')->radioList(User::getUserTypes()) ?>
 
-                <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+    <?= $form->field($model, 'first_name') ?>
+    <?= $form->field($model, 'last_name') ?>
 
-                <?= $form->field($model, 'email') ?>
+    <?= $form->field($model, 'email')->textInput([
+        'type' => 'email',
+    ])->label(false) ?>
 
-                <?= $form->field($model, 'password')->passwordInput() ?>
+    <?= $form->field($model, 'password')->passwordInput() ?>
+    <?= $form->field($model, 'password_repeat')->passwordInput() ?>
 
-                <div class="form-group">
-                    <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
-                </div>
+    <?= $form->field($model, 'confirm')->checkbox(['checked' => true]) ?>
 
-            <?php ActiveForm::end(); ?>
-        </div>
+    <div class="form-group">
+        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
     </div>
+    <?php ActiveForm::end(); ?>
+
 </div>

@@ -1,19 +1,22 @@
 <?php
 namespace frontend\controllers;
 
-use frontend\models\ResendVerificationEmailForm;
-use frontend\models\VerifyEmailForm;
+use frontend\forms\PasswordResetRequestForm;
+use frontend\forms\SignupForm;
+use frontend\forms\VerifyEmailForm;
+use frontend\models\profile\ProfileBuilder;
+use Throwable;
 use Yii;
+use yii\base\Exception;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
-use frontend\models\PasswordResetRequestForm;
+use frontend\models\ResendVerificationEmailForm;
 use frontend\models\ResetPasswordForm;
-use frontend\models\SignupForm;
-use frontend\models\ContactForm;
+use Yii\web\Response;
 
 /**
  * Site controller
@@ -27,7 +30,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['logout', 'signup'],
                 'rules' => [
                     [
@@ -43,7 +46,7 @@ class SiteController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -91,13 +94,13 @@ class SiteController extends Controller
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
-        } else {
-            $model->password = '';
-
-            return $this->render('login', [
-                'model' => $model,
-            ]);
         }
+
+        $model->password = '';
+
+        return $this->render('login', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -113,42 +116,10 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays contact page.
-     *
-     * @return mixed
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-                Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
-            } else {
-                Yii::$app->session->setFlash('error', 'There was an error sending your message.');
-            }
-
-            return $this->refresh();
-        } else {
-            return $this->render('contact', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return mixed
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
-
-    /**
      * Signs user up.
      *
      * @return mixed
+     * @throws Exception
      */
     public function actionSignup()
     {
@@ -167,6 +138,7 @@ class SiteController extends Controller
      * Requests password reset.
      *
      * @return mixed
+     * @throws Exception
      */
     public function actionRequestPasswordReset()
     {
@@ -176,9 +148,9 @@ class SiteController extends Controller
                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
 
                 return $this->goHome();
-            } else {
-                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
             }
+
+            Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
         }
 
         return $this->render('requestPasswordResetToken', [
@@ -216,8 +188,10 @@ class SiteController extends Controller
      * Verify email address
      *
      * @param string $token
+     * @return Response
+     * @throws Exception
      * @throws BadRequestHttpException
-     * @return yii\web\Response
+     * @throws Throwable
      */
     public function actionVerifyEmail($token)
     {
@@ -229,7 +203,7 @@ class SiteController extends Controller
         if ($user = $model->verifyEmail()) {
             if (Yii::$app->user->login($user)) {
                 Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
-                return $this->goHome();
+                return $this->actionProfile();
             }
         }
 
@@ -256,5 +230,27 @@ class SiteController extends Controller
         return $this->render('resendVerificationEmail', [
             'model' => $model
         ]);
+    }
+
+    /**
+     * @return mixed
+     * @throws \yii\db\Exception
+     * @throws Throwable
+     */
+    public function actionProfile()
+    {
+        $user = Yii::$app->getUser()->getIdentity();
+
+        if ($user) {
+            $profile = ProfileBuilder::build($user);
+
+            return $this->render($profile->getViewName(), [
+                'model' => $profile->getForm(),
+            ]);
+        }
+
+        Yii::$app->session->setFlash('error', 'User undefined');
+
+        return $this->goHome();
     }
 }

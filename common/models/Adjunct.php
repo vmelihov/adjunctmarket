@@ -6,9 +6,10 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "profile".
+ * This is the model class for table "adjunct".
  *
  * @property int $id
+ * @property int $user_id
  * @property string $title
  * @property string $description
  * @property int $age
@@ -26,32 +27,32 @@ use yii\db\ActiveRecord;
  * @property TeachingTime $teachTime
  * @property TeachingType $teachType
  * @property TeachingType $teachingExperienceType
+ * @property User $user
  */
-class Profile extends ActiveRecord
+class Adjunct extends ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName(): string
     {
-        return 'profile';
+        return 'adjunct';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules(): array
+    public function rules(): array 
     {
         return [
-            [['title', 'description'], 'required'],
-            [['age', 'sex', 'teaching_experience_type_id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id'], 'integer'],
+            [['age', 'sex', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id'], 'integer'],
             [['title', 'description'], 'string', 'max' => 200],
-            [['teach_locations', 'faculties'], 'string', 'max' => 255],
+            [['teach_locations', 'faculties', 'teaching_experience_type_id'], 'string', 'max' => 255],
             [['education_id'], 'exist', 'skipOnError' => true, 'targetClass' => Education::class, 'targetAttribute' => ['education_id' => 'id']],
             [['teach_period_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingPeriod::class, 'targetAttribute' => ['teach_period_id' => 'id']],
             [['teach_time_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingTime::class, 'targetAttribute' => ['teach_time_id' => 'id']],
             [['teach_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingType::class, 'targetAttribute' => ['teach_type_id' => 'id']],
-            [['teaching_experience_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingType::class, 'targetAttribute' => ['teaching_experience_type_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -62,6 +63,7 @@ class Profile extends ActiveRecord
     {
         return [
             'id' => 'ID',
+            'user_id' => 'User ID',
             'title' => 'Title',
             'description' => 'Description',
             'age' => 'Age',
@@ -109,10 +111,11 @@ class Profile extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @param int $userId
+     * @return Adjunct
      */
-    public function getTeachingExperienceType(): ActiveQuery
+    public static function findByUserId(int $userId): self
     {
-        return $this->hasOne(TeachingType::class, ['id' => 'teaching_experience_type_id']);
+        return self::findOne(['user_id' => $userId]);
     }
 }

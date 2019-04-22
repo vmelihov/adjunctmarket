@@ -34,6 +34,7 @@ class m190409_040353_create_table_teaching_type extends TableMigration
         return [
             ['id' => 1, 'name' => 'Online'],
             ['id' => 2, 'name' => 'In person'],
+            ['id' => 3, 'name' => 'Both'],
         ];
     }
 }

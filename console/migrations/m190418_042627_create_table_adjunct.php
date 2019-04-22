@@ -3,16 +3,16 @@
 use common\src\migration\TableMigration;
 
 /**
- * Class m190410_023956_create_table_profile
+ * Class m190418_042627_create_table_adjunct
  */
-class m190410_023956_create_table_profile extends TableMigration
+class m190418_042627_create_table_adjunct extends TableMigration
 {
     /**
      * @inheritDoc
      */
     protected function getTableName(): string
     {
-        return 'profile';
+        return 'adjunct';
     }
 
     /**
@@ -22,6 +22,7 @@ class m190410_023956_create_table_profile extends TableMigration
     {
         return [
             'id' => $this->primaryKey(),
+            'user_id' => $this->integer()->unique()->notNull(),
             'title' => $this->string(200)->notNull(),
             'description' => $this->string(200)->notNull(),
             'age' => $this->smallInteger()->defaultValue(null),
@@ -42,12 +43,12 @@ class m190410_023956_create_table_profile extends TableMigration
     protected function getForeignKeysParams(): array
     {
         return [
-            ['profile_teaching_type_fk', 'profile', 'teaching_experience_type_id', 'teaching_type', 'id'],
-            ['profile_education_fk', 'profile', 'education_id', 'education', 'id'],
-            ['profile_teach_type_fk', 'profile', 'teach_type_id', 'teaching_type', 'id'],
-            ['profile_teach_time_fk', 'profile', 'teach_time_id', 'teaching_time', 'id'],
-            ['profile_teach_period_fk', 'profile', 'teach_period_id', 'teaching_period', 'id'],
+            ['adjunct_user_fk', 'adjunct', 'user_id', 'user', 'id'],
+            ['adjunct_education_fk', 'adjunct', 'education_id', 'education', 'id'],
+            ['adjunct_teaching_exp_type_fk', 'adjunct', 'teaching_experience_type_id', 'teaching_type', 'id'],
+            ['adjunct_teach_type_fk', 'adjunct', 'teach_type_id', 'teaching_type', 'id'],
+            ['adjunct_teach_time_fk', 'adjunct', 'teach_time_id', 'teaching_time', 'id'],
+            ['adjunct_teach_period_fk', 'adjunct', 'teach_period_id', 'teaching_period', 'id'],
         ];
     }
-
 }
