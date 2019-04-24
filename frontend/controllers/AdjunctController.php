@@ -57,14 +57,16 @@ class AdjunctController extends Controller
     {
         $model = new AdjunctForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->goHome();
+        if ($post = Yii::$app->request->post()) {
+            if ($model->load($post) && $model->save()) {
+                Yii::$app->session->setFlash('success', 'Profile is saved success');
+
+                return $this->redirect(['site/profile']);
+            }
+
+            Yii::$app->session->setFlash('error', $model->getErrors());
         }
 
-        Yii::$app->session->setFlash('error', $model->getErrors());
-
-        return $this->render('@frontend/views/site/adjunct', [
-            'model' => $model
-        ]);
+        return $this->goHome();
     }
 }
