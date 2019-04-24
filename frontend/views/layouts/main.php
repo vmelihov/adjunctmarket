@@ -3,13 +3,16 @@
 /* @var $this View */
 /* @var $content string */
 
+use common\models\User;
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
+use yii\helpers\Url;
 use yii\web\View;
-use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
+use yii\widgets\Menu;
+
+/** @var null|User $user */
+$user = Yii::$app->getUser()->getIdentity();
 
 AppAsset::register($this);
 ?>
@@ -28,53 +31,82 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <div class="wrap">
-    <?php
-    NavBar::begin([
-        'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
-        ],
-    ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'About', 'url' => ['/site/about']],
-        ['label' => 'Contact', 'url' => ['/site/contact']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-    } else {
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';
-    }
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => $menuItems,
-    ]);
-    NavBar::end();
-    ?>
+
+    <header class="g-header">
+        <div class="container">
+            <div class="g-header__content">
+                <div class="g-header__content-logo">
+                    <a href="<?= Yii::$app->homeUrl ?>" class="g-header__content-logo-link">
+                        ADJUNCT
+                        <span>MARKET</span>
+                    </a>
+                </div>
+
+                <div class="g-header__content-mobi" id="headerMobi">
+                    <span class="fa fa-bars g-header__content-mobi-link js-activeOnOff" data-id="headerMobi"></span>
+
+                    <div class="g-header__content-mobi-menu">
+                        <?php
+                        $menuItems = [
+                            ['label' => 'Home', 'url' => ['/site/index']],
+                            ['label' => 'Home2', 'url' => ['/site/index']],
+                            ['label' => 'Home3', 'url' => ['/site/index']],
+                            ['label' => 'Home4', 'url' => ['/site/index']],
+                        ];
+
+                        if ($user) {
+                            $menuItems[] = ['label' => 'Profile', 'url' => ['/site/profile']];
+                        }
+
+                        echo Menu::widget([
+                            'options' => ['class' => 'g-header__content-menu'],
+                            'itemOptions' => ['class' => 'g-header__content-menu-item'],
+                            'items' => $menuItems,
+                            'linkTemplate' => '<a class="g-header__content-menu-item-link" href="{url}"><span>{label}</span></a>',
+                            'encodeLabels' => false,
+                            'activeCssClass' => 'active',
+                        ]);
+                        ?>
+                        <div class="g-header__content-controls">
+                            <?php if ($user) : ?>
+                                <?=
+                                '<li>'
+                                . Html::beginForm(['/site/logout'], 'post')
+                                . Html::submitButton(
+                                    'Logout (' . $user->getUsername() . ')',
+                                    ['class' => 'btn btn-link logout']
+                                )
+                                . Html::endForm()
+                                . '</li>'
+                                ?>
+                            <?php else: ?>
+                                <div class="g-header__content-controls-one">
+                                    <a href="<?= Url::to(['/site/login'], true) ?>"
+                                       class="g-header__content-controls-one-link">Sign In</a>
+                                </div>
+                                <div class="g-header__content-controls-one">
+                                    <a href="<?= Url::to(['/site/signup'], true) ?>"
+                                       class="g-header__content-controls-one-link">Sign Up</a>
+                                </div>
+                            <?php endif ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
     <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>
 </div>
 
-<footer class="footer">
-    <div class="container">
-        <p class="pull-left">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
+<footer class="g-footer">
+    <div class="g-footer__text">
+        &copy; 2019
+        <br/>
+        adjunctmarket.com
     </div>
 </footer>
 
