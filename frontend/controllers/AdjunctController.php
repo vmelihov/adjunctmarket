@@ -8,6 +8,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\ErrorAction;
+use yii\web\Response;
 
 class AdjunctController extends Controller
 {
@@ -49,7 +50,10 @@ class AdjunctController extends Controller
         ];
     }
 
-    public function actionProfile(): string
+    /**
+     * @return string|Response
+     */
+    public function actionProfile()
     {
         $model = new AdjunctForm();
 

@@ -8,6 +8,8 @@
  * init --env=Development --overwrite=n
  */
 
+define('STDIN', fopen("php://stdin", "r"));
+
 if (!extension_loaded('openssl')) {
     die('The OpenSSL PHP extension is required by Yii2.');
 }
