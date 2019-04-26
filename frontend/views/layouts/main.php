@@ -30,9 +30,7 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-<div class="wrap">
-
-    <header class="g-header">
+<header class="g-header">
         <div class="container">
             <div class="g-header__content">
                 <div class="g-header__content-logo">
@@ -96,7 +94,8 @@ AppAsset::register($this);
         </div>
     </header>
 
-    <div class="container">
+<div class="container">
+    <div class="g-content">
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>
