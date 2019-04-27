@@ -38,13 +38,13 @@ class AdjunctForm extends Model
 //                    'sex',
                     'education_id',
                     'teach_type_id',
-                    'teach_locations',
                     'teach_time_id',
                     'teach_period_id',
                     'faculties',
                 ],
                 'required'
             ],
+            ['teach_locations', 'safe'],
             [
                 [
                     'title',

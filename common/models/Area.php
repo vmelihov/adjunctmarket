@@ -54,6 +54,14 @@ class Area extends ActiveRecord
      */
     public function getState(): ActiveQuery
     {
-        return $this->hasOne(State::className(), ['id' => 'state_id']);
+        return $this->hasOne(State::class, ['id' => 'state_id']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameWithState(): string
+    {
+        return $this->state->name . ', ' . $this->name;
     }
 }

@@ -13,6 +13,9 @@ use yii\bootstrap\ActiveForm;
 $this->registerCssFile('@web/css/registration.css', [
     'depends' => [AppAsset::class],
 ]);
+$this->registerJsFile('@web/js/reg.js"', [
+    'depends' => [AppAsset::class],
+]);
 
 $this->title = 'Registration';
 ?>
@@ -32,7 +35,6 @@ $this->title = 'Registration';
                     'label' => 'ui-radio g-mr20',
                     'offset' => 'col-sm-offset-4',
                     'wrapper' => 'form-group',
-                    'error' => 'pppp',
                     'hint' => '',
                 ],
                 'options' => [
@@ -124,7 +126,6 @@ $this->title = 'Registration';
 $script = <<< JS
     $('#reg-form').on('afterValidate', function(e, m) {
         $.each(m, function(key, errors){
-            console.log(key, errors);
             var id = '#' + key;
             if (typeof errors !== 'undefined' && errors.length > 0) {
                 console.log(id, $(id).parent());

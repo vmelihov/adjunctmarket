@@ -13,6 +13,7 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'extension/bootstrap-4.0.0/css/bootstrap.min.css',
+        'extension/font-awesome/css/all.css',
         'css/global.css',
         'css/fix.css',
     ];
