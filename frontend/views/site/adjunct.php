@@ -158,7 +158,7 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
                 ?>
             </div>
 
-            <div class="p-profile__select2 p-profile__hidden" id="formatToTeaching">
+            <div class="p-profile__select2<?= ($model->teach_type_id > 1) ? '' : ' p-profile__hidden' ?>" id="formatToTeaching">
                 <?= $form->field($model, 'teach_locations')
                     ->dropDownList($areas, [
                         'multiple' => 'multiple',
