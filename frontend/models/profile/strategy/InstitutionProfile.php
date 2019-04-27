@@ -2,20 +2,23 @@
 
 namespace frontend\models\profile\strategy;
 
-use frontend\forms\AdjunctProfileForm;
+use frontend\forms\InstitutionProfileForm;
 use frontend\models\profile\BaseProfile;
 use yii\base\Model;
 
-class AdjunctProfile extends BaseProfile
+class InstitutionProfile extends BaseProfile
 {
+    /**
+     * @param int $userId
+     * @param array $attributes
+     * @return Model
+     */
     public function createForm(int $userId, array $attributes): Model
     {
-        $form = new AdjunctProfileForm(['user_id' => $userId]);
+        $form = new InstitutionProfileForm(['user_id' => $userId]);
 
         if ($attributes) {
             $form->setAttributes($attributes);
-            $form->teach_locations = json_decode($attributes['teach_locations'], true);
-            $form->faculties = json_decode($attributes['faculties'], true);
         }
 
         return $form;
@@ -26,6 +29,6 @@ class AdjunctProfile extends BaseProfile
      */
     public function getViewName(): string
     {
-        return 'adjunct';
+        return 'institution';
     }
 }

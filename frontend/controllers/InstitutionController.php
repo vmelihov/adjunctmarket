@@ -2,7 +2,7 @@
 
 namespace frontend\controllers;
 
-use frontend\forms\AdjunctProfileForm;
+use frontend\forms\InstitutionProfileForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -10,7 +10,7 @@ use yii\web\Controller;
 use yii\web\ErrorAction;
 use yii\web\Response;
 
-class AdjunctController extends Controller
+class InstitutionController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -55,7 +55,8 @@ class AdjunctController extends Controller
      */
     public function actionProfile()
     {
-        $model = new AdjunctProfileForm();
+        $model = new InstitutionProfileForm();
+
 
         if ($post = Yii::$app->request->post()) {
             if ($model->load($post) && $model->save()) {

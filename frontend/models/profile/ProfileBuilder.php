@@ -4,6 +4,7 @@ namespace frontend\models\profile;
 
 use common\models\User;
 use frontend\models\profile\strategy\AdjunctProfile;
+use frontend\models\profile\strategy\InstitutionProfile;
 use yii\db\Exception;
 use yii\web\IdentityInterface;
 
@@ -21,10 +22,10 @@ class ProfileBuilder
         }
 
         if ($user->user_type === User::TYPE_INSTITUTION) {
-            throw new Exception('InstitutionForm is not implemented');
+            return new InstitutionProfile($user);
         }
 
-        throw new Exception('Undefined type');
+        throw new Exception('Undefined user type');
     }
 
 }

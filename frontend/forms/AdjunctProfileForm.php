@@ -8,7 +8,7 @@ use yii\base\Model;
 /**
  * Signup form
  */
-class AdjunctForm extends Model
+class AdjunctProfileForm extends Model
 {
     public $id;
     public $user_id;
@@ -34,8 +34,6 @@ class AdjunctForm extends Model
             [
                 [
                     'user_id',
-//                    'age',
-//                    'sex',
                     'education_id',
                     'teach_type_id',
                     'teach_time_id',
@@ -45,19 +43,11 @@ class AdjunctForm extends Model
                 'required'
             ],
             ['teach_locations', 'safe'],
-            [
-                [
-                    'title',
-                    'description',
-                ],
-                'trim'
-            ],
+            [['title','description'], 'trim'],
             [
                 [
                     'id',
                     'user_id',
-//                    'age',
-//                    'sex',
                     'teaching_experience_type_id',
                     'education_id',
                     'teach_type_id',
@@ -89,8 +79,6 @@ class AdjunctForm extends Model
         $adjunct->user_id = $this->user_id;
         $adjunct->title = $this->title;
         $adjunct->description = $this->description;
-//        $adjunct->age = $this->age;
-//        $adjunct->sex = $this->sex;
         $adjunct->education_id = $this->education_id;
         $adjunct->teach_type_id = $this->teach_type_id;
         $adjunct->teach_time_id = $this->teach_time_id;

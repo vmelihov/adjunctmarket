@@ -17,12 +17,12 @@ use yii\web\View;
 /* @var $model common\models\Adjunct */
 /* @var $form ActiveForm */
 
-$this->registerCssFile('@web/extension/select2/select2.min.css', ['depends' => [AppAsset::class]]);
 $this->registerCssFile('@web/css/profile-type.css', ['depends' => [AppAsset::class]]);
+$this->registerCssFile('@web/extension/select2/select2.min.css', ['depends' => [AppAsset::class]]);
 
 $this->registerJsFile('@web/js/profile-type.js', ['depends' => [AppAsset::class]]);
-$this->registerJsFile('@web/extension/select2/select2.min.js', ['depends' => [AppAsset::class]]);
 $this->registerJsFile('@web/extension/bootstrap-4.0.0/js/popper.min.js', ['depends' => [AppAsset::class]]);
+$this->registerJsFile('@web/extension/select2/select2.min.js', ['depends' => [AppAsset::class]]);
 
 $this->title = 'Adjunct profile';
 
@@ -42,7 +42,7 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
 
         <?php $form = ActiveForm::begin([
             'id' => 'adjunct-profile-form',
-        'action' => Url::to(['adjunct/profile']),
+            'action' => Url::to(['adjunct/profile']),
             'fieldConfig' => [
                 'template' => "{input}\n{error}",
                 'options' => [
@@ -50,7 +50,7 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
                     'tag' => false,
                 ],
             ],
-    ]); ?>
+        ]); ?>
 
         <div class="p-profile__block">
             <h2 class="g-mb20">
