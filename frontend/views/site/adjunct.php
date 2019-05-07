@@ -2,7 +2,7 @@
 
 use common\models\Area;
 use common\models\Education;
-use common\models\Faculty;
+use common\models\Specialty;
 use common\models\TeachingPeriod;
 use common\models\TeachingTime;
 use common\models\TeachingType;
@@ -26,13 +26,12 @@ $this->registerJsFile('@web/extension/select2/select2.min.js', ['depends' => [Ap
 
 $this->title = 'Adjunct profile';
 
-$faculties = ArrayHelper::map(Faculty::find()->all(), 'id', 'name');
+$specialities = ArrayHelper::map(Specialty::find()->all(), 'id', 'nameWithFaculty');
 $teachingTypes = ArrayHelper::map(TeachingType::find()->all(), 'id', 'name');
 $teachingTimes = ArrayHelper::map(TeachingTime::find()->all(), 'id', 'name');
 $teachingPeriods = ArrayHelper::map(TeachingPeriod::find()->all(), 'id', 'name');
 $education = ArrayHelper::map(Education::find()->all(), 'id', 'name');
 $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
-
 ?>
 
     <div class="p-profile g-content">
@@ -60,8 +59,8 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
 
             </h2>
             <div class="p-profile__select2">
-                <?= $form->field($model, 'faculties')
-                    ->dropDownList($faculties, [
+                <?= $form->field($model, 'specialities')
+                    ->dropDownList($specialities, [
                         'multiple' => 'multiple',
                         'class' => 'p-profile__select2-select js-select2',
                     ])

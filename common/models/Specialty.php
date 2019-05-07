@@ -56,4 +56,12 @@ class Specialty extends ActiveRecord
     {
         return $this->hasOne(Faculty::class, ['id' => 'faculty_id']);
     }
+
+    /**
+     * @return string
+     */
+    public function getNameWithFaculty(): string
+    {
+        return $this->faculty->name . ', ' . $this->name;
+    }
 }

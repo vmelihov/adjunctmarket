@@ -15,7 +15,7 @@ class AdjunctProfile extends BaseProfile
         if ($attributes) {
             $form->setAttributes($attributes);
             $form->teach_locations = json_decode($attributes['teach_locations'], true);
-            $form->faculties = json_decode($attributes['faculties'], true);
+            $form->specialities = json_decode($attributes['specialities'], true);
         }
 
         return $form;

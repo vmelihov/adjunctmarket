@@ -20,7 +20,7 @@ use yii\db\ActiveRecord;
  * @property string $teach_locations
  * @property int $teach_time_id
  * @property int $teach_period_id
- * @property string $faculties
+ * @property string $specialities
  *
  * @property Education $education
  * @property TeachingPeriod $teachPeriod
@@ -47,7 +47,7 @@ class Adjunct extends ActiveRecord
         return [
             [['age', 'sex', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id'], 'integer'],
             [['title', 'description'], 'string', 'max' => 200],
-            [['teach_locations', 'faculties', 'teaching_experience_type_id'], 'string', 'max' => 255],
+            [['teach_locations', 'specialities', 'teaching_experience_type_id'], 'string', 'max' => 255],
             [['education_id'], 'exist', 'skipOnError' => true, 'targetClass' => Education::class, 'targetAttribute' => ['education_id' => 'id']],
             [['teach_period_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingPeriod::class, 'targetAttribute' => ['teach_period_id' => 'id']],
             [['teach_time_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingTime::class, 'targetAttribute' => ['teach_time_id' => 'id']],
@@ -74,7 +74,7 @@ class Adjunct extends ActiveRecord
             'teach_locations' => 'Teach Locations',
             'teach_time_id' => 'Teach Time ID',
             'teach_period_id' => 'Teach Period ID',
-            'faculties' => 'Faculties',
+            'specialities' => 'Specialities',
         ];
     }
 

@@ -22,7 +22,7 @@ class AdjunctProfileForm extends Model
     public $teach_locations;
     public $teach_time_id;
     public $teach_period_id;
-    public $faculties;
+    public $specialities;
     public $confirm;
 
     /**
@@ -38,7 +38,7 @@ class AdjunctProfileForm extends Model
                     'teach_type_id',
                     'teach_time_id',
                     'teach_period_id',
-                    'faculties',
+                    'specialities',
                 ],
                 'required'
             ],
@@ -86,7 +86,7 @@ class AdjunctProfileForm extends Model
         $adjunct->teaching_experience_type_id = $this->teaching_experience_type_id;
 
         $adjunct->teach_locations = $this->getArrayAsString($this->teach_locations);
-        $adjunct->faculties = $this->getArrayAsString($this->faculties);
+        $adjunct->specialities = $this->getArrayAsString($this->specialities);
 
         return $adjunct->save() ? $adjunct : null;
     }

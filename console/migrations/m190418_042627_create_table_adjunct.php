@@ -33,7 +33,7 @@ class m190418_042627_create_table_adjunct extends TableMigration
             'teach_locations' => $this->string()->defaultValue(null),
             'teach_time_id' => $this->integer()->defaultValue(null),
             'teach_period_id' => $this->integer()->defaultValue(null),
-            'faculties' => $this->string()->defaultValue(null),
+            'specialities' => $this->string()->defaultValue(null),
         ];
     }
 
