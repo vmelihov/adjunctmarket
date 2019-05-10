@@ -47,7 +47,7 @@ AppAsset::register($this);
                         <?php
                         $menuItems = [
                             ['label' => 'Home', 'url' => ['/site/index']],
-                            ['label' => 'Home2', 'url' => ['/site/index']],
+                            ['label' => 'vacancy', 'url' => ['/vacancy']],
                             ['label' => 'Home3', 'url' => ['/site/index']],
                             ['label' => 'Home4', 'url' => ['/site/index']],
                         ];
