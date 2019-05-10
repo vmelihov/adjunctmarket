@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\User;
 use frontend\forms\PasswordResetRequestForm;
 use frontend\forms\SignupForm;
 use frontend\forms\VerifyEmailForm;
@@ -84,6 +85,8 @@ class SiteController extends Controller
      * Logs in a user.
      *
      * @return mixed
+     * @throws Throwable
+     * @throws \yii\db\Exception
      */
     public function actionLogin()
     {
@@ -93,6 +96,14 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+
+            /** @var User $user */
+            $user = Yii::$app->getUser()->getIdentity();
+
+            if (!$user->profile) {
+                return $this->actionProfile();
+            }
+
             return $this->goBack();
         }
 
