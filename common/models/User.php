@@ -276,4 +276,20 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->first_name . ' ' . $this->last_name;
     }
+
+    /**
+     * @return bool
+     */
+    public function isInstitution(): bool
+    {
+        return $this->user_type === self::TYPE_INSTITUTION;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdjunct(): bool
+    {
+        return $this->user_type === self::TYPE_ADJUNCT;
+    }
 }
