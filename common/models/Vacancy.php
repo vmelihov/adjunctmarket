@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -12,16 +13,19 @@ use yii\db\ActiveRecord;
  * @property int $institution_id
  * @property string $title
  * @property string $description
- * @property int $faculty_id
+ * @property int $specialty_id
  * @property int $area_id
  * @property int $education_id
  * @property int $teach_type_id
  * @property int $teach_time_id
  * @property int $teach_period_id
+ * @property int $created
+ * @property int $updated
  * @property int $deleted
+ * @property int $views
  *
  * @property Education $education
- * @property Faculty $faculty
+ * @property Specialty $specialty
  * @property Institution $institution
  * @property Area $area
  * @property TeachingPeriod $teachPeriod
@@ -38,18 +42,28 @@ class Vacancy extends ActiveRecord
         return 'vacancy';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'created',
+                'updatedAtAttribute' => 'updated',
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['institution_id', 'title', 'description', 'faculty_id', 'area_id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id'], 'required'],
-            [['institution_id', 'faculty_id', 'area_id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id', 'deleted'], 'integer'],
+            [['institution_id', 'title', 'description', 'specialty_id', 'area_id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id'], 'required'],
+            [['institution_id', 'specialty_id', 'area_id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id', 'created', 'updated', 'deleted', 'views'], 'integer'],
             [['title', 'description'], 'string', 'max' => 200],
-            [['institution_id'], 'unique'],
             [['education_id'], 'exist', 'skipOnError' => true, 'targetClass' => Education::class, 'targetAttribute' => ['education_id' => 'id']],
-            [['faculty_id'], 'exist', 'skipOnError' => true, 'targetClass' => Faculty::class, 'targetAttribute' => ['faculty_id' => 'id']],
+            [['specialty_id'], 'exist', 'skipOnError' => true, 'targetClass' => Specialty::class, 'targetAttribute' => ['specialty_id' => 'id']],
             [['institution_id'], 'exist', 'skipOnError' => true, 'targetClass' => Institution::class, 'targetAttribute' => ['institution_id' => 'id']],
             [['area_id'], 'exist', 'skipOnError' => true, 'targetClass' => Area::class, 'targetAttribute' => ['area_id' => 'id']],
             [['teach_period_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingPeriod::class, 'targetAttribute' => ['teach_period_id' => 'id']],
@@ -68,14 +82,29 @@ class Vacancy extends ActiveRecord
             'institution_id' => 'Institution ID',
             'title' => 'Title',
             'description' => 'Description',
-            'faculty_id' => 'Faculty ID',
+            'specialty_id' => 'Specialty',
             'area_id' => 'Area ID',
             'education_id' => 'Education ID',
             'teach_type_id' => 'Teach Type ID',
             'teach_time_id' => 'Teach Time ID',
             'teach_period_id' => 'Teach Period ID',
+            'created' => 'Created time',
+            'updated' => 'Updated time',
             'deleted' => 'Deleted',
+            'views' => 'Views',
         ];
+    }
+
+    /**
+     * @param int $id
+     */
+    public static function incrementView(int $id): void
+    {
+        $vacancy = self::findOne($id);
+
+        if ($vacancy) {
+            $vacancy->updateCounters(['views' => 1]);
+        }
     }
 
     /**
@@ -89,9 +118,9 @@ class Vacancy extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getFaculty()
+    public function getSpecialty()
     {
-        return $this->hasOne(Faculty::class, ['id' => 'faculty_id']);
+        return $this->hasOne(Specialty::class, ['id' => 'specialty_id']);
     }
 
     /**
@@ -136,10 +165,18 @@ class Vacancy extends ActiveRecord
 
     /**
      * @param int $id
-     * @return ActiveQuery
+     * @return Vacancy[]
      */
-    public static function findByInstitutionId(int $id): ActiveQuery
+    public static function findByInstitutionId(int $id): array
     {
-        return self::find()->with(['institution_id' => $id]);
+        return self::findAll(['institution_id' => $id]);
+    }
+
+    /**
+     * @return Vacancy[]
+     */
+    public static function findAllToShow(): array
+    {
+        return self::findAll(['deleted' => 0]);
     }
 }

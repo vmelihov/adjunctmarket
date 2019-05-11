@@ -42,7 +42,7 @@ abstract class TableMigration extends Migration
      * @return bool|void
      * @throws Exception
      */
-    public function down(): void
+    public function safeDown(): void
     {
         $tableName = $this->getTableName();
 

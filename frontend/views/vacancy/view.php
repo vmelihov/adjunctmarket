@@ -1,46 +1,74 @@
 <?php
 
+use common\src\helpers\Helper;
+use frontend\assets\AppAsset;
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use yii\helpers\Url;
+use yii\web\YiiAsset;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Vacancy */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Vacancies', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
-\yii\web\YiiAsset::register($this);
+$this->registerCssFile('@web/css/one-job.css', ['depends' => [AppAsset::class]]);
+YiiAsset::register($this);
+
+$user = Helper::getUserIdentity();
 ?>
-<div class="vacancy-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="p-job g-content">
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+    <h1 class="g-mb10"><?= Html::encode("#{$model->id} {$this->title}") ?></h1>
+
+    <a href="<?= Url::to(['/vacancy/index'], true) ?>" class="p-job__back">&#139; back jobs list</a>
+
+    <?php if ($user->isInstitution()): ?>
+        <p>
+            <?= Html::a('<span class="fa fa-edit"></span>', ['update', 'id' => $model->id]) ?>
+            <?= Html::a('<span class="fa fa-trash-alt"></span>', ['delete', 'id' => $model->id], [
+                'data' => [
+                    'confirm' => 'Are you sure you want to delete this item?',
+                    'method' => 'post',
+                ],
+            ]) ?>
+        </p>
+    <?php endif; ?>
+
+    <p class="p-job__content">
+        <?= Html::encode($model->description) ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'institution_id',
-            'title',
-            'description',
-            'faculty_id',
-            'area_id',
-            'education_id',
-            'teach_type_id',
-            'teach_time_id:datetime',
-            'teach_period_id',
-            'deleted',
-        ],
-    ]) ?>
+    <div class="p-job__footer">
+        <div class="p-job__footer-column">
+            <div class="p-job__footer-item">
+                <span class="p-job__footer-item-name">Category:</span> <?= Html::encode($model->specialty->getNameWithFaculty()) ?>
+            </div>
+            <div class="p-job__footer-item">
+                <span class="p-job__footer-item-name">Teaching experience:</span> <?= Html::encode($model->teachType->name) ?>
+            </div>
+            <div class="p-job__footer-item">
+                <span class="p-job__footer-item-name">Education:</span> <?= Html::encode($model->education->name) ?>
+            </div>
+        </div>
+
+        <div class="p-job__footer-column">
+            <div class="p-job__footer-item">
+                <span class="p-job__footer-item-name">Type of teaching:</span> <?= Html::encode($model->teachPeriod->name) ?>
+            </div>
+            <div class="p-job__footer-item">
+                <span class="p-job__footer-item-name">Location:</span> <?= Html::encode($model->area->getNameWithState()) ?>
+            </div>
+            <!--            <div class="p-job__footer-item">-->
+            <!--                <span class="p-job__footer-item-name">University:</span> William Paterson University of-->
+            <!--                New Jersey-->
+            <!--            </div>-->
+        </div>
+    </div>
+
+    <div class="p-job__proposals">
+    </div>
+
+    <div class="p-job__add-proposal">
+    </div>
 
 </div>

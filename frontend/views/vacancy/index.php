@@ -1,43 +1,59 @@
 <?php
 
+use common\models\Vacancy;
+use common\src\helpers\Helper;
+use frontend\assets\AppAsset;
 use yii\helpers\Html;
-use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $vacancies Vacancy[] */
 
-$this->title = 'Vacancies';
+$this->registerCssFile('@web/css/jobs.css', ['depends' => [AppAsset::class]]);
+
+$this->title = 'Jobs';
 $this->params['breadcrumbs'][] = $this->title;
+
+$user = Helper::getUserIdentity();
 ?>
 <div class="vacancy-index">
+    <div class="p-jobs g-content">
+        <h1 class="p-jobs__title"><?= Html::encode($this->title) ?></h1>
 
-    <h1><?= Html::encode($this->title) ?></h1>
+        <?php if ($user->isInstitution()): ?>
+            <?= Html::a('Create Vacancy', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php endif; ?>
 
-    <p>
-        <?= Html::a('Create Vacancy', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'institution_id',
-            'title',
-            'description',
-            'faculty_id',
-            //'area_id',
-            //'education_id',
-            //'teach_type_id',
-            //'teach_time_id:datetime',
-            //'teach_period_id',
-            //'deleted',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-
-
+        <div class="p-jobs__list">
+            <?php foreach ($vacancies as $vacancy) : ?>
+                <div class="p-jobs__list-one">
+                    <div class="p-jobs__list-one-name">
+                        <?= Html::encode("#{$vacancy->id} {$vacancy->title}") ?>
+                    </div>
+                    <div class="p-jobs__list-one-cat">
+                        <?= Html::encode("{$vacancy->specialty->faculty->name} - {$vacancy->specialty->name} /") ?>
+                    </div>
+                    <div class="p-jobs__list-one-btns">
+                        <?= Html::a('<span class="fa fa-envelope-open-text"></span>', ['view', 'id' => $vacancy->id]) ?>
+                        <?php if ($user->isInstitution()): ?>
+                            <?= Html::a('<span class="fa fa-edit"></span>', ['update', 'id' => $vacancy->id]) ?>
+                            <?= Html::a('<span class="fa fa-trash-alt"></span>', ['delete', 'id' => $vacancy->id], [
+                                'data' => [
+                                    'confirm' => 'Are you sure you want to delete this item?',
+                                    'method' => 'post',
+                                ],
+                            ]) ?>
+                        <?php endif; ?>
+                    </div>
+                    <div class="p-jobs__list-one-stats">
+                        <div class="p-jobs__list-one-stats-date">
+                            <?= date('d/m/Y', $vacancy->updated) ?>
+                        </div>
+                        <div class="p-jobs__list-one-stats-views">
+                            Views: <?= $vacancy->views ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 </div>

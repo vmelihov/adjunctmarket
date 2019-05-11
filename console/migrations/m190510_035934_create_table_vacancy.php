@@ -22,17 +22,19 @@ class m190510_035934_create_table_vacancy extends TableMigration
     {
         return [
             'id' => $this->primaryKey(),
-            'institution_id' => $this->integer()->unique()->notNull(),
+            'institution_id' => $this->integer()->notNull(),
             'title' => $this->string(200)->notNull(),
-            'description' => $this->string(200)->notNull(),
-            'faculty_id' => $this->integer()->notNull(),
-//            'speciality_id' => $this->integer()->notNull(),
+            'description' => $this->string()->notNull(),
+            'specialty_id' => $this->integer()->notNull(),
             'area_id' => $this->integer()->notNull(),
             'education_id' => $this->integer()->notNull(),
             'teach_type_id' => $this->integer()->notNull(),
             'teach_time_id' => $this->integer()->notNull(),
             'teach_period_id' => $this->integer()->notNull(),
+            'created' => $this->integer(11)->notNull(),
+            'updated' => $this->integer(11)->notNull(),
             'deleted' => $this->smallInteger()->defaultValue(0),
+            'views' => $this->integer()->defaultValue(0),
         ];
     }
 
@@ -43,8 +45,7 @@ class m190510_035934_create_table_vacancy extends TableMigration
     {
         return [
             ['vacancy_institution_fk', 'vacancy', 'institution_id', 'institution', 'id'],
-            ['vacancy_faculty_fk', 'vacancy', 'faculty_id', 'faculty', 'id'],
-//            ['vacancy_speciality_fk', 'vacancy', 'speciality_id', 'speciality', 'id'],
+            ['vacancy_specialty_fk', 'vacancy', 'specialty_id', 'specialty', 'id'],
             ['vacancy_location_fk', 'vacancy', 'area_id', 'area', 'id'],
             ['vacancy_education_fk', 'vacancy', 'education_id', 'education', 'id'],
             ['vacancy_teach_type_fk', 'vacancy', 'teach_type_id', 'teaching_type', 'id'],

@@ -2,11 +2,11 @@
 
 namespace frontend\controllers;
 
-use common\models\User;
+use common\src\helpers\Helper;
 use Throwable;
 use Yii;
 use common\models\Vacancy;
-use yii\data\ActiveDataProvider;
+use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -28,7 +28,7 @@ class VacancyController extends Controller
                 'only' => ['index', 'view', 'create', 'update', 'delete'],
                 'rules' => [
                     [
-                        'actions' => ['index'],
+                        'actions' => ['index', 'view'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -54,8 +54,7 @@ class VacancyController extends Controller
     public static function isInstitution(): bool
     {
         try {
-            /** @var User $user */
-            $user = Yii::$app->getUser()->getIdentity();
+            $user = Helper::getUserIdentity();
             return $user->isInstitution();
         } catch (Throwable $e) {}
 
@@ -65,34 +64,24 @@ class VacancyController extends Controller
     /**
      * Lists all Vacancy models.
      * @return mixed
-     * @throws Throwable
      */
     public function actionIndex()
     {
-        /** @var User $user */
-        $user = Yii::$app->getUser()->getIdentity();
+        $user = Helper::getUserIdentity();
 
         if ($user->isInstitution()) {
-            $dataProvider = new ActiveDataProvider([
-                'query' => Vacancy::findByInstitutionId($user->getId()),
-            ]);
+            $vacancies = Vacancy::findByInstitutionId($user->profile->id);
+        } elseif ($user->isAdjunct()) {
+            $vacancies = Vacancy::findAllToShow();
+        } else {
+            Yii::$app->session->setFlash('error', 'Undefined type of profile.');
 
-            return $this->render('index', [
-                'dataProvider' => $dataProvider,
-            ]);
+            return $this->goHome();
         }
 
-        if ($user->isAdjunct()) {
-            $dataProvider = new ActiveDataProvider([
-                'query' => Vacancy::find(),
-            ]);
-
-            return $this->render('index', [
-                'dataProvider' => $dataProvider,
-            ]);
-        }
-
-        return $this->goHome();
+        return $this->render('index', [
+            'vacancies' => $vacancies,
+        ]);
     }
 
     /**
@@ -103,6 +92,12 @@ class VacancyController extends Controller
      */
     public function actionView($id)
     {
+        $user = Helper::getUserIdentity();
+
+        if ($user->isAdjunct()) {
+            Vacancy::incrementView($id);
+        }
+
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -152,6 +147,8 @@ class VacancyController extends Controller
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws Throwable
+     * @throws StaleObjectException
      */
     public function actionDelete($id)
     {

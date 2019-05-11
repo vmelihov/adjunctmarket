@@ -3,7 +3,7 @@
 /* @var $this View */
 /* @var $content string */
 
-use common\models\User;
+use common\src\helpers\Helper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
@@ -11,8 +11,7 @@ use frontend\assets\AppAsset;
 use common\widgets\Alert;
 use yii\widgets\Menu;
 
-/** @var null|User $user */
-$user = Yii::$app->getUser()->getIdentity();
+$user = Helper::getUserIdentity();
 
 AppAsset::register($this);
 ?>
@@ -47,9 +46,8 @@ AppAsset::register($this);
                         <?php
                         $menuItems = [
                             ['label' => 'Home', 'url' => ['/site/index']],
-                            ['label' => 'vacancy', 'url' => ['/vacancy']],
-                            ['label' => 'Home3', 'url' => ['/site/index']],
-                            ['label' => 'Home4', 'url' => ['/site/index']],
+                            ['label' => 'vacancy', 'url' => ['/vacancy/index']],
+                            ['label' => 'Home', 'url' => ['/site/index']],
                         ];
 
                         if ($user) {
