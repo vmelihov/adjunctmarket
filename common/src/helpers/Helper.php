@@ -11,9 +11,9 @@ use yii\web\IdentityInterface;
 class Helper
 {
     /**
-     * @return IdentityInterface|User
+     * @return null|IdentityInterface|User
      */
-    public static function getUserIdentity(): IdentityInterface
+    public static function getUserIdentity(): ?IdentityInterface
     {
         try {
             return Yii::$app->getUser()->getIdentity();
