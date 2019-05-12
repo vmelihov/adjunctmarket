@@ -12,7 +12,7 @@ use yii\db\ActiveRecord;
  * @property int $user_id
  * @property string $title
  * @property string $description
- * @property int $location_id
+ * @property int $university_id
  *
  * @property User $user
  */
@@ -35,7 +35,7 @@ class Institution extends ActiveRecord
             [['user_id'], 'required'],
             [['user_id'], 'integer'],
             [['title', 'description'], 'string', 'max' => 200],
-            [['location_id'], 'exist', 'skipOnError' => true, 'targetClass' => Area::class, 'targetAttribute' => ['location_id' => 'id']],
+            [['university_id'], 'exist', 'skipOnError' => true, 'targetClass' => University::class, 'targetAttribute' => ['university_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -50,15 +50,15 @@ class Institution extends ActiveRecord
             'user_id' => 'User ID',
             'title' => 'Title',
             'description' => 'Description',
-            'location_id' => 'Location',
+            'university_id' => 'University',
         ];
     }
 
     /**
      * @return ActiveQuery
      */
-    public function getArea(): ActiveQuery
+    public function getUniversity(): ActiveQuery
     {
-        return $this->hasOne(Area::class, ['id' => 'state_id']);
+        return $this->hasOne(University::class, ['id' => 'university_id']);
     }
 }

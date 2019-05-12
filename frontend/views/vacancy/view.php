@@ -58,10 +58,9 @@ $user = Helper::getUserIdentity();
             <div class="p-job__footer-item">
                 <span class="p-job__footer-item-name">Location:</span> <?= Html::encode($model->area->getNameWithState()) ?>
             </div>
-            <!--            <div class="p-job__footer-item">-->
-            <!--                <span class="p-job__footer-item-name">University:</span> William Paterson University of-->
-            <!--                New Jersey-->
-            <!--            </div>-->
+            <div class="p-job__footer-item">
+                <span class="p-job__footer-item-name">University:</span> <?= Html::encode($model->institution->university->name) ?>
+            </div>
         </div>
     </div>
 

@@ -2,8 +2,8 @@
 
 namespace frontend\forms;
 
-use common\models\Area;
 use common\models\Institution;
+use common\models\University;
 use yii\base\Model;
 
 class InstitutionProfileForm extends Model
@@ -12,7 +12,7 @@ class InstitutionProfileForm extends Model
     public $user_id;
     public $title;
     public $description;
-    public $location_id;
+    public $university_id;
     public $confirm;
 
     /**
@@ -21,10 +21,10 @@ class InstitutionProfileForm extends Model
     public function rules(): array
     {
         return [
-            [['user_id', 'location_id'], 'required'],
+            [['user_id', 'university_id'], 'required'],
             [['title', 'description'], 'trim'],
             [['id', 'user_id'], 'number'],
-            [['location_id'], 'exist', 'skipOnError' => true, 'targetClass' => Area::class, 'targetAttribute' => ['location_id' => 'id']],
+            [['university_id'], 'exist', 'skipOnError' => true, 'targetClass' => University::class, 'targetAttribute' => ['university_id' => 'id']],
             ['confirm', 'compare', 'compareValue' => 1, 'message' => 'You must confirm'],
         ];
     }
@@ -49,7 +49,7 @@ class InstitutionProfileForm extends Model
         $institution->user_id = $this->user_id;
         $institution->title = $this->title;
         $institution->description = $this->description;
-        $institution->location_id = $this->location_id;
+        $institution->university_id = $this->university_id;
 
         return $institution->save() ? $institution : null;
     }

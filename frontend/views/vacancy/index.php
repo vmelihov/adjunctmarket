@@ -30,7 +30,7 @@ $user = Helper::getUserIdentity();
                         <?= Html::encode("#{$vacancy->id} {$vacancy->title}") ?>
                     </div>
                     <div class="p-jobs__list-one-cat">
-                        <?= Html::encode("{$vacancy->specialty->faculty->name} - {$vacancy->specialty->name} /") ?>
+                        <?= Html::encode("{$vacancy->specialty->faculty->name} - {$vacancy->specialty->name} / {$vacancy->institution->university->name}") ?>
                     </div>
                     <div class="p-jobs__list-one-btns">
                         <?= Html::a('<span class="fa fa-envelope-open-text"></span>', ['view', 'id' => $vacancy->id]) ?>

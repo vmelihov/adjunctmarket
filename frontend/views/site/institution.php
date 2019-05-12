@@ -1,6 +1,6 @@
 <?php
 
-use common\models\Area;
+use common\models\University;
 use frontend\assets\AppAsset;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -21,7 +21,7 @@ $this->registerJsFile('@web/extension/select2/select2.min.js', ['depends' => [Ap
 
 $this->title = 'Employer profile';
 
-$areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
+$universities = ArrayHelper::map(University::find()->all(), 'id', 'name');
 ?>
 
     <div class="p-profile g-content">
@@ -47,8 +47,8 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
             </h2>
 
             <div class="p-profile__select2 g-mb20">
-                <?= $form->field($model, 'location_id')
-                    ->dropDownList($areas, ['class' => 'p-profile__select2-select js-select2'])
+                <?= $form->field($model, 'university_id')
+                    ->dropDownList($universities, ['class' => 'p-profile__select2-select js-select2'])
                 ?>
             </div>
         </div>
