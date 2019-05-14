@@ -17,12 +17,12 @@ use yii\web\View;
 /* @var $model common\models\Adjunct */
 /* @var $form ActiveForm */
 
-$this->registerCssFile('@web/css/profile-type.css', ['depends' => [AppAsset::class]]);
 $this->registerCssFile('@web/extension/select2/select2.min.css', ['depends' => [AppAsset::class]]);
+$this->registerCssFile('@web/css/profile-type.css', ['depends' => [AppAsset::class]]);
 
-$this->registerJsFile('@web/js/profile-type.js', ['depends' => [AppAsset::class]]);
 $this->registerJsFile('@web/extension/bootstrap-4.0.0/js/popper.min.js', ['depends' => [AppAsset::class]]);
 $this->registerJsFile('@web/extension/select2/select2.min.js', ['depends' => [AppAsset::class]]);
+$this->registerJsFile('@web/js/profile-type.js', ['depends' => [AppAsset::class]]);
 
 $this->title = 'Adjunct profile';
 
@@ -58,13 +58,17 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
                       title="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"></span>
 
             </h2>
-            <div class="p-profile__select2">
-                <?= $form->field($model, 'specialities')
-                    ->dropDownList($specialities, [
-                        'multiple' => 'multiple',
-                        'class' => 'p-profile__select2-select js-select2',
-                    ])
-                ?>
+
+            <div class="js-categoryFaculty">
+                <div class="js-cfBlock g-mb20">
+                    <div class="p-profile__select2 g-mb10">
+                        <?= $form->field($model, 'specialities')
+                            ->dropDownList($specialities, [
+                                'multiple' => 'multiple',
+                                'class' => 'p-profile__select2-select js-select2'
+                            ]) ?>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -157,13 +161,18 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
                 ?>
             </div>
 
-            <div class="p-profile__select2<?= ($model->teach_type_id > 1) ? '' : ' p-profile__hidden' ?>" id="formatToTeaching">
-                <?= $form->field($model, 'teach_locations')
-                    ->dropDownList($areas, [
-                        'multiple' => 'multiple',
-                        'class' => 'p-profile__select2-select js-select2',
-                    ])
-                ?>
+            <div class="js-categoryFaculty">
+                <div class="js-cfBlock g-mb20">
+                    <div class="p-profile__select2<?= ($model->teach_type_id > 1) ? '' : ' p-profile__hidden' ?>"
+                         id="formatToTeaching">
+                        <?= $form->field($model, 'teach_locations')
+                            ->dropDownList($areas, [
+                                'multiple' => 'multiple',
+                                'class' => 'p-profile__select2-select js-select2',
+                            ])
+                        ?>
+                    </div>
+                </div>
             </div>
         </div>
 
