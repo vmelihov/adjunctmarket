@@ -1,5 +1,6 @@
 <?php
 
+use common\models\Chat;
 use common\src\helpers\Helper;
 use frontend\assets\AppAsset;
 use yii\helpers\Html;
@@ -72,8 +73,11 @@ $user = Helper::getUserIdentity();
 
     <?php if ($user->isAdjunct()): ?>
         <div>
-            <!--        либо view либо create, если чата еще нет -->
-            <a href="<?= Url::to(['/chat/create', 'vacancyId' => $model->id], true) ?>" class="btn btn-primary">Откликнуться</a>
+            <?php if ($chat = Chat::findForVacancyAndAdjunct($model->id, $user->getId())): ?>
+                <a href="<?= Url::to(['/chat/view', 'chatId' => $chat->id], true) ?>" class="btn btn-primary">К чату</a>
+            <?php else : ?>
+                <a href="<?= Url::to(['/chat/create', 'param' => $model->id], true) ?>" class="btn btn-primary">Откликнуться</a>
+            <?php endif; ?>
         </div>
     <?php endif; ?>
 

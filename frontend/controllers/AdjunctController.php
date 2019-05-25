@@ -2,7 +2,11 @@
 
 namespace frontend\controllers;
 
+use common\models\Adjunct;
+use common\models\User;
+use common\src\helpers\Helper;
 use frontend\forms\AdjunctProfileForm;
+use Throwable;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -20,8 +24,13 @@ class AdjunctController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['profile'],
+                'only' => ['profile', 'index'],
                 'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => self::isInstitution(),
+                        'roles' => ['@'],
+                    ],
                     [
                         'actions' => ['profile'],
                         'allow' => true,
@@ -39,6 +48,21 @@ class AdjunctController extends Controller
     }
 
     /**
+     * @return bool
+     */
+    public static function isInstitution(): bool
+    {
+        try {
+            /** @var User $user */
+            $user = Helper::getUserIdentity();
+            return $user->isInstitution();
+        } catch (Throwable $e) {
+        }
+
+        return false;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function actions(): array
@@ -48,6 +72,20 @@ class AdjunctController extends Controller
                 'class' => ErrorAction::class,
             ],
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function actionIndex(): string
+    {
+        $adjuncts = Adjunct::find()
+            ->joinWith('user', false)
+            ->where(['=', 'user.user_type', User::TYPE_ADJUNCT])
+            ->andWhere(['=', 'user.status', User::STATUS_ACTIVE])
+            ->all();
+
+        return $this->render('index', ['adjuncts' => $adjuncts]);
     }
 
     /**

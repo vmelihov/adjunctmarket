@@ -111,6 +111,14 @@ class Adjunct extends ActiveRecord
     }
 
     /**
+     * @return ActiveQuery
+     */
+    public function getUser(): ActiveQuery
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
+    /**
      * @param int $userId
      * @return Adjunct
      */
