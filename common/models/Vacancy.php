@@ -10,7 +10,7 @@ use yii\db\ActiveRecord;
  * This is the model class for table "vacancy".
  *
  * @property int $id
- * @property int $institution_id
+ * @property int $institution_user_id
  * @property string $title
  * @property string $description
  * @property int $specialty_id
@@ -26,7 +26,7 @@ use yii\db\ActiveRecord;
  *
  * @property Education $education
  * @property Specialty $specialty
- * @property Institution $institution
+ * @property User $user
  * @property Area $area
  * @property TeachingPeriod $teachPeriod
  * @property TeachingTime $teachTime
@@ -37,12 +37,12 @@ class Vacancy extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'vacancy';
     }
 
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             [
@@ -56,15 +56,15 @@ class Vacancy extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            [['institution_id', 'title', 'description', 'specialty_id', 'area_id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id'], 'required'],
-            [['institution_id', 'specialty_id', 'area_id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id', 'created', 'updated', 'deleted', 'views'], 'integer'],
+            [['institution_user_id', 'title', 'description', 'specialty_id', 'area_id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id'], 'required'],
+            [['institution_user_id', 'specialty_id', 'area_id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id', 'created', 'updated', 'deleted', 'views'], 'integer'],
             [['title', 'description'], 'string', 'max' => 200],
             [['education_id'], 'exist', 'skipOnError' => true, 'targetClass' => Education::class, 'targetAttribute' => ['education_id' => 'id']],
             [['specialty_id'], 'exist', 'skipOnError' => true, 'targetClass' => Specialty::class, 'targetAttribute' => ['specialty_id' => 'id']],
-            [['institution_id'], 'exist', 'skipOnError' => true, 'targetClass' => Institution::class, 'targetAttribute' => ['institution_id' => 'id']],
+            [['institution_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['institution_user_id' => 'id']],
             [['area_id'], 'exist', 'skipOnError' => true, 'targetClass' => Area::class, 'targetAttribute' => ['area_id' => 'id']],
             [['teach_period_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingPeriod::class, 'targetAttribute' => ['teach_period_id' => 'id']],
             [['teach_time_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingTime::class, 'targetAttribute' => ['teach_time_id' => 'id']],
@@ -75,11 +75,11 @@ class Vacancy extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
-            'institution_id' => 'Institution ID',
+            'institution_user_id' => 'User ID',
             'title' => 'Title',
             'description' => 'Description',
             'specialty_id' => 'Specialty',
@@ -110,7 +110,7 @@ class Vacancy extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getEducation()
+    public function getEducation(): ActiveQuery
     {
         return $this->hasOne(Education::class, ['id' => 'education_id']);
     }
@@ -118,7 +118,7 @@ class Vacancy extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getSpecialty()
+    public function getSpecialty(): ActiveQuery
     {
         return $this->hasOne(Specialty::class, ['id' => 'specialty_id']);
     }
@@ -126,15 +126,15 @@ class Vacancy extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getInstitution()
+    public function getUser(): ActiveQuery
     {
-        return $this->hasOne(Institution::class, ['id' => 'institution_id']);
+        return $this->hasOne(User::class, ['id' => 'institution_user_id']);
     }
 
     /**
      * @return ActiveQuery
      */
-    public function getArea()
+    public function getArea(): ActiveQuery
     {
         return $this->hasOne(Area::class, ['id' => 'area_id']);
     }
@@ -142,7 +142,7 @@ class Vacancy extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getTeachPeriod()
+    public function getTeachPeriod(): ActiveQuery
     {
         return $this->hasOne(TeachingPeriod::class, ['id' => 'teach_period_id']);
     }
@@ -150,7 +150,7 @@ class Vacancy extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getTeachTime()
+    public function getTeachTime(): ActiveQuery
     {
         return $this->hasOne(TeachingTime::class, ['id' => 'teach_time_id']);
     }
@@ -158,7 +158,7 @@ class Vacancy extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getTeachType()
+    public function getTeachType(): ActiveQuery
     {
         return $this->hasOne(TeachingType::class, ['id' => 'teach_type_id']);
     }
@@ -167,9 +167,9 @@ class Vacancy extends ActiveRecord
      * @param int $id
      * @return Vacancy[]
      */
-    public static function findByInstitutionId(int $id): array
+    public static function findByInstitutionUserId(int $id): array
     {
-        return self::findAll(['institution_id' => $id]);
+        return self::findAll(['institution_user_id' => $id]);
     }
 
     /**

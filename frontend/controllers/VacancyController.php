@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\User;
 use common\src\helpers\Helper;
 use Throwable;
 use Yii;
@@ -54,6 +55,7 @@ class VacancyController extends Controller
     public static function isInstitution(): bool
     {
         try {
+            /** @var User $user */
             $user = Helper::getUserIdentity();
             return $user->isInstitution();
         } catch (Throwable $e) {}
@@ -67,10 +69,11 @@ class VacancyController extends Controller
      */
     public function actionIndex()
     {
+        /** @var User $user */
         $user = Helper::getUserIdentity();
 
         if ($user->isInstitution()) {
-            $vacancies = Vacancy::findByInstitutionId($user->profile->id);
+            $vacancies = Vacancy::findByInstitutionUserId($user->getId());
         } elseif ($user->isAdjunct()) {
             $vacancies = Vacancy::findAllToShow();
         } else {
@@ -92,6 +95,7 @@ class VacancyController extends Controller
      */
     public function actionView($id)
     {
+        /** @var User $user */
         $user = Helper::getUserIdentity();
 
         if ($user->isAdjunct()) {

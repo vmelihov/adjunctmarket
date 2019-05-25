@@ -59,7 +59,7 @@ $user = Helper::getUserIdentity();
                 <span class="p-job__footer-item-name">Location:</span> <?= Html::encode($model->area->getNameWithState()) ?>
             </div>
             <div class="p-job__footer-item">
-                <span class="p-job__footer-item-name">University:</span> <?= Html::encode($model->institution->university->name) ?>
+                <span class="p-job__footer-item-name">University:</span> <?= Html::encode($model->user->profile->university->name) ?>
             </div>
         </div>
     </div>
@@ -69,5 +69,12 @@ $user = Helper::getUserIdentity();
 
     <div class="p-job__add-proposal">
     </div>
+
+    <?php if ($user->isAdjunct()): ?>
+        <div>
+            <!--        либо view либо create, если чата еще нет -->
+            <a href="<?= Url::to(['/chat/create', 'vacancyId' => $model->id], true) ?>" class="btn btn-primary">Откликнуться</a>
+        </div>
+    <?php endif; ?>
 
 </div>

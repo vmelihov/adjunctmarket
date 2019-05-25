@@ -41,7 +41,7 @@ $user = Helper::getUserIdentity();
 ]); ?>
 
 <?= $form->field($model, 'id')->hiddenInput()->label(false) ?>
-<?= $form->field($model, 'institution_id')->hiddenInput(['value' => $user->profile->id])->label(false) ?>
+<?= $form->field($model, 'institution_user_id')->hiddenInput(['value' => $user->getId()])->label(false) ?>
 
 <div class="p-cj__block">
     <div class="row">
