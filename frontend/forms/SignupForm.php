@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Exception;
 use yii\base\Model;
 use common\models\User;
+use yii\log\Logger;
 
 /**
  * Signup form
@@ -19,6 +20,7 @@ class SignupForm extends Model
     public $password;
     public $password_repeat;
     public $confirm;
+    public $university_id;
 
     /**
      * {@inheritdoc}
@@ -48,6 +50,7 @@ class SignupForm extends Model
             ['password', 'match', 'pattern' => '/[A-Z]+/', 'message' => 'Password should contain at least 1 character in uppercase'],
             ['password_repeat', 'compare', 'compareAttribute' => 'password', 'message' => "Passwords don't match"],
             ['user_type', 'in', 'range' => array_keys(User::getUserTypes())],
+            ['university_id', 'number'],
             ['confirm', 'compare', 'compareValue' => 1, 'message' => 'You must confirm'],
         ];
     }
@@ -78,6 +81,10 @@ class SignupForm extends Model
         if ($user->save()) {
             $this->sendEmail($user);
 
+            if ((int)$this->user_type === User::TYPE_INSTITUTION && $this->university_id) {
+                $this->saveInstitutionProfile($user);
+            }
+
             return $user;
         }
 
@@ -104,5 +111,20 @@ class SignupForm extends Model
             ->setTo($this->email)
             ->setSubject('Account registration at ' . Yii::$app->name)
             ->send();
+    }
+
+    /**
+     * @param User $user
+     */
+    private function saveInstitutionProfile(User $user): void
+    {
+        try {
+            $profileForm = new InstitutionProfileForm();
+            $profileForm->user_id = $user->getId();
+            $profileForm->university_id = $this->university_id;
+            $profileForm->save();
+        } catch (\Exception $e) {
+            Yii::getLogger()->log('Error creating profile. ' . $e->getMessage(), Logger::LEVEL_ERROR);
+        }
     }
 }

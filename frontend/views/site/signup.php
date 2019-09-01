@@ -1,7 +1,9 @@
 <?php
 
+use common\models\University;
 use common\models\User;
 use frontend\assets\AppAsset;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\bootstrap\ActiveForm;
@@ -16,6 +18,8 @@ $this->registerCssFile('@web/css/registration.css', [
 $this->registerJsFile('@web/js/reg.js"', [
     'depends' => [AppAsset::class],
 ]);
+
+$universities = ArrayHelper::map(University::find()->all(), 'id', 'name');
 
 $this->title = 'Registration';
 ?>
@@ -66,6 +70,10 @@ $this->title = 'Registration';
             </div>
         </div>
 
+        <?= $form->field($model, 'university_id')
+            ->dropDownList($universities, ['class' => 'p-profile__select2-select js-select2'])
+        ?>
+
         <?= $form->field($model, 'first_name')->textInput([
             'placeholder' => 'Enter your first name',
             'required' => '',
@@ -76,11 +84,11 @@ $this->title = 'Registration';
             'required' => '',
         ]) ?>
 
-    <?= $form->field($model, 'email')->textInput([
-        'placeholder' => 'Enter your work email',
-        'type' => 'email',
-        'required' => '',
-    ]) ?>
+        <?= $form->field($model, 'email')->textInput([
+            'placeholder' => 'Enter your work email',
+            'type' => 'email',
+            'required' => '',
+        ]) ?>
 
         <?= $form->field($model, 'password')->passwordInput([
             'placeholder' => 'Password',
