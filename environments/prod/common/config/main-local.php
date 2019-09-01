@@ -21,9 +21,9 @@ return [
             'useFileTransport' => false,
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
-                'host' => 'smtp.gmail.com',
-                'username' => 'username',
-                'password' => 'password',
+                'host' => 'vip26.hosting.reg.ru',
+                'username' => 'noreply@instructorshub.com',
+                'password' => 'W7l9F7v8',
                 'port' => '587',
                 'encryption' => 'tls',
             ],
