@@ -5,38 +5,97 @@
 /* @var $model LoginForm */
 
 use common\models\LoginForm;
+use frontend\assets\AppAsset;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = 'Login';
+$this->title = 'Log in to get start';
 $this->params['breadcrumbs'][] = $this->title;
+
+$this->registerCssFile('@web/css/registration.css', ['depends' => [AppAsset::class]]);
+$this->registerJsFile('@web/extension/selectize/js/standalone/selectize.min.js', ['depends' => [AppAsset::class],]);
+$this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class],]);
+
 ?>
-<div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>Please fill out the following fields to login:</p>
+<div class="p-reg p-login g-content js-regForm">
+    <div class="p-reg__title"><?= Html::encode($this->title) ?></div>
 
-    <div class="row">
-        <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => [
+            'id' => 'login-form',
+            'class' => 'p-reg__form needs-validation'
+        ],
+        'fieldConfig' => [
+            'template' => "{input}\n{error}",
+            'options' => [
+                'tag' => false,
+            ],
+        ],
+    ]); ?>
 
-            <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
-
-                <?= $form->field($model, 'password')->passwordInput() ?>
-
-                <?= $form->field($model, 'rememberMe')->checkbox() ?>
-
-                <div style="color:#999;margin:1em 0">
-                    If you forgot your password you can <?= Html::a('reset it', ['site/request-password-reset']) ?>.
-                    <br>
-                    Need new verification email? <?= Html::a('Resend', ['site/resend-verification-email']) ?>
-                </div>
-
-                <div class="form-group">
-                    <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                </div>
-
-            <?php ActiveForm::end(); ?>
+    <div class="form-group">
+        <div class="p-reg__form-linkedin">
+            <a href="" class="p-reg__form-linkedin-link">
+                <span class="fab fa-linkedin-in"></span>
+                Continue with LinkedIn
+            </a>
         </div>
+    </div>
+
+    <div class="form-group">
+        <div class="p-reg__form-or">or</div>
+    </div>
+
+    <div class="form-group">
+        <div class="p-reg__form-iblock">
+            <div class="p-reg__form-iblock-icon fal fa-check"></div>
+            <?= $form->field($model, 'email')->textInput([
+                'class' => 'p-reg__form-input',
+                'placeholder' => 'Work email address',
+                'required' => '',
+            ]) ?>
+        </div>
+    </div>
+
+    <div class="form-group js-passParent">
+        <div class="js-passLine">
+            <div class="p-reg__form-iblock">
+                <div class="p-reg__form-iblock-icon js-passEye fa fa-eye"></div>
+                <?= $form->field($model, 'password')->passwordInput([
+                    'class' => 'p-reg__form-input js-passInput',
+                    'placeholder' => 'Password',
+                    'required' => '',
+                ]) ?>
+            </div>
+        </div>
+        <div class="js-passLine d-none">
+            <div class="p-reg__form-iblock">
+                <div class="p-reg__form-iblock-icon js-passEye fa fa-eye-slash"></div>
+                <input placeholder="Password" type="text" class="p-reg__form-input js-notPassInput"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <?= Html::a('Forgot password?', ['site/request-password-reset']) ?>
+    </div>
+
+    <div class="p-reg__form-submit">
+        <?= Html::submitButton('Sign up', ['class' => 'p-reg__form-submit-input', 'name' => 'login-button']) ?>
+    </div>
+
+    <div class="p-reg__form-login">
+        Don't have an account yet? <?= Html::a('Create account', ['site/signup']) ?>
+    </div>
+    <?php ActiveForm::end(); ?>
+</div>
+
+<div class="p-reg__mail d-none js-regDone">
+    <div class="p-reg__mail-title">
+        We have sent an email with a confirmation link to your email address
+    </div>
+    <div class="p-reg__mail-text">
+        Thank you for choosing our service
     </div>
 </div>
