@@ -1,10 +1,10 @@
 <?php
 
 use common\models\University;
-use common\models\User;
 use frontend\assets\AppAsset;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 use yii\bootstrap\ActiveForm;
 
@@ -12,12 +12,11 @@ use yii\bootstrap\ActiveForm;
 /* @var $model frontend\forms\SignupForm */
 /* @var $form ActiveForm */
 
-$this->registerCssFile('@web/css/registration.css', [
-    'depends' => [AppAsset::class],
-]);
-$this->registerJsFile('@web/js/reg.js"', [
-    'depends' => [AppAsset::class],
-]);
+$this->registerCssFile('@web/extension/selectize/css/selectize.css', ['depends' => [AppAsset::class]]);
+$this->registerCssFile('@web/css/registration.css', ['depends' => [AppAsset::class]]);
+
+$this->registerJsFile('@web/extension/selectize/js/standalone/selectize.min.js', ['depends' => [AppAsset::class]]);
+$this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class]]);
 
 $universities = ArrayHelper::map(University::find()->all(), 'id', 'name');
 
@@ -31,77 +30,151 @@ $this->title = 'Registration';
             'layout' => 'horizontal',
             'options' => [
                 'id' => 'reg-form',
-                'class' => 'needs-validation',
+                'class' => 'p-reg__form needs-validation',
             ],
             'fieldConfig' => [
-                'template' => "{beginWrapper}\n{label}\n{input}\n{hint}\n{error}\n{endWrapper}",
-                'horizontalCssClasses' => [
-                    'label' => 'ui-radio g-mr20',
-                    'offset' => 'col-sm-offset-4',
-                    'wrapper' => 'form-group',
-                    'hint' => '',
-                ],
+                'template' => "{input}\n{error}",
                 'options' => [
-                    'class' => 'form-control form-control-lg',
                     'tag' => false,
                 ],
             ],
         ]); ?>
 
         <div class="form-group">
-            <h2 class="g-mb20">Choose account type</h2>
-
-            <?= $form->field($model, 'user_type')->radioList(User::getUserTypes(), [
-                'item' => static function ($index, $label, $name, $checked, $value) {
-
-                    $return = '<label class="ui-radio g-mr20">';
-                    $return .= '<input type="radio" name="' . $name . '" value="' . $value . '">';
-                    $return .= '<span class="ui-radio__decor"></span>';
-                    $return .= '<span class="ui-radio__text">' . strtoupper($label) . '</span>';
-                    $return .= '</label>';
-
-                    return $return;
-                }
-            ])->label(false) ?>
+            <div class="p-reg__form-profile-type">
+                <div class="p-reg__form-profile-type-one active js-profileType" data-value="1">
+                    Adjunct
+                </div>
+                <div class="p-reg__form-profile-type-one js-profileType" data-value="2">
+                    Institution
+                </div>
+            </div>
 
             <div class="p-reg__form-acc-info">
-                <div class="p-reg__form-acc-info-icon fa fa-exclamation-triangle"></div>
                 After registering, you cannot change the account type!
             </div>
         </div>
 
-        <?= $form->field($model, 'university_id')
-            ->dropDownList($universities, ['class' => 'p-profile__select2-select js-select2'])
-        ?>
+        <?= $form->field($model, 'user_type')->hiddenInput([
+            'id' => 'user_type_input',
+            'value' => '1',
+        ])->label(false) ?>
 
-        <?= $form->field($model, 'first_name')->textInput([
-            'placeholder' => 'Enter your first name',
-            'required' => '',
-        ]) ?>
+        <div class="form-group">
+            <div class="p-reg__form-linkedin">
+                <a href="" class="p-reg__form-linkedin-link">
+                    <span class="fab fa-linkedin-in"></span>
+                    Continue with LinkedIn
+                </a>
+            </div>
+        </div>
 
-        <?= $form->field($model, 'last_name')->textInput([
-            'placeholder' => 'Enter your last name',
-            'required' => '',
-        ]) ?>
+        <div class="form-group">
+            <div class="p-reg__form-or">or</div>
+        </div>
 
-        <?= $form->field($model, 'email')->textInput([
-            'placeholder' => 'Enter your work email',
-            'type' => 'email',
-            'required' => '',
-        ]) ?>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="p-reg__form-iblock">
+                        <div class="p-reg__form-iblock-label">First name</div>
+                        <div class="p-reg__form-iblock-icon fal fa-check"></div>
 
-        <?= $form->field($model, 'password')->passwordInput([
-            'placeholder' => 'Password',
-            'required' => '',
-        ]) ?>
+                        <?= $form->field($model, 'first_name')->textInput([
+                            'class' => 'p-reg__form-iblock-input',
+                            'placeholder' => 'Enter your first name',
+                            'required' => '',
+                        ]) ?>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="p-reg__form-iblock">
+                        <div class="p-reg__form-iblock-label">Last name</div>
 
-        <?= $form->field($model, 'password_repeat')->passwordInput([
-            'placeholder' => 'Repeat password',
-            'required' => '',
-        ]) ?>
+                        <?= $form->field($model, 'last_name')->textInput([
+                            'class' => 'p-reg__form-iblock-input',
+                            'placeholder' => 'Enter your last name',
+                            'required' => '',
+                        ]) ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="p-reg__form-iblock">
+                <div class="p-reg__form-iblock-icon fal fa-check"></div>
+
+                <?= $form->field($model, 'email')->textInput([
+                    'class' => 'p-reg__form-input',
+                    'placeholder' => 'Work email address',
+                    'type' => 'email',
+                    'required' => '',
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="form-group d-none js-institution">
+            <div class="p-reg__form-iblock">
+                <div class="p-reg__form-iblock-label">Educational institution</div>
+                <div class="p-reg__form-iblock-icon fal fa-check"></div>
+
+                <?= $form->field($model, 'university_id')
+                    ->dropDownList($universities, [
+                        'class' => 'js-selectize',
+                        'placeholder' => 'Choose institution',
+                    ])
+                ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-lg-6 js-passParent">
+                    <div class="js-passLine">
+                        <div class="p-reg__form-iblock">
+                            <div class="p-reg__form-iblock-icon js-passEye fa fa-eye"></div>
+
+                            <?= $form->field($model, 'password')->passwordInput([
+                                'class' => 'p-reg__form-input js-passInput',
+                                'placeholder' => 'Password',
+                                'required' => '',
+                            ]) ?>
+                        </div>
+                    </div>
+                    <div class="js-passLine d-none">
+                        <div class="p-reg__form-iblock">
+                            <div class="p-reg__form-iblock-icon js-passEye fa fa-eye-slash"></div>
+                            <input placeholder="Password" type="text"
+                                   class="p-reg__form-input js-notPassInput"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 js-passParent">
+                    <div class="js-passLine">
+                        <div class="p-reg__form-iblock">
+                            <div class="p-reg__form-iblock-icon js-passEye fa fa-eye"></div>
+
+                            <?= $form->field($model, 'password_repeat')->passwordInput([
+                                'class' => 'p-reg__form-input js-passInput',
+                                'placeholder' => 'Confirm pasword',
+                                'required' => '',
+                            ]) ?>
+                        </div>
+                    </div>
+                    <div class="js-passLine d-none">
+                        <div class="p-reg__form-iblock">
+                            <div class="p-reg__form-iblock-icon js-passEye fa fa-eye-slash"></div>
+                            <input placeholder="Confirm pasword" type="text"
+                                   class="p-reg__form-input js-notPassInput"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="p-reg__form-submit">
-            <?= Html::submitButton('SIGN UP', ['class' => 'btn btn-primary btn-lg btn-block']) ?>
+            <?= Html::submitButton('Sign up', ['class' => 'p-reg__form-submit-input']) ?>
         </div>
 
         <div class="p-reg__form-read">
@@ -115,16 +188,14 @@ $this->title = 'Registration';
             </div>
 
             <div class="p-reg__form-read-text">
-                I have read and agree to the AdjunktMarket <a href="" target="_blank">Terms and
-                    Conditions</a>
+                I have read and agree to the AdjunktMarket <a href="" target="_blank">Terms and Conditions</a>
                 of Use and <a href="" target="_blank">Privacy Policy</a>.
             </div>
         </div>
 
-        <div class="p-reg__form-sometext">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore magna aliqua.
-    </div>
+        <div class="p-reg__form-login">
+            Already have an account? <a href="<?= Url::to(['/site/login'], true) ?>">Log in</a>
+        </div>
 
     <?php ActiveForm::end(); ?>
 
@@ -132,18 +203,9 @@ $this->title = 'Registration';
 
 <?php
 $script = <<< JS
-    $('#reg-form').on('afterValidate', function(e, m) {
-        $.each(m, function(key, errors){
-            var id = '#' + key;
-            if (typeof errors !== 'undefined' && errors.length > 0) {
-                console.log(id, $(id).parent());
-                $(id).parent().children('.help-block-error').text(errors[0]).addClass('error');
-            } else {
-                $(id).parent().children('.help-block-error').text('').removeClass('error');
-            }
-        });
-
-        return true;
+    $('.p-reg__form-profile-type-one').on('click', function(){
+        var val = $(this).attr('data-value');
+        $('#user_type_input').val(val);
     });
 JS;
 $this->registerJs($script, yii\web\View::POS_READY);
