@@ -61,16 +61,74 @@ AppAsset::register($this);
             </div>
             <div class="g-header__content-controls">
                 <?php if ($user) : ?>
-                    <?=
-                    '<li>'
-                    . Html::beginForm(['/site/logout'], 'post')
-                    . Html::submitButton(
-                        'Logout (' . $user->getUsername() . ')',
-                        ['class' => 'btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>'
-                    ?>
+                    <div class="g-header__content-user" id="userMenu">
+                        <div class="g-header__content-user-link js-activeOnOff" data-id="userMenu">
+                            <div class="g-header__content-user-link-ava">
+                                <div class="g-header__content-user-link-ava-nopict fa fa-user"></div>
+                                <img src="https://cdn.technicpack.net/platform2/pack-icons/827089.png?1460226445"
+                                     class="g-header__content-user-link-ava-img" alt=""/>
+                            </div>
+                            <div class="g-header__content-user-link-name"><?= $user->getUsername() ?></div>
+                            <div class="g-header__content-user-link-icon fa fa-chevron-down"></div>
+                        </div>
+
+                        <div class="g-header__content-user-menu">
+                            <div class="g-header__content-user-menu-title">
+                                Jobs
+                            </div>
+
+                            <div class="g-header__content-user-menu-block">
+                                <div class="g-header__content-user-menu-block-item">
+                                    <a class="g-header__content-user-menu-block-item-link">
+                                        Recommended jobs
+                                    </a>
+                                </div>
+                                <div class="g-header__content-user-menu-block-item">
+                                    <a class="g-header__content-user-menu-block-item-link">
+                                        Saved jobs
+                                    </a>
+                                </div>
+                                <div class="g-header__content-user-menu-block-item">
+                                    <a class="g-header__content-user-menu-block-item-link">
+                                        My responses
+                                    </a>
+                                </div>
+                                <div class="g-header__content-user-menu-block-item">
+                                    <a class="g-header__content-user-menu-block-item-link">
+                                        Search jobs
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="g-header__content-user-menu-title">
+                                Profile
+                            </div>
+
+                            <div class="g-header__content-user-menu-block">
+                                <div class="g-header__content-user-menu-block-item">
+                                    <a href="" class="g-header__content-user-menu-block-item-link">
+                                        Edit profile
+                                    </a>
+                                </div>
+                                <div class="g-header__content-user-menu-block-item">
+                                    <a href="" class="g-header__content-user-menu-block-item-link">
+                                        My portfolio
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="g-header__content-user-menu-out">
+                                <?=
+                                Html::beginForm(['/site/logout'], 'post')
+                                . Html::submitButton(
+                                    'Log Out',
+                                    ['class' => 'g-header__content-user-menu-out-link logout']
+                                )
+                                . Html::endForm()
+                                ?>
+                            </div>
+                        </div>
+                    </div>
                 <?php else: ?>
                     <div class="g-header__content-controls-one">
                         <a href="<?= Url::to(['/site/login'], true) ?>"
