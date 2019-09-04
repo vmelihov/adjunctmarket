@@ -13,8 +13,8 @@ $this->title = 'Log in to get start';
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerCssFile('@web/css/registration.css', ['depends' => [AppAsset::class]]);
-$this->registerJsFile('@web/extension/selectize/js/standalone/selectize.min.js', ['depends' => [AppAsset::class],]);
-$this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class],]);
+$this->registerJsFile('@web/extension/selectize/js/standalone/selectize.min.js', ['depends' => [AppAsset::class]]);
+$this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class]]);
 
 ?>
 
@@ -82,7 +82,7 @@ $this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class],]);
     </div>
 
     <div class="p-reg__form-submit">
-        <?= Html::submitButton('Sign up', ['class' => 'p-reg__form-submit-input', 'name' => 'login-button']) ?>
+        <?= Html::submitButton('Log in', ['class' => 'p-reg__form-submit-input', 'name' => 'login-button']) ?>
     </div>
 
     <div class="p-reg__form-login">
