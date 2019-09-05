@@ -4,29 +4,55 @@
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $model ResetPasswordForm */
 
+use frontend\assets\AppAsset;
 use frontend\models\ResetPasswordForm;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->title = 'Reset password';
 $this->params['breadcrumbs'][] = $this->title;
+
+$this->registerCssFile('@web/css/registration.css', ['depends' => [AppAsset::class]]);
+$this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class]]);
 ?>
-<div class="site-reset-password">
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>Please choose your new password:</p>
+<div class="p-reg p-login g-content js-regForm">
+    <div class="p-reg__title"><?= Html::encode($this->title) ?></div>
 
-    <div class="row">
-        <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'reset-password-form']); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'request-password-reset-form',
+        'options' => ['class' => 'p-reg__form needs-validation'],
+        'fieldConfig' => [
+            'template' => "{input}\n{error}",
+            'options' => [
+                'tag' => false,
+            ],
+        ],
+    ]); ?>
 
-                <?= $form->field($model, 'password')->passwordInput(['autofocus' => true]) ?>
+    <div class="form-group">
+        <div class="p-reg__form-iblock">
+            <div class="p-reg__form-iblock-icon fal fa-check"></div>
 
-                <div class="form-group">
-                    <?= Html::submitButton('Save', ['class' => 'btn btn-primary']) ?>
-                </div>
-
-            <?php ActiveForm::end(); ?>
+            <?= $form->field($model, 'password')->passwordInput([
+                'autofocus' => true,
+                'class' => 'p-reg__form-input',
+            ]) ?>
         </div>
+    </div>
+
+    <div class="p-reg__form-submit">
+        <?= Html::submitButton('Save', ['class' => 'p-reg__form-submit-input']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
+</div>
+
+<div class="p-reg__mail d-none js-regDone">
+    <div class="p-reg__mail-title">
+        We have sent an email with a confirmation link to your email address
+    </div>
+    <div class="p-reg__mail-text">
+        Thank you for choosing our service
     </div>
 </div>
