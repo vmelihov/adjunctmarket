@@ -19,6 +19,7 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/global.js',
+        'extension/bootstrap-4.0.0/js/popper.min.js',
         'extension/bootstrap-4.0.0/js/bootstrap.min.js',
     ];
     public $depends = [

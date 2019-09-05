@@ -4,6 +4,7 @@ namespace common\models;
 
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\Query;
 
 /**
  * This is the model class for table "specialty".
@@ -63,5 +64,16 @@ class Specialty extends ActiveRecord
     public function getNameWithFaculty(): string
     {
         return $this->faculty->name . ', ' . $this->name;
+    }
+
+    public static function findWithFacultyName(): array
+    {
+        $rows = (new Query())
+            ->select(['specialty.id', 'specialty.name', 'faculty.name as faculty'])
+            ->from('specialty')
+            ->innerJoin('faculty', 'specialty.faculty_id = faculty.id')
+            ->all();
+
+        return $rows;
     }
 }

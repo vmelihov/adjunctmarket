@@ -43,7 +43,7 @@ class AdjunctProfileForm extends Model
                 'required'
             ],
             ['teach_locations', 'safe'],
-            [['title','description'], 'trim'],
+            [['title', 'description', 'specialities'], 'trim'],
             [
                 [
                     'id',
@@ -86,7 +86,7 @@ class AdjunctProfileForm extends Model
         $adjunct->teaching_experience_type_id = $this->teaching_experience_type_id;
 
         $adjunct->teach_locations = $this->getArrayAsString($this->teach_locations);
-        $adjunct->specialities = $this->getArrayAsString($this->specialities);
+        $adjunct->specialities = $this->getArrayAsString(explode(' ', $this->specialities));
 
         return $adjunct->save() ? $adjunct : null;
     }
