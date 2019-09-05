@@ -9,7 +9,7 @@ use frontend\models\ResetPasswordForm;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = 'Reset password';
+$this->title = 'Reset your password';
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerCssFile('@web/css/registration.css', ['depends' => [AppAsset::class]]);
@@ -36,6 +36,18 @@ $this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class]]);
 
             <?= $form->field($model, 'password')->passwordInput([
                 'autofocus' => true,
+                'placeholder' => 'New password',
+                'class' => 'p-reg__form-input',
+            ]) ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="p-reg__form-iblock">
+            <div class="p-reg__form-iblock-icon fal fa-check"></div>
+
+            <?= $form->field($model, 'password_repeat')->passwordInput([
+                'placeholder' => 'Confirm password',
                 'class' => 'p-reg__form-input',
             ]) ?>
         </div>
