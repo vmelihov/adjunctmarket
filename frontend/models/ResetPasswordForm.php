@@ -45,7 +45,9 @@ class ResetPasswordForm extends Model
     {
         return [
             ['password', 'required'],
-            ['password', 'string', 'min' => 6],
+            ['password', 'string', 'min' => 8],
+            ['password', 'match', 'pattern' => '/[0-9]+/', 'message' => 'Password should contain at least 1 number.'],
+            ['password', 'match', 'pattern' => '/[A-Z]+/', 'message' => 'Password should contain at least 1 character in uppercase'],
             ['password_repeat', 'required'],
             ['password_repeat', 'compare', 'compareAttribute' => 'password', 'message' => "Passwords don't match"],
         ];
