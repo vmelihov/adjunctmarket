@@ -31,115 +31,118 @@ AppAsset::register($this);
 
 <header class="g-header">
     <div class="container">
-        <div class="fal fa-bars g-header__mobi-link js-activeOnOff" data-id="hMenu"></div>
+        <div class="g-header__mobi-link js-activeOnOff" data-id="header">
+            <span class="fal fa-bars"></span>
+            <span class="fal fa-times"></span>
+        </div>
         <div class="g-header__content">
             <div class="g-header__content-logo">
                 <a href="<?= Yii::$app->homeUrl ?>" class="g-header__content-logo-link"></a>
             </div>
-            <div class="g-header__content-menu" id="hMenu">
-                <?php
-                $menuItems = [
-                    ['label' => 'Home', 'url' => ['/site/index']],
-                    ['label' => 'Vacancies', 'url' => ['/vacancy/index']],
-                    ['label' => 'Adjuncts', 'url' => ['/adjunct/index']],
-                    ['label' => 'Chats', 'url' => ['/chat/index']],
-                ];
 
-                if ($user) {
-                    $menuItems[] = ['label' => 'Profile', 'url' => ['/site/profile']];
-                }
+            <?php
+            $menuItems = [
+                ['label' => 'Home', 'url' => ['/site/index']],
+                ['label' => 'Vacancies', 'url' => ['/vacancy/index']],
+                ['label' => 'Adjuncts', 'url' => ['/adjunct/index']],
+                ['label' => 'Chats', 'url' => ['/chat/index']],
+            ];
 
-                echo Menu::widget([
-                    'options' => ['class' => 'g-header__content-menu'],
-                    'itemOptions' => ['class' => 'g-header__content-menu-item'],
-                    'items' => $menuItems,
-                    'linkTemplate' => '<a class="g-header__content-menu-item-link" href="{url}"><span>{label}</span></a>',
-                    'encodeLabels' => false,
-                    'activeCssClass' => 'active',
-                ]);
-                ?>
-            </div>
-            <div class="g-header__content-controls">
-                <?php if ($user) : ?>
-                    <div class="g-header__content-user" id="userMenu">
-                        <div class="g-header__content-user-link js-activeOnOff" data-id="userMenu">
-                            <div class="g-header__content-user-link-ava">
-                                <div class="g-header__content-user-link-ava-nopict fa fa-user"></div>
-                                <img src="https://cdn.technicpack.net/platform2/pack-icons/827089.png?1460226445"
-                                     class="g-header__content-user-link-ava-img" alt=""/>
-                            </div>
-                            <div class="g-header__content-user-link-name"><?= $user->getUsername() ?></div>
-                            <div class="g-header__content-user-link-icon fa fa-chevron-down"></div>
+            if ($user) {
+                $menuItems[] = ['label' => 'Profile', 'url' => ['/site/profile']];
+            }
+
+            echo Menu::widget([
+                'options' => ['class' => 'g-header__content-menu'],
+                'itemOptions' => ['class' => 'g-header__content-menu-item'],
+                'items' => $menuItems,
+                'linkTemplate' => '<a class="g-header__content-menu-item-link" href="{url}"><span>{label}</span></a>',
+                'encodeLabels' => false,
+                'activeCssClass' => 'active',
+            ]);
+            ?>
+
+            <?php if ($user) : ?>
+                <div class="g-header__content-user" id="userMenu">
+                    <div class="g-header__content-user-link js-activeOnOff" data-id="userMenu">
+                        <div class="g-header__content-user-link-ava">
+                            <div class="g-header__content-user-link-ava-nopict fa fa-user"></div>
+                            <img src="https://cdn.technicpack.net/platform2/pack-icons/827089.png?1460226445"
+                                 class="g-header__content-user-link-ava-img" alt=""/>
+                        </div>
+                        <div class="g-header__content-user-link-name"><?= $user->getUsername() ?></div>
+                        <div class="g-header__content-user-link-icon fa fa-chevron-down"></div>
+                    </div>
+
+                    <div class="g-header__content-user-menu">
+                        <div class="g-header__content-user-menu-title">
+                            Jobs
                         </div>
 
-                        <div class="g-header__content-user-menu">
-                            <div class="g-header__content-user-menu-title">
-                                Jobs
+                        <div class="g-header__content-user-menu-block">
+                            <div class="g-header__content-user-menu-block-item">
+                                <a class="g-header__content-user-menu-block-item-link">
+                                    Recommended jobs
+                                </a>
                             </div>
-
-                            <div class="g-header__content-user-menu-block">
-                                <div class="g-header__content-user-menu-block-item">
-                                    <a class="g-header__content-user-menu-block-item-link">
-                                        Recommended jobs
-                                    </a>
-                                </div>
-                                <div class="g-header__content-user-menu-block-item">
-                                    <a class="g-header__content-user-menu-block-item-link">
-                                        Saved jobs
-                                    </a>
-                                </div>
-                                <div class="g-header__content-user-menu-block-item">
-                                    <a class="g-header__content-user-menu-block-item-link">
-                                        My responses
-                                    </a>
-                                </div>
-                                <div class="g-header__content-user-menu-block-item">
-                                    <a class="g-header__content-user-menu-block-item-link">
-                                        Search jobs
-                                    </a>
-                                </div>
+                            <div class="g-header__content-user-menu-block-item">
+                                <a class="g-header__content-user-menu-block-item-link">
+                                    Saved jobs
+                                </a>
                             </div>
-
-                            <div class="g-header__content-user-menu-title">
-                                Profile
+                            <div class="g-header__content-user-menu-block-item">
+                                <a class="g-header__content-user-menu-block-item-link">
+                                    My responses
+                                </a>
                             </div>
-
-                            <div class="g-header__content-user-menu-block">
-                                <div class="g-header__content-user-menu-block-item">
-                                    <a href="" class="g-header__content-user-menu-block-item-link">
-                                        Edit profile
-                                    </a>
-                                </div>
-                                <div class="g-header__content-user-menu-block-item">
-                                    <a href="" class="g-header__content-user-menu-block-item-link">
-                                        My portfolio
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="g-header__content-user-menu-out">
-                                <?=
-                                Html::beginForm(['/site/logout'], 'post')
-                                . Html::submitButton(
-                                    'Log Out',
-                                    ['class' => 'g-header__content-user-menu-out-link logout']
-                                )
-                                . Html::endForm()
-                                ?>
+                            <div class="g-header__content-user-menu-block-item">
+                                <a class="g-header__content-user-menu-block-item-link">
+                                    Search jobs
+                                </a>
                             </div>
                         </div>
+
+                        <div class="g-header__content-user-menu-title">
+                            Profile
+                        </div>
+
+                        <div class="g-header__content-user-menu-block">
+                            <div class="g-header__content-user-menu-block-item">
+                                <a href="" class="g-header__content-user-menu-block-item-link">
+                                    Edit profile
+                                </a>
+                            </div>
+                            <div class="g-header__content-user-menu-block-item">
+                                <a href="" class="g-header__content-user-menu-block-item-link">
+                                    My portfolio
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="g-header__content-user-menu-out">
+                            <?=
+                            Html::beginForm(['/site/logout'], 'post')
+                            . Html::submitButton(
+                                'Log Out',
+                                ['class' => 'g-header__content-user-menu-out-link logout']
+                            )
+                            . Html::endForm()
+                            ?>
+                        </div>
                     </div>
-                <?php else: ?>
+                </div>
+            <?php else: ?>
+                <div class="g-header__content-controls">
                     <div class="g-header__content-controls-one">
-                        <a href="<?= Url::to(['/site/login'], true) ?>"
-                           class="g-header__content-controls-one-link">Sign In</a>
+                        <a href="<?= Url::to(['/site/login'], true) ?>" class="g-header__content-controls-one-link">Sign
+                            In</a>
                     </div>
                     <div class="g-header__content-controls-one">
-                        <a href="<?= Url::to(['/site/signup'], true) ?>"
-                           class="g-header__content-controls-one-link">Sign Up</a>
+                        <a href="<?= Url::to(['/site/signup'], true) ?>" class="g-header__content-controls-one-link">Sign
+                            Up</a>
                     </div>
-                <?php endif ?>
-            </div>
+                </div>
+            <?php endif ?>
         </div>
     </div>
 </header>
