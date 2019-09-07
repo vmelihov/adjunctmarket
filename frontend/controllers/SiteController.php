@@ -78,7 +78,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->render('index', [
+            'popup' => Yii::$app->session->getFlash('popup'),
+        ]);
     }
 
     /**
@@ -98,7 +100,7 @@ class SiteController extends Controller
 
             $user = Helper::getUserIdentity();
 
-            if (!$user->profile) {
+            if ($user && !$user->profile) {
                 return $this->actionProfile();
             }
 
@@ -135,7 +137,11 @@ class SiteController extends Controller
         $model = new SignupForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+            Yii::$app->session->setFlash('popup', [
+                'text' => 'We have sent an email with a confirmation link to your email address',
+                'class' => 'm-mail',
+            ]);
+
             return $this->goHome();
         }
 
@@ -155,7 +161,8 @@ class SiteController extends Controller
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+                $text = 'If an account exists for <a href="">' . $model->email . '</a>, you will get an email with instructions on resetting your password. If it doesn\'t arrive, be sure to check your spam folder.';
+                Yii::$app->session->setFlash('popup', ['text' => $text, 'class' => 'm-restore']);
 
                 return $this->goHome();
             }
@@ -174,6 +181,7 @@ class SiteController extends Controller
      * @param string $token
      * @return mixed
      * @throws BadRequestHttpException
+     * @throws Exception
      */
     public function actionResetPassword($token)
     {

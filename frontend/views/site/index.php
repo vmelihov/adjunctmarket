@@ -1,6 +1,7 @@
 <?php
 
 /* @var $this yii\web\View */
+/** @var null|array $popup */
 
 $this->title = 'My Yii Application';
 ?>
@@ -20,3 +21,9 @@ $this->title = 'My Yii Application';
     <p>1</p>
 
 </div>
+
+<?php
+if ($popup) {
+    echo $this->render('popup', $popup);
+}
+?>
