@@ -12,7 +12,7 @@ use yii\bootstrap\ActiveForm;
 /* @var $model frontend\forms\SignupForm */
 /* @var $form ActiveForm */
 
-$this->registerCssFile('@web/extension/selectize/css/selectize.css', ['depends' => [AppAsset::class]]);
+$this->registerCssFile('@web/extension/selectize/css/selectize.css');
 $this->registerCssFile('@web/css/registration.css', ['depends' => [AppAsset::class]]);
 
 $this->registerJsFile('@web/extension/selectize/js/standalone/selectize.min.js', ['depends' => [AppAsset::class]]);
