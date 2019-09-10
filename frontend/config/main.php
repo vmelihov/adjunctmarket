@@ -1,4 +1,8 @@
 <?php
+
+use yii\authclient\clients\LinkedIn;
+use yii\authclient\Collection;
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -36,14 +40,22 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+        'authClientCollection' => [
+            'class' => Collection::class,
+            'clients' => [
+                'linkedin' => [
+                    'class' => LinkedIn::class,
+                    'clientId' => '77hlrkge4lx7c5',
+                    'clientSecret' => 'VpnOt5CYXg18o0Tj',
+                ],
+            ],
+        ]
     ],
     'params' => $params,
 ];
