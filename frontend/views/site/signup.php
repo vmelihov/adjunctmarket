@@ -27,15 +27,18 @@ $this->title = 'Registration';
         <div class="p-reg__title">Registration</div>
 
         <?php $form = ActiveForm::begin([
-            'layout' => 'horizontal',
             'options' => [
                 'id' => 'reg-form',
                 'class' => 'p-reg__form needs-validation',
             ],
             'fieldConfig' => [
                 'template' => "{input}\n{error}",
+                'errorOptions' => [
+                    'tag' => 'div',
+                    'class' => 'p-reg__form-iblock-error js-validateblockError',
+                ],
                 'options' => [
-                    'tag' => false,
+                    'tag' => 'div',
                 ],
             ],
         ]); ?>
@@ -58,7 +61,7 @@ $this->title = 'Registration';
         <?= $form->field($model, 'user_type')->hiddenInput([
             'id' => 'user_type_input',
             'value' => '1',
-        ])->label(false) ?>
+        ]) ?>
 
         <div class="form-group">
             <div class="p-reg__form-linkedin">
@@ -83,7 +86,6 @@ $this->title = 'Registration';
                         <?= $form->field($model, 'first_name')->textInput([
                             'class' => 'p-reg__form-iblock-input',
                             'placeholder' => 'Enter your first name',
-                            'required' => '',
                         ]) ?>
                     </div>
                 </div>
@@ -94,7 +96,6 @@ $this->title = 'Registration';
                         <?= $form->field($model, 'last_name')->textInput([
                             'class' => 'p-reg__form-iblock-input',
                             'placeholder' => 'Enter your last name',
-                            'required' => '',
                         ]) ?>
                     </div>
                 </div>
@@ -109,7 +110,6 @@ $this->title = 'Registration';
                     'class' => 'p-reg__form-input',
                     'placeholder' => 'Work email address',
                     'type' => 'email',
-                    'required' => '',
                 ]) ?>
             </div>
         </div>
@@ -138,7 +138,6 @@ $this->title = 'Registration';
                             <?= $form->field($model, 'password')->passwordInput([
                                 'class' => 'p-reg__form-input js-passInput',
                                 'placeholder' => 'Password',
-                                'required' => '',
                             ]) ?>
                         </div>
                     </div>
@@ -158,7 +157,6 @@ $this->title = 'Registration';
                             <?= $form->field($model, 'password_repeat')->passwordInput([
                                 'class' => 'p-reg__form-input js-passInput',
                                 'placeholder' => 'Confirm pasword',
-                                'required' => '',
                             ]) ?>
                         </div>
                     </div>
@@ -206,6 +204,22 @@ $script = <<< JS
     $('.p-reg__form-profile-type-one').on('click', function(){
         var val = $(this).attr('data-value');
         $('#user_type_input').val(val);
+    });
+ 
+    $('#reg-form').on('afterValidate', function(e, m) {
+       
+        
+        $.each(m, function(key, errors){
+            console.log(key, errors);
+            var id = '#' + key;
+
+            if (errors.length > 0) {
+            } else {
+                $(id).siblings().first().hide();
+            }
+        });
+
+        return true;
     });
 JS;
 $this->registerJs($script, yii\web\View::POS_READY);
