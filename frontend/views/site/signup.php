@@ -214,6 +214,7 @@ $script = <<< JS
             var id = '#' + key;
 
             if (errors.length > 0) {
+                $(id).siblings().first().show();
             } else {
                 $(id).siblings().first().hide();
             }
