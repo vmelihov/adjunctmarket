@@ -40,12 +40,14 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
+
         'authClientCollection' => [
             'class' => Collection::class,
             'clients' => [
@@ -55,7 +57,7 @@ return [
                     'clientSecret' => 'VpnOt5CYXg18o0Tj',
                 ],
             ],
-        ]
+        ],
     ],
     'params' => $params,
 ];
