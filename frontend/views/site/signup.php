@@ -26,6 +26,11 @@ $this->title = 'Registration';
 
         <div class="p-reg__title">Registration</div>
 
+        <?= yii\authclient\widgets\AuthChoice::widget([
+            'baseAuthUrl' => ['site/auth'],
+            'popupMode' => false,
+        ]) ?>
+
         <?php $form = ActiveForm::begin([
             'layout' => 'horizontal',
             'options' => [

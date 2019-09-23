@@ -8,7 +8,7 @@ use frontend\forms\VerifyEmailForm;
 use frontend\models\profile\ProfileBuilder;
 use Throwable;
 use Yii;
-use yii\authclient\clients\LinkedIn;
+use yii\authclient\ClientInterface;
 use yii\base\Exception;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -25,20 +25,12 @@ use Yii\web\Response;
  */
 class SiteController extends Controller
 {
-    public function actionLinkedin()
+    public function onAuthSuccess(ClientInterface $client)
     {
+        $attributes = $client->getUserAttributes();
 
-        $l = new LinkedIn();
-
-        $l->clientId = '77hlrkge4lx7c5';
-        $l->clientSecret = 'VpnOt5CYXg18o0Tj';
-
-        $t = $l->buildAuthUrl();
-
-        var_dump($t);
-
-
-        die();
+        var_dump($attributes);
+        die;
     }
 
     /**
@@ -78,6 +70,10 @@ class SiteController extends Controller
     public function actions()
     {
         return [
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'onAuthSuccess'],
+            ],
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
