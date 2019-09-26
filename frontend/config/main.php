@@ -1,5 +1,6 @@
 <?php
 
+use frontend\src\MyLinkedIn;
 use yii\authclient\clients\LinkedIn;
 use yii\authclient\Collection;
 
@@ -51,6 +52,11 @@ return [
             'clients' => [
                 'linkedin' => [
                     'class' => LinkedIn::class,
+                    'clientId' => '77hlrkge4lx7c5',
+                    'clientSecret' => 'VpnOt5CYXg18o0Tj',
+                ],
+                'mylinkedin' => [
+                    'class' => MyLinkedIn::class,
                     'clientId' => '77hlrkge4lx7c5',
                     'clientSecret' => 'VpnOt5CYXg18o0Tj',
                 ],

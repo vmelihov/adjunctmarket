@@ -1,11 +1,13 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\User;
 use common\src\helpers\Helper;
 use frontend\forms\PasswordResetRequestForm;
 use frontend\forms\SignupForm;
 use frontend\forms\VerifyEmailForm;
 use frontend\models\profile\ProfileBuilder;
+use frontend\src\MyLinkedIn;
 use Throwable;
 use Yii;
 use yii\authclient\ClientInterface;
@@ -25,12 +27,49 @@ use Yii\web\Response;
  */
 class SiteController extends Controller
 {
+    /**
+     * @param ClientInterface $client
+     * @return mixed|Response
+     * @throws Exception
+     * @throws \yii\db\Exception
+     */
     public function onAuthSuccess(ClientInterface $client)
     {
-        $attributes = $client->getUserAttributes();
+        if ($client->getName() === MyLinkedIn::DEFAULT_NAME) {
+            $attributes = $client->getUserAttributes();
 
-        var_dump($attributes);
-        die;
+            $email = $attributes['email'];
+
+            $user = User::findByEmail($email);
+
+            if ($user) {
+                // log in
+                Yii::$app->user->login($user);
+            } else {
+                // registration
+                $password = Yii::$app->security->generateRandomString(8);
+                $user = new User([
+                    'first_name' => $attributes['firstName'],
+                    'last_name' => $attributes['lastName'],
+                    'email' => $attributes['email'],
+                    'password' => $password,
+                    'user_type' => User::TYPE_ADJUNCT,
+                    'status' => User::STATUS_ACTIVE,
+                ]);
+                $user->generateAuthKey();
+                $user->generatePasswordResetToken();
+
+                if ($user->save()) {
+                    Yii::$app->user->login($user);
+
+                    return $this->actionProfile();
+                }
+
+                Yii::$app->session->setFlash('error', 'Sorry');
+            }
+        }
+
+        return $this->goHome();
     }
 
     /**
