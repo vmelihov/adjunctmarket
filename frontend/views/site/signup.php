@@ -65,7 +65,7 @@ $this->title = 'Registration';
 
         <div class="form-group">
             <div class="p-reg__form-linkedin">
-                <a href="" class="p-reg__form-linkedin-link">
+                <a href="<?= Url::to(['/site/auth?authclient=mylinkedin'], true) ?>" class="p-reg__form-linkedin-link">
                     <span class="fab fa-linkedin-in"></span>
                     Continue with LinkedIn
                 </a>
