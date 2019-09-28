@@ -81,10 +81,10 @@ $this->title = 'Registration';
                 <div class="col-lg-6">
                     <div class="p-reg__form-iblock">
                         <div class="p-reg__form-iblock-label">First name</div>
-                        <div class="p-reg__form-iblock-icon fal fa-check"></div>
+                        <div class="p-reg__form-iblock-icon fal fa-check js-validateblockOk"></div>
 
                         <?= $form->field($model, 'first_name')->textInput([
-                            'class' => 'p-reg__form-iblock-input',
+                            'class' => 'p-reg__form-iblock-input js-textValidation',
                             'placeholder' => 'Enter your first name',
                         ]) ?>
                     </div>
@@ -92,9 +92,10 @@ $this->title = 'Registration';
                 <div class="col-lg-6">
                     <div class="p-reg__form-iblock">
                         <div class="p-reg__form-iblock-label">Last name</div>
+                        <div class="p-reg__form-iblock-icon fal fa-check js-validateblockOk"></div>
 
                         <?= $form->field($model, 'last_name')->textInput([
-                            'class' => 'p-reg__form-iblock-input',
+                            'class' => 'p-reg__form-iblock-input js-textValidation',
                             'placeholder' => 'Enter your last name',
                         ]) ?>
                     </div>
@@ -104,7 +105,7 @@ $this->title = 'Registration';
 
         <div class="form-group">
             <div class="p-reg__form-iblock">
-                <div class="p-reg__form-iblock-icon fal fa-check"></div>
+                <div class="p-reg__form-iblock-icon fal fa-check js-validateblockOk"></div>
 
                 <?= $form->field($model, 'email')->textInput([
                     'class' => 'p-reg__form-input',
