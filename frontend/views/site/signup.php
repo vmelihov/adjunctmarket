@@ -79,7 +79,7 @@ $this->title = 'Registration';
         <div class="form-group">
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="p-reg__form-iblock">
+                    <div class="p-reg__form-iblock js-validateblock">
                         <div class="p-reg__form-iblock-label">First name</div>
                         <div class="p-reg__form-iblock-icon fal fa-check js-validateblockOk"></div>
 
@@ -90,7 +90,7 @@ $this->title = 'Registration';
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="p-reg__form-iblock">
+                    <div class="p-reg__form-iblock js-validateblock">
                         <div class="p-reg__form-iblock-label">Last name</div>
                         <div class="p-reg__form-iblock-icon fal fa-check js-validateblockOk"></div>
 
@@ -104,7 +104,7 @@ $this->title = 'Registration';
         </div>
 
         <div class="form-group">
-            <div class="p-reg__form-iblock">
+            <div class="p-reg__form-iblock js-validateblock">
                 <div class="p-reg__form-iblock-icon fal fa-check js-validateblockOk"></div>
 
                 <?= $form->field($model, 'email')->textInput([
