@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\models\User;
 use common\src\helpers\Helper;
+use frontend\models\VacancySearch;
 use Throwable;
 use Yii;
 use common\models\Vacancy;
@@ -69,21 +70,12 @@ class VacancyController extends Controller
      */
     public function actionIndex()
     {
-        /** @var User $user */
-        $user = Helper::getUserIdentity();
-
-        if ($user->isInstitution()) {
-            $vacancies = Vacancy::findByInstitutionUserId($user->getId());
-        } elseif ($user->isAdjunct()) {
-            $vacancies = Vacancy::findAllToShow();
-        } else {
-            Yii::$app->session->setFlash('error', 'Undefined type of profile.');
-
-            return $this->goHome();
-        }
+        $searchModel = new VacancySearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'vacancies' => $vacancies,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
