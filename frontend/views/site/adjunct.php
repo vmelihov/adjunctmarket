@@ -6,6 +6,7 @@ use common\models\Specialty;
 use common\models\TeachingPeriod;
 use common\models\TeachingTime;
 use common\models\TeachingType;
+use common\src\helpers\HtmlHelper;
 use frontend\assets\AppAsset;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -168,7 +169,7 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
                                 '<label class="ui-checkbox g-mr15 js-showLink" data-show="formatToTeaching">';
                             $return .= '<input type="radio" name="' . $name . '" value="' . $value . '"' . $check . '>';
                             $return .= '<span class="ui-radio__decor"></span>';
-                            $return .= '<span class="ui-radio__text">' . strtoupper($label) . '</span>';
+                            $return .= '<span class="ui-radio__text">' . $label . '</span>';
                             $return .= '</label>';
 
                             return $return;
@@ -197,17 +198,7 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
 
             <?= $form->field($model, 'teach_period_id')
                 ->radioList($teachingPeriods, [
-                    'item' => static function ($index, $label, $name, $checked, $value) {
-                        $check = $checked ? ' checked' : '';
-                        $return = '<div class="g-mb15">';
-                        $return .= '<label class="ui-radio">';
-                        $return .= '<input type="radio" name="' . $name . '" value="' . $value . '"' . $check . '>';
-                        $return .= '<span class="ui-radio__decor"></span>';
-                        $return .= '<span class="ui-radio__text">' . $label . '</span>';
-                        $return .= '</label></div>';
-
-                        return $return;
-                    }
+                    'item' => HtmlHelper::getCallbackRadioItem(),
                 ])
             ?>
         </div>
@@ -219,17 +210,7 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
 
             <?= $form->field($model, 'teach_time_id')
                 ->radioList($teachingTimes, [
-                    'item' => static function ($index, $label, $name, $checked, $value) {
-                        $check = $checked ? ' checked' : '';
-                        $return = '<div class="g-mb20">';
-                        $return .= '<label class="ui-radio">';
-                        $return .= '<input type="radio" name="' . $name . '" value="' . $value . '"' . $check . '>';
-                        $return .= '<span class="ui-radio__decor"></span>';
-                        $return .= '<span class="ui-radio__text">' . strtoupper($label) . '</span>';
-                        $return .= '</label></div>';
-
-                        return $return;
-                    }
+                    'item' => HtmlHelper::getCallbackRadioItem(),
                 ])
             ?>
         </div>
