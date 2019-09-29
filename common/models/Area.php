@@ -4,6 +4,7 @@ namespace common\models;
 
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\Query;
 
 /**
  * This is the model class for table "area".
@@ -63,5 +64,19 @@ class Area extends ActiveRecord
     public function getNameWithState(): string
     {
         return $this->state->name . ', ' . $this->name;
+    }
+
+    /**
+     * @return array
+     */
+    public static function findWithStateName(): array
+    {
+        $rows = (new Query())
+            ->select(['area.id', 'area.name', 'state.name as state'])
+            ->from('area')
+            ->innerJoin('state', 'area.state_id = state.id')
+            ->all();
+
+        return $rows;
     }
 }
