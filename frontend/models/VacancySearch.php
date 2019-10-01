@@ -45,8 +45,6 @@ class VacancySearch extends Vacancy
     {
         $query = Vacancy::find();
 
-        // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -54,15 +52,12 @@ class VacancySearch extends Vacancy
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'specialty_id' => $this->specialty_id,
             'area_id' => $this->area_id,
             'education_id' => $this->education_id,
             'teach_type_id' => $this->teach_type_id,
@@ -75,9 +70,35 @@ class VacancySearch extends Vacancy
             'institution_user_id' => $this->institution_user_id,
         ]);
 
+        $specialtyIds = $this->getSpecialtyIds();
+        if ($specialtyIds) {
+            $query->andFilterWhere(['in', 'specialty_id', $specialtyIds]);
+        }
+
+        $areaIds = $this->getAreaIds();
+        if ($areaIds) {
+            $query->andFilterWhere(['in', 'area_id', $areaIds]);
+        }
+
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'description', $this->description]);
 
         return $dataProvider;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getSpecialtyIds(): array
+    {
+        return $this->specialities ? explode(' ', trim($this->specialities)) : [];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getAreaIds(): array
+    {
+        return $this->areas ? explode(' ', trim($this->areas)) : [];
     }
 }

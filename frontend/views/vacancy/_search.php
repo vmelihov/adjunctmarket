@@ -137,12 +137,11 @@ $education = ArrayHelper::map(Education::find()->all(), 'id', 'name');
             <div class="row">
                 <div class="col-md-6">
                     <div class="p-feed__filter-content-block-select">
-                        <select class="js-selectize">
-                            <option></option>
-                            <?php foreach ($education as $item): ?>
-                                <option><?= $item ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <?= $form->field($model, 'education_id')
+                            ->dropDownList($education, [
+                                'class' => 'js-selectize',
+                            ])
+                        ?>
                     </div>
                 </div>
             </div>
@@ -202,15 +201,10 @@ $education = ArrayHelper::map(Education::find()->all(), 'id', 'name');
         </div>
     </div>
 
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
-    </div>
-
     <div class="p-feed__filter-content-btns">
-        <a class="p-feed__filter-content-btns-reset" href="">Reset filters</a>
+        <?= Html::a('Reset filters', ['index'], ['class' => 'p-feed__filter-content-btns-reset']) ?>
         <div class="p-feed__filter-content-btns-one">
-            <div class="p-feed__filter-content-btns-one-btn">Search</div>
+            <?= Html::submitButton('Search', ['class' => 'p-feed__filter-content-btns-one-btn']) ?>
         </div>
     </div>
 
