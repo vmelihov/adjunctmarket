@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Vacancy;
+use common\src\helpers\DateTimeHelper;
 use common\src\helpers\Helper;
 use frontend\assets\AppAsset;
 use frontend\models\VacancySearch;
@@ -78,36 +79,72 @@ $user = Helper::getUserIdentity();
         <?= Html::a('Create Vacancy', ['create'], ['class' => 'btn btn-success']) ?>
     <?php endif; ?>
 
-    <div class="p-jobs__list">
-        <?php foreach ($dataProvider->getModels() as $vacancy) : ?>
-            <div class="p-jobs__list-one">
-                <div class="p-jobs__list-one-name">
-                    <?= Html::encode("#{$vacancy->id} {$vacancy->title}") ?>
-                </div>
-                <div class="p-jobs__list-one-cat">
-                    <?= Html::encode("{$vacancy->specialty->faculty->name} - {$vacancy->specialty->name} / {$vacancy->user->profile->university->name}") ?>
-                </div>
-                <div class="p-jobs__list-one-btns">
-                    <?= Html::a('<span class="fa fa-envelope-open-text"></span>', ['view', 'id' => $vacancy->id]) ?>
-                    <?php if ($user->isInstitution()): ?>
-                        <?= Html::a('<span class="fa fa-edit"></span>', ['update', 'id' => $vacancy->id]) ?>
-                        <?= Html::a('<span class="fa fa-trash-alt"></span>', ['delete', 'id' => $vacancy->id], [
-                            'data' => [
-                                'confirm' => 'Are you sure you want to delete this item?',
-                                'method' => 'post',
-                            ],
-                        ]) ?>
-                    <?php endif; ?>
-                </div>
-                <div class="p-jobs__list-one-stats">
-                    <div class="p-jobs__list-one-stats-date">
-                        <?= date('d/m/Y', $vacancy->updated) ?>
+    <div class="g-vlist">
+        <?php
+        /** @var Vacancy $vacancy */
+        foreach ($dataProvider->getModels() as $vacancy) : ?>
+            <div class="g-vlist__one js-one">
+                <div class="g-vlist__one-header">
+                    <?= Html::a(HTML::encode($vacancy->title), ['view', 'id' => $vacancy->id], ['class' => 'g-vlist__one-header-title']) ?>
+
+                    <div class="g-vlist__one-header-cat">
+                        <?= Html::encode("{$vacancy->specialty->faculty->name} - {$vacancy->specialty->name} / {$vacancy->user->profile->university->name}") ?>
                     </div>
-                    <div class="p-jobs__list-one-stats-views">
-                        Views: <?= $vacancy->views ?>
+
+                    <div class="g-vlist__one-header-right">
+                        <div class="g-vlist__one-header-right-views">
+                            <div class="g-vlist__one-header-right-views">
+                                <span class="g-vlist__one-header-right-views-icon fal fa-eye"></span>
+                                <span class="g-vlist__one-header-right-views-num"><?= $vacancy->views ?></span>
+                            </div>
+                        </div>
+
+                        <div class="g-vlist__one-header-right-fav fal fa-heart js-fav"></div>
+                    </div>
+                </div>
+
+                <div class="g-vlist__one-content">
+                    <div class="g-vlist__one-content-head">
+                        <div class="g-vlist__one-content-head-time">
+                            Posted <?= DateTimeHelper::getTimeAgo($vacancy->created) ?? '-' ?> minutes ago - Proposals
+                            12
+                        </div>
+                        <div class="g-vlist__one-content-head-control active js-view">
+                            <div class="g-vlist__one-content-head-control-text">
+                                Expanded view
+                                <br/>
+                                Compact view
+                            </div>
+                        </div>
+                    </div>
+                    <div class="g-vlist__one-content-body js-body">
+                        <?= HTML::encode($vacancy->description) ?>
+                    </div>
+                </div>
+
+                <div class="g-vlist__one-footer js-footer">
+                    <div class="g-vlist__one-footer-column">
+                        <div class="g-vlist__one-footer-item">
+                            <span class="g-vlist__one-footer-item-name">Teaching experience:</span> <?= $vacancy->teachType->name ?>
+                        </div>
+                        <div class="g-vlist__one-footer-item">
+                            <span class="g-vlist__one-footer-item-name">Education:</span> <?= $vacancy->education->name ?>
+                        </div>
+                    </div>
+
+                    <div class="g-vlist__one-footer-column">
+                        <div class="g-vlist__one-footer-item m-none">
+                            <span class="g-vlist__one-footer-item-name">Type of teaching:</span> <?= $vacancy->teachTime->name ?>
+                        </div>
+                        <div class="g-vlist__one-footer-item">
+                            <span class="g-vlist__one-footer-item-name">Location:</span> <?= $vacancy->area->state->name . ', ' . $vacancy->area->name ?>
+                        </div>
                     </div>
                 </div>
             </div>
         <?php endforeach; ?>
+    </div>
+    <div class="p-feed__load">
+        <div class="p-feed__load-btn">Load More Vacancies</div>
     </div>
 </div>
