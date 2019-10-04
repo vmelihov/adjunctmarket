@@ -1,12 +1,12 @@
 <?php
 
 use common\models\Vacancy;
-use common\src\helpers\DateTimeHelper;
 use common\src\helpers\Helper;
 use frontend\assets\AppAsset;
 use frontend\models\VacancySearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
+use yii\web\View;
 
 /* @var $this yii\web\View */
 /* @var $vacancies Vacancy[] */
@@ -75,76 +75,58 @@ $user = Helper::getUserIdentity();
 
     <?= $this->render('_search', ['model' => $searchModel]) ?>
 
-    <?php if ($user->isInstitution()): ?>
-        <?= Html::a('Create Vacancy', ['create'], ['class' => 'btn btn-success']) ?>
-    <?php endif; ?>
-
-    <div class="g-vlist">
-        <?php
-        /** @var Vacancy $vacancy */
-        foreach ($dataProvider->getModels() as $vacancy) : ?>
-            <div class="g-vlist__one js-one">
-                <div class="g-vlist__one-header">
-                    <?= Html::a(HTML::encode($vacancy->title), ['view', 'id' => $vacancy->id], ['class' => 'g-vlist__one-header-title']) ?>
-
-                    <div class="g-vlist__one-header-cat">
-                        <?= Html::encode("{$vacancy->specialty->faculty->name} - {$vacancy->specialty->name} / {$vacancy->user->profile->university->name}") ?>
-                    </div>
-
-                    <div class="g-vlist__one-header-right">
-                        <div class="g-vlist__one-header-right-views">
-                            <div class="g-vlist__one-header-right-views">
-                                <span class="g-vlist__one-header-right-views-icon fal fa-eye"></span>
-                                <span class="g-vlist__one-header-right-views-num"><?= $vacancy->views ?></span>
-                            </div>
-                        </div>
-
-                        <div class="g-vlist__one-header-right-fav fal fa-heart js-fav"></div>
-                    </div>
-                </div>
-
-                <div class="g-vlist__one-content">
-                    <div class="g-vlist__one-content-head">
-                        <div class="g-vlist__one-content-head-time">
-                            Posted <?= DateTimeHelper::getTimeAgo($vacancy->created) ?? '-' ?> minutes ago - Proposals
-                            12
-                        </div>
-                        <div class="g-vlist__one-content-head-control active js-view">
-                            <div class="g-vlist__one-content-head-control-text">
-                                Expanded view
-                                <br/>
-                                Compact view
-                            </div>
-                        </div>
-                    </div>
-                    <div class="g-vlist__one-content-body js-body">
-                        <?= HTML::encode($vacancy->description) ?>
-                    </div>
-                </div>
-
-                <div class="g-vlist__one-footer js-footer">
-                    <div class="g-vlist__one-footer-column">
-                        <div class="g-vlist__one-footer-item">
-                            <span class="g-vlist__one-footer-item-name">Teaching experience:</span> <?= $vacancy->teachType->name ?>
-                        </div>
-                        <div class="g-vlist__one-footer-item">
-                            <span class="g-vlist__one-footer-item-name">Education:</span> <?= $vacancy->education->name ?>
-                        </div>
-                    </div>
-
-                    <div class="g-vlist__one-footer-column">
-                        <div class="g-vlist__one-footer-item m-none">
-                            <span class="g-vlist__one-footer-item-name">Type of teaching:</span> <?= $vacancy->teachTime->name ?>
-                        </div>
-                        <div class="g-vlist__one-footer-item">
-                            <span class="g-vlist__one-footer-item-name">Location:</span> <?= $vacancy->area->state->name . ', ' . $vacancy->area->name ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div id="itemList" class="g-vlist">
+        <?php foreach ($dataProvider->getModels() as $vacancy) : ?>
+            <?= $this->render('_one', ['model' => $vacancy]) ?>
         <?php endforeach; ?>
     </div>
-    <div class="p-feed__load">
-        <div class="p-feed__load-btn">Load More Vacancies</div>
-    </div>
+
+    <?php if ($dataProvider->getPagination()->getPageCount() > 1) : ?>
+        <div class="p-feed__load">
+            <div id="showMore" class="p-feed__load-btn">Load More Vacancies</div>
+        </div>
+
+        <?php
+        $page = (int)Yii::$app->request->get('page', 0);
+        $pageCount = $dataProvider->pagination->pageCount - 1;
+
+        $script = <<< JS
+        // запоминаем текущую страницу и их максимальное количество
+        var page = parseInt('$page');
+        var pageCount = parseInt('{$pageCount}');
+        var loadingFlag = false;
+    
+        $('#showMore').click(function() {
+            if (!loadingFlag) {
+                // выставляем блокировку
+                loadingFlag = true;
+                
+                $.ajax({
+                    type: 'post',
+                    url: window.location.href,
+                    data: {
+                        // передаём номер нужной страницы методом POST
+                        'page': page + 1,
+                    },
+                    success: function(data) {
+                        // увеличиваем номер текущей страницы и снимаем блокировку
+                        page++;
+                        loadingFlag = false;
+    
+                        // вставляем полученные записи после имеющихся в наш блок
+                        $('#itemList').append(data);
+
+                        // если достигли максимальной страницы, то прячем кнопку
+                        if (page >= pageCount) {
+                            $('#showMore').hide();
+                        }
+                    }
+                });
+            }
+            return false;
+        })
+JS;
+        $this->registerJs($script, View::POS_READY);
+        ?>
+    <?php endif; ?>
 </div>

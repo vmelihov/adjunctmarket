@@ -11,6 +11,8 @@ use common\models\Vacancy;
  */
 class VacancySearch extends Vacancy
 {
+    public const PAGE_SIZE = 5;
+
     public $specialities;
     public $areas;
 
@@ -39,14 +41,19 @@ class VacancySearch extends Vacancy
      *
      * @param array $params
      *
+     * @param int $page
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, int $page = 0): ActiveDataProvider
     {
         $query = Vacancy::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => self::PAGE_SIZE,
+                'page' => $page,
+            ],
         ]);
 
         $this->load($params);

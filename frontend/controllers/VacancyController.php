@@ -70,8 +70,20 @@ class VacancyController extends Controller
      */
     public function actionIndex()
     {
+        $params = Yii::$app->request->getQueryParams();
+        $page = Yii::$app->request->post('page', 0);
+
         $searchModel = new VacancySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search($params, $page);
+
+        $string = '';
+        if (Yii::$app->request->isAjax) {
+            foreach ($dataProvider->getModels() as $vacancy) {
+                $string .= $this->renderPartial('_one', ['model' => $vacancy]);
+            }
+
+            return $string;
+        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
