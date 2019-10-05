@@ -17,6 +17,7 @@ $this->registerCssFile('@web/css/registration.css', ['depends' => [AppAsset::cla
 
 $this->registerJsFile('@web/extension/selectize/js/standalone/selectize.min.js', ['depends' => [AppAsset::class]]);
 $this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class]]);
+$this->registerJsFile('@web/js/validation.js', ['depends' => [AppAsset::class]]);
 
 $universities = ArrayHelper::map(University::find()->all(), 'id', 'name');
 
@@ -118,9 +119,13 @@ $this->title = 'Registration';
         <div class="form-group d-none js-institution">
             <div class="p-reg__form-iblock">
                 <div class="p-reg__form-iblock-label">Educational institution</div>
-                <div class="p-reg__form-iblock-icon fal fa-check"></div>
 
-                <?= $form->field($model, 'university_id')
+                <?= $form->field($model, 'university_id', [
+                    'template' => '{input}',
+                    'options' => [
+                        'tag' => false,
+                    ]
+                ])
                     ->dropDownList($universities, [
                         'class' => 'js-selectize',
                         'placeholder' => 'Choose institution',
