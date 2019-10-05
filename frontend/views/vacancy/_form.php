@@ -17,7 +17,6 @@ use yii\helpers\Html;
 /* @var $form yii\widgets\ActiveForm */
 
 $this->registerCssFile('@web/extension/select2/select2.min.css', ['depends' => [AppAsset::class]]);
-$this->registerCssFile('@web/css/createjobs.css', ['depends' => [AppAsset::class]]);
 
 $this->registerJsFile('@web/extension/bootstrap-4.0.0/js/popper.min.js', ['depends' => [AppAsset::class]]);
 $this->registerJsFile('@web/extension/select2/select2.min.js', ['depends' => [AppAsset::class]]);

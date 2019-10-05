@@ -2,7 +2,6 @@
 
 use common\models\Vacancy;
 use common\src\helpers\Helper;
-use frontend\assets\AppAsset;
 use frontend\models\VacancySearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
@@ -12,8 +11,6 @@ use yii\web\View;
 /* @var $vacancies Vacancy[] */
 /* @var $dataProvider ActiveDataProvider */
 /* @var $searchModel VacancySearch */
-
-$this->registerCssFile('@web/css/jobs.css', ['depends' => [AppAsset::class]]);
 
 $this->title = 'Vacancies';
 $this->params['breadcrumbs'][] = $this->title;
