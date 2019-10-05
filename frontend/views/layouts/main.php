@@ -148,10 +148,8 @@ AppAsset::register($this);
 </header>
 
 <div class="container">
-    <div class="g-content">
-        <?= Alert::widget() ?>
-        <?= $content ?>
-    </div>
+    <?= Alert::widget() ?>
+    <?= $content ?>
 </div>
 
 <footer class="g-footer">
