@@ -48,19 +48,19 @@ use yii\helpers\Html;
     <div class="g-vlist__one-footer js-footer">
         <div class="g-vlist__one-footer-column">
             <div class="g-vlist__one-footer-item">
-                <span class="g-vlist__one-footer-item-name">Teaching experience:</span> <?= $model->teachType->name ?>
+                <span class="g-vlist__one-footer-item-name">Teaching experience:</span> <?= $model->teachType ? $model->teachType->name : '' ?>
             </div>
             <div class="g-vlist__one-footer-item">
-                <span class="g-vlist__one-footer-item-name">Education:</span> <?= $model->education->name ?>
+                <span class="g-vlist__one-footer-item-name">Education:</span> <?= $model->education ? $model->education->name : '' ?>
             </div>
         </div>
 
         <div class="g-vlist__one-footer-column">
             <div class="g-vlist__one-footer-item m-none">
-                <span class="g-vlist__one-footer-item-name">Type of teaching:</span> <?= $model->teachTime->name ?>
+                <span class="g-vlist__one-footer-item-name">Type of teaching:</span> <?= $model->teachTime ? $model->teachTime->name : '' ?>
             </div>
             <div class="g-vlist__one-footer-item">
-                <span class="g-vlist__one-footer-item-name">Location:</span> <?= $model->area->state->name . ', ' . $model->area->name ?>
+                <span class="g-vlist__one-footer-item-name">Location:</span> <?= $model->area ? $model->area->state->name . ', ' . $model->area->name : '' ?>
             </div>
         </div>
     </div>

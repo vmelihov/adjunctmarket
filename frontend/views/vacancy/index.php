@@ -20,6 +20,10 @@ $user = Helper::getUserIdentity();
 <div class="p-feed">
     <h1 class="p-jobs__title"><?= Html::encode($this->title) ?></h1>
 
+    <?php if ($user->isInstitution()): ?>
+        <?= Html::a('Create Vacancy', ['create'], ['class' => 'btn btn-success']) ?>
+    <?php endif; ?>
+
     <div class="p-feed__filter">
         <div class="p-feed__filter-vacancies js-vacancies">
             <div class="p-feed__filter-vacancies-chosen js-vacanciesBtn">

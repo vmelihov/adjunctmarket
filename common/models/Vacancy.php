@@ -59,13 +59,13 @@ class Vacancy extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['institution_user_id', 'title', 'description', 'specialty_id', 'area_id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id'], 'required'],
+            [['institution_user_id', 'title', 'description', 'specialty_id'], 'required'],
             [['institution_user_id', 'specialty_id', 'area_id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id', 'created', 'updated', 'deleted', 'views'], 'integer'],
             [['title', 'description'], 'string', 'max' => 200],
-            [['education_id'], 'exist', 'skipOnError' => true, 'targetClass' => Education::class, 'targetAttribute' => ['education_id' => 'id']],
+            [['education_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Education::class, 'targetAttribute' => ['education_id' => 'id']],
             [['specialty_id'], 'exist', 'skipOnError' => true, 'targetClass' => Specialty::class, 'targetAttribute' => ['specialty_id' => 'id']],
             [['institution_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['institution_user_id' => 'id']],
-            [['area_id'], 'exist', 'skipOnError' => true, 'targetClass' => Area::class, 'targetAttribute' => ['area_id' => 'id']],
+            [['area_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Area::class, 'targetAttribute' => ['area_id' => 'id']],
             [['teach_period_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingPeriod::class, 'targetAttribute' => ['teach_period_id' => 'id']],
             [['teach_time_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingTime::class, 'targetAttribute' => ['teach_time_id' => 'id']],
             [['teach_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingType::class, 'targetAttribute' => ['teach_type_id' => 'id']],

@@ -45,19 +45,19 @@ $user = Helper::getUserIdentity();
                 <span class="p-job__footer-item-name">Category:</span> <?= Html::encode($model->specialty->getNameWithFaculty()) ?>
             </div>
             <div class="p-job__footer-item">
-                <span class="p-job__footer-item-name">Teaching experience:</span> <?= Html::encode($model->teachType->name) ?>
+                <span class="p-job__footer-item-name">Teaching experience:</span> <?= Html::encode($model->teachType ? $model->teachType->name : '') ?>
             </div>
             <div class="p-job__footer-item">
-                <span class="p-job__footer-item-name">Education:</span> <?= Html::encode($model->education->name) ?>
+                <span class="p-job__footer-item-name">Education:</span> <?= Html::encode($model->education ? $model->education->name : '') ?>
             </div>
         </div>
 
         <div class="p-job__footer-column">
             <div class="p-job__footer-item">
-                <span class="p-job__footer-item-name">Type of teaching:</span> <?= Html::encode($model->teachPeriod->name) ?>
+                <span class="p-job__footer-item-name">Type of teaching:</span> <?= Html::encode($model->teachPeriod ? $model->teachPeriod->name : '') ?>
             </div>
             <div class="p-job__footer-item">
-                <span class="p-job__footer-item-name">Location:</span> <?= Html::encode($model->area->getNameWithState()) ?>
+                <span class="p-job__footer-item-name">Location:</span> <?= Html::encode($model->area ? $model->area->getNameWithState() : '') ?>
             </div>
             <div class="p-job__footer-item">
                 <span class="p-job__footer-item-name">University:</span> <?= Html::encode($model->user->profile->university->name) ?>

@@ -1,17 +1,18 @@
 <?php
 
+use frontend\assets\AppAsset;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Vacancy */
 
-$this->title = 'Create Job';
-$this->params['breadcrumbs'][] = ['label' => 'Vacancies', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->registerCssFile('@web/css/create-vacancy.css', ['depends' => [AppAsset::class]]);
+
+$this->title = 'Create Vacancy';
 ?>
 
-<div class="p-cj g-content">
-    <h1 class="p-cj__title"><?= Html::encode($this->title) ?></h1>
+<div class="p-cv g-content">
+    <h1 class="p-cv__title"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,
