@@ -8,6 +8,7 @@ use common\models\Specialty;
 use common\models\TeachingPeriod;
 use common\models\TeachingTime;
 use common\models\TeachingType;
+use common\models\University;
 use yii\helpers\ArrayHelper;
 
 class DictionaryHelper
@@ -102,6 +103,15 @@ class DictionaryHelper
     public function prepareTeachingPeriod(): self
     {
         $this->result = ArrayHelper::map(TeachingPeriod::find()->all(), 'id', 'name');
+        return $this;
+    }
+
+    /**
+     * @return DictionaryHelper
+     */
+    public function prepareUniversity(): self
+    {
+        $this->result = ArrayHelper::map(University::find()->all(), 'id', 'name');
         return $this;
     }
 
