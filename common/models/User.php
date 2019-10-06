@@ -25,6 +25,7 @@ use yii\web\IdentityInterface;
  * @property string $first_name
  * @property string $last_name
  * @property string $password write-only password
+ * @property string $image
  *
  * @property ActiveRecord $profile
  */

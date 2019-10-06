@@ -1,6 +1,8 @@
 <?php
 
 use common\src\helpers\DictionaryHelper;
+use common\src\helpers\Helper;
+use common\src\helpers\UserImageHelper;
 use frontend\assets\AppAsset;
 use frontend\forms\InstitutionProfileForm;
 use yii\helpers\Html;
@@ -20,15 +22,35 @@ $this->registerJsFile('@web/js/validation.js', ['depends' => [AppAsset::class]])
 
 $this->title = 'Institution Profile';
 
+$user = Helper::getUserIdentity();
+$user->refresh();
+
 $dictionaryHelper = new DictionaryHelper();
 $universities = $dictionaryHelper->prepareUniversity()->getResult();
-
 ?>
 
     <div class="p-prflinst">
+        <?php $form = ActiveForm::begin([
+            'id' => 'institution-profile-form',
+            'action' => Url::to(['institution/profile']),
+            'options' => [
+                'enctype' => 'multipart/form-data'
+            ],
+            'fieldConfig' => [
+                'template' => "{input}\n{error}",
+                'options' => [
+                    'tag' => false,
+                ],
+                'errorOptions' => [
+                    'class' => 'p-prflinst__sform-block-iblock-error',
+                    'tag' => 'div'
+                ],
+            ],
+        ]); ?>
+
         <div class="p-prflinst__settings">
             <div class="p-prflinst__settings-ava">
-                <img src="https://www.harvard.edu/sites/default/files/user13/harvard_shield_wreath.png"
+                <img src="<?= UserImageHelper::getUserImageUrl($user) ?>"
                      alt="" class="p-prflinst__settings-ava-img"/>
                 <div class="p-prflinst__settings-ava-status" title="Offline"></div>
                 <div class="p-prflinst__settings-ava-status m-online" title="Online"></div>
@@ -38,42 +60,17 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                 <?= Html::encode($universities[$model->university_id]) ?>
             </div>
             <div class="p-prflinst__settings-status">
-                <?= Html::encode($model->first_name . ' ' . $model->last_name) ?> <?= $model->position ? ' - ' . Html::encode($model->position) : '' ?>
-            </div>
-
-            <div class="p-prflinst__settings-right">
-                <div class="p-prflinst__settings-right-add">
-                    <a href="" class="p-prflinst__settings-right-add-link">Publish a vacancy</a>
-                </div>
+                <?= Html::encode($user->getUsername()) ?> <?= $model->position ? ' - ' . Html::encode($model->position) : '' ?>
             </div>
         </div>
 
         <div class="p-prflinst__settings-content" style="display: block">
-            <?php $form = ActiveForm::begin([
-                'id' => 'institution-profile-form',
-                'action' => Url::to(['institution/profile']),
-                'options' => [
-                    'class' => 'p-prflinst__sform',
-                ],
-                'fieldConfig' => [
-                    'template' => "{input}\n{error}",
-                    'options' => [
-                        'tag' => false,
-                    ],
-                    'errorOptions' => [
-                        'class' => 'p-prflinst__sform-block-iblock-error',
-                        'tag' => 'div'
-                    ],
-                ],
-            ]); ?>
-
+            <div class="p-prflinst__sform">
             <div class="p-prflinst__sform-block">
                 <div class="p-prflinst__sform-block-title">
                     Edit Userpic
                 </div>
-                <div class="p-prflinst__sform-block-upload">
-                    Upload a picture
-                </div>
+                <?= $form->field($model, 'image_file')->fileInput() ?>
                 <div class="p-prflinst__sform-block-tooltip">
                     <div class="p-prflinst__sform-block-tooltip-question">?</div>
                     <div class="p-prflinst__sform-block-tooltip-popup">
@@ -193,7 +190,6 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                                     </div>
                                     <input placeholder="Confirm pasword" type="text"
                                            class="p-prflinst__sform-block-input js-notPassInput"/>
-
                                 </div>
                             </div>
                         </div>
@@ -204,12 +200,13 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
             <div class="p-prflinst__sform-block">
                 <?= Html::submitButton('Apply changes', ['class' => 'p-prflinst__sform-block-submit js-submit']) ?>
             </div>
+            </div>
 
             <?= $form->field($model, 'id')->hiddenInput()->label(false) ?>
             <?= $form->field($model, 'user_id')->hiddenInput()->label(false) ?>
-
-            <?php ActiveForm::end(); ?>
         </div>
+
+        <?php ActiveForm::end(); ?>
     </div>
 
 <?php

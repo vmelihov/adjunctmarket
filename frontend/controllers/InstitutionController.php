@@ -11,6 +11,7 @@ use yii\log\Logger;
 use yii\web\Controller;
 use yii\web\ErrorAction;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 class InstitutionController extends Controller
 {
@@ -61,12 +62,21 @@ class InstitutionController extends Controller
 
         if ($post = Yii::$app->request->post()) {
             try {
-                if ($model->load($post) && $model->save()) {
-                    Yii::$app->session->setFlash('success', 'Profile is saved success');
+                if ($model->load($post)) {
+
+                    $model->uploadedFile = UploadedFile::getInstance($model, 'image_file');
+
+                    if ($model->save()) {
+                        Yii::$app->session->setFlash('success', 'Profile is saved success');
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Error saving profile');
+                    }
+
                 } else {
                     Yii::$app->session->setFlash('error', 'Error saving profile');
                 }
             } catch (Exception $e) {
+                Yii::$app->session->setFlash('error', 'Error saving profile');
                 Yii::getLogger()->log('Error creating profile. ' . $e->getMessage(), Logger::LEVEL_ERROR);
             }
 

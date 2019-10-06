@@ -5,9 +5,13 @@ namespace frontend\forms;
 use common\models\Institution;
 use common\models\University;
 use common\models\User;
+use common\src\helpers\UserImageHelper;
+use Yii;
 use yii\base\Exception;
 use yii\base\Model;
 use yii\base\UserException;
+use yii\helpers\FileHelper;
+use yii\web\UploadedFile;
 
 class InstitutionProfileForm extends Model
 {
@@ -22,6 +26,10 @@ class InstitutionProfileForm extends Model
     public $email;
     public $new_password;
     public $repeat_password;
+    public $image_file;
+
+    /** @var UploadedFile */
+    public $uploadedFile;
 
     /**
      * {@inheritdoc}
@@ -43,6 +51,8 @@ class InstitutionProfileForm extends Model
             ['new_password', 'match', 'skipOnEmpty' => true, 'pattern' => '/[0-9]+/', 'message' => 'Password should contain at least 1 number.'],
             ['new_password', 'match', 'skipOnEmpty' => true, 'pattern' => '/[A-Z]+/', 'message' => 'Password should contain at least 1 character in uppercase'],
             ['repeat_password', 'compare', 'compareAttribute' => 'new_password', 'message' => "Passwords don't match"],
+
+            [['image_file'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg'],
         ];
     }
 
@@ -113,6 +123,24 @@ class InstitutionProfileForm extends Model
             }
         }
 
+        if ($this->uploadedFile) {
+            $fileName = UserImageHelper::generateImageName($user) . '.' . $this->uploadedFile->extension;
+
+            if ($user->image) {
+                FileHelper::unlink(Yii::getAlias('@webroot') . '/user/' . $user->image);
+            }
+
+            if ($this->uploadedFile->saveAs('user/' . $fileName)) {
+                $this->uploadedFile = null;
+                $user->image = $fileName;
+                $needSave = true;
+            } else {
+                $this->addError('image_file', 'Error saving image');
+
+                return false;
+            }
+        }
+
         if ($needSave && !$user->save()) {
             $this->addErrors($user->getErrors());
 
@@ -149,8 +177,5 @@ class InstitutionProfileForm extends Model
 
         return true;
     }
-
-//$user->validatePassword($this->password)
-//$user->setPassword($this->password);
 
 }
