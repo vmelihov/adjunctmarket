@@ -1,105 +1,238 @@
 <?php
 
-use common\models\University;
+use common\src\helpers\DictionaryHelper;
 use frontend\assets\AppAsset;
-use yii\helpers\ArrayHelper;
+use frontend\forms\InstitutionProfileForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use yii\web\View;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Adjunct */
-/* @var $form ActiveForm */
+/* @var $model InstitutionProfileForm */
 
-$this->registerCssFile('@web/css/profile-type.css', ['depends' => [AppAsset::class]]);
-$this->registerCssFile('@web/extension/select2/select2.min.css', ['depends' => [AppAsset::class]]);
+$this->registerCssFile('@web/extension/selectize/css/selectize.css', ['depends' => [AppAsset::class]]);
+$this->registerCssFile('@web/css/profile-institution.css', ['depends' => [AppAsset::class]]);
 
-$this->registerJsFile('@web/js/profile-type.js', ['depends' => [AppAsset::class]]);
-$this->registerJsFile('@web/extension/bootstrap-4.0.0/js/popper.min.js', ['depends' => [AppAsset::class]]);
-$this->registerJsFile('@web/extension/select2/select2.min.js', ['depends' => [AppAsset::class]]);
+$this->registerJsFile('@web/extension/selectize/js/standalone/selectize.min.js', ['depends' => [AppAsset::class]]);
+$this->registerJsFile('@web/js/profile-institution.js', ['depends' => [AppAsset::class]]);
+$this->registerJsFile('@web/js/validation.js', ['depends' => [AppAsset::class]]);
 
-$this->title = 'Employer profile';
+$this->title = 'Institution Profile';
 
-$universities = ArrayHelper::map(University::find()->all(), 'id', 'name');
+$dictionaryHelper = new DictionaryHelper();
+$universities = $dictionaryHelper->prepareUniversity()->getResult();
+
 ?>
 
-    <div class="p-profile g-content">
-        <h1 class="g-mb30">Creating User Profile</h1>
+    <div class="p-prflinst">
+        <div class="p-prflinst__settings">
+            <div class="p-prflinst__settings-ava">
+                <img src="https://www.harvard.edu/sites/default/files/user13/harvard_shield_wreath.png"
+                     alt="" class="p-prflinst__settings-ava-img"/>
+                <div class="p-prflinst__settings-ava-status" title="Offline"></div>
+                <div class="p-prflinst__settings-ava-status m-online" title="Online"></div>
+            </div>
 
-        <?php $form = ActiveForm::begin([
-            'id' => 'institution-profile-form',
-            'action' => Url::to(['institution/profile']),
-            'fieldConfig' => [
-                'template' => "{input}\n{error}",
+            <div class="p-prflinst__settings-name">
+                <?= Html::encode($universities[$model->university_id]) ?>
+            </div>
+            <div class="p-prflinst__settings-status">
+                <?= Html::encode($model->first_name . ' ' . $model->last_name) ?> <?= $model->position ? ' - ' . Html::encode($model->position) : '' ?>
+            </div>
+
+            <div class="p-prflinst__settings-right">
+                <div class="p-prflinst__settings-right-add">
+                    <a href="" class="p-prflinst__settings-right-add-link">Publish a vacancy</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-prflinst__settings-content" style="display: block">
+            <?php $form = ActiveForm::begin([
+                'id' => 'institution-profile-form',
                 'options' => [
-                    'class' => 'form-control form-control-lg',
-                    'tag' => false,
+                    'class' => 'p-prflinst__sform',
+//                'data-validate' => '6',
                 ],
-            ],
-        ]); ?>
+                'action' => Url::to(['institution/profile']),
+                'fieldConfig' => [
+                    'template' => "{input}\n{error}",
+                    'options' => [
+                        'tag' => false,
+                    ],
+                ],
+            ]); ?>
 
-        <div class="p-profile__block">
-            <h2 class="g-mb20">
-                Some choose
-                <span class="fa fa-info-circle" data-toggle="tooltip"
-                      title="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"></span>
-            </h2>
-
-            <div class="p-profile__select2 g-mb20">
-                <?= $form->field($model, 'university_id')
-                    ->dropDownList($universities, ['class' => 'p-profile__select2-select js-select2'])
-                ?>
-            </div>
-        </div>
-
-
-        <?= $form->field($model, 'id')->hiddenInput()->label(false) ?>
-        <?= $form->field($model, 'user_id')->hiddenInput()->label(false) ?>
-
-        <div class="p-profile__submit">
-            <?= Html::submitButton('APPLY', ['class' => 'btn btn-primary btn-lg btn-block']) ?>
-        </div>
-
-        <div class="p-profile__sometext g-mb15">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut
-            labore et dolore magna aliqua.
-        </div>
-
-        <div class="p-profile__read">
-            <div class="p-profile__read-check">
-                <label class="ui-checkbox">
-                    <input type="checkbox" id="adjunctform-confirm" name="AdjunctForm[confirm]" value="1" checked="">
-                    <span class="ui-checkbox__decor"></span>
-                </label>
+            <div class="p-prflinst__sform-block">
+                <div class="p-prflinst__sform-block-title">
+                    Edit Userpic
+                </div>
+                <div class="p-prflinst__sform-block-upload">
+                    Upload a picture
+                </div>
+                <div class="p-prflinst__sform-block-tooltip">
+                    <div class="p-prflinst__sform-block-tooltip-question">?</div>
+                    <div class="p-prflinst__sform-block-tooltip-popup">
+                        Upload the symbol of institution to make your profile more recognizable
+                    </div>
+                </div>
             </div>
 
-            <div class="p-profile__read-text">
-                I have read and agree to the AdjunktMarket <a href="" target="_blank">Terms and
-                    Conditions</a>
-                of Use and <a href="" target="_blank">Privacy Policy</a>.
-            </div>
-    </div>
+            <div class="p-prflinst__sform-block">
+                <div class="p-prflinst__sform-block-title">
+                    General Settings
+                </div>
 
-    <?php ActiveForm::end(); ?>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="p-prflinst__sform-block-iblock js-validateblock">
+                            <div class="p-prflinst__sform-block-iblock-label">First name</div>
+                            <div class="p-prflinst__sform-block-iblock-icon fal fa-check js-validateblockOk"></div>
+
+                            <?= $form->field($model, 'first_name')->textInput([
+                                'class' => 'p-prflinst__sform-block-iblock-input js-textValidation',
+                            ]) ?>
+
+                            <div class="p-prflinst__sform-block-iblock-error js-validateblockError">
+                                Please enter any
+                                words
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="p-prflinst__sform-block-iblock js-validateblock">
+                            <div class="p-prflinst__sform-block-iblock-label">Last name</div>
+                            <div class="p-prflinst__sform-block-iblock-icon fal fa-check js-validateblockOk"></div>
+
+                            <?= $form->field($model, 'last_name')->textInput([
+                                'class' => 'p-prflinst__sform-block-iblock-input js-textValidation',
+                            ]) ?>
+
+                            <div class="p-prflinst__sform-block-iblock-error js-validateblockError">
+                                Please enter any
+                                words
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="p-prflinst__sform-block-iblock js-validateblock">
+                            <div class="p-prflinst__sform-block-iblock-icon fal fa-check js-validateblockOk"></div>
+
+                            <?= $form->field($model, 'email')->textInput([
+                                'class' => 'p-prflinst__sform-block-input js-mailValidation',
+                                'placeholder' => 'Work email address',
+                                'type' => 'email',
+                            ]) ?>
+
+                            <div class="p-prflinst__sform-block-iblock-error js-validateblockError">
+                                Please enter any
+                                words
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="p-prflinst__sform-block-iblock js-validateblock">
+                            <div class="p-prflinst__sform-block-iblock-label">Position</div>
+                            <div class="p-prflinst__sform-block-iblock-icon fal fa-check js-validateblockOk"></div>
+
+                            <?= $form->field($model, 'position')->textInput([
+                                'class' => 'p-prflinst__sform-block-iblock-input js-textValidation',
+                            ]) ?>
+
+                            <div class="p-prflinst__sform-block-iblock-error js-validateblockError">
+                                Please enter any
+                                words
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-prflinst__sform-block-iblock js-validateblock">
+                    <div class="p-prflinst__sform-block-iblock-label">Educational institution</div>
+
+                    <?= $form->field($model, 'university_id')
+                        ->dropDownList($universities, [
+                            'class' => 'js-selectize',
+                        ])
+                    ?>
+                </div>
+            </div>
+
+            <div class="p-prflinst__sform-block">
+                <div class="p-prflinst__sform-block-title">
+                    Security
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="p-prflinst__sform-block-iblock js-validateblock js-passParent">
+                            <div class="js-passLine">
+                                <div class="p-prflinst__sform-block-iblock-icon js-passEye fa fa-eye"></div>
+                                <input placeholder="Password" type="password"
+                                       class="p-prflinst__sform-block-input js-passInput js-passValidation js-passValidation1"/>
+                            </div>
+                            <div class="js-passLine d-none">
+                                <div class="p-prflinst__sform-block-iblock">
+                                    <div class="p-prflinst__sform-block-iblock-icon js-passEye fa fa-eye-slash"></div>
+                                    <input placeholder="Password" type="text"
+                                           class="p-prflinst__sform-block-input js-notPassInput"/>
+                                </div>
+                            </div>
+
+                            <div class="p-prflinst__sform-block-iblock-error js-validateblockError">
+                                Please enter any words
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="p-prflinst__sform-block-iblock js-validateblock js-passParent">
+                            <div class="js-passLine">
+                                <div class="p-prflinst__sform-block-iblock">
+                                    <div
+                                            class="p-prflinst__sform-block-iblock-icon js-passEye fa fa-eye">
+                                    </div>
+                                    <input placeholder="Confirm pasword" type="password"
+                                           class="p-prflinst__sform-block-input js-passInput js-passValidation js-passValidation2"/>
+                                </div>
+                            </div>
+                            <div class="js-passLine d-none">
+                                <div class="p-prflinst__sform-block-iblock">
+                                    <div
+                                            class="p-prflinst__sform-block-iblock-icon js-passEye fa fa-eye-slash">
+                                    </div>
+                                    <input placeholder="Confirm pasword" type="text"
+                                           class="p-prflinst__sform-block-input js-notPassInput"/>
+                                </div>
+                            </div>
+
+                            <div class="p-prflinst__sform-block-iblock-error js-validateblockError">
+                                Password dont match
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-prflinst__sform-block">
+                <?= Html::submitButton('Apply changes', ['class' => 'p-prflinst__sform-block-submit js-submit']) ?>
+            </div>
+
+            <?= $form->field($model, 'id')->hiddenInput()->label(false) ?>
+            <?= $form->field($model, 'user_id')->hiddenInput()->label(false) ?>
+
+            <?php ActiveForm::end(); ?>
+        </div>
     </div>
 
 <?php
 $script = <<< JS
-    $('#adjunct-profile-form').on('afterValidate', function(e, m) {
-        
-        $.each(m, function(key, errors){
-            var id = '#' + key;
-            if (typeof errors !== 'undefined' && errors.length > 0) {
-                console.log(id, $(id).parent());
-                $(id).parent().children('.help-block-error').text(errors[0]).addClass('error');
-            } else {
-                $(id).parent().children('.help-block-error').text('').removeClass('error');
-            }
-        });
-
-        return true;
+    $('.js-selectize').selectize({
+        create: true,
+        sortField: 'text'
     });
 JS;
 $this->registerJs($script, View::POS_READY);

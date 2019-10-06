@@ -3,9 +3,11 @@
 namespace frontend\controllers;
 
 use frontend\forms\InstitutionProfileForm;
+use \Exception;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\log\Logger;
 use yii\web\Controller;
 use yii\web\ErrorAction;
 use yii\web\Response;
@@ -57,15 +59,20 @@ class InstitutionController extends Controller
     {
         $model = new InstitutionProfileForm();
 
-
         if ($post = Yii::$app->request->post()) {
-            if ($model->load($post) && $model->save()) {
-                Yii::$app->session->setFlash('success', 'Profile is saved success');
-
-                return $this->redirect(['site/profile']);
+            try {
+                if ($model->load($post) && $model->save()) {
+                    Yii::$app->session->setFlash('success', 'Profile is saved success');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error saving profile');
+                }
+            } catch (Exception $e) {
+                Yii::getLogger()->log('Error creating profile. ' . $e->getMessage(), Logger::LEVEL_ERROR);
             }
 
-            Yii::$app->session->setFlash('error', $model->getErrors());
+            return $this->render('@frontend/views/site/institution', [
+                'model' => $model,
+            ]);
         }
 
         return $this->goHome();

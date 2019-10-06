@@ -12,9 +12,11 @@ use yii\db\ActiveRecord;
  * @property int $user_id
  * @property string $title
  * @property string $description
+ * @property string $position
  * @property int $university_id
  *
  * @property User $user
+ * @property University $university
  */
 class Institution extends ActiveRecord
 {
@@ -34,7 +36,7 @@ class Institution extends ActiveRecord
         return [
             [['user_id'], 'required'],
             [['user_id'], 'integer'],
-            [['title', 'description'], 'string', 'max' => 200],
+            [['title', 'description', 'position'], 'string', 'max' => 200],
             [['university_id'], 'exist', 'skipOnError' => true, 'targetClass' => University::class, 'targetAttribute' => ['university_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -60,5 +62,13 @@ class Institution extends ActiveRecord
     public function getUniversity(): ActiveQuery
     {
         return $this->hasOne(University::class, ['id' => 'university_id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getUser(): ActiveQuery
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 }
