@@ -10,15 +10,17 @@ abstract class BaseProfile
     /** @var Model */
     protected $form;
 
+    /** @var User */
+    protected $user;
+
     /**
      * BaseProfile constructor.
      * @param User $user
      */
     public function __construct(User $user)
     {
-        $attributes = $user->profile ? $user->profile->getAttributes() : [];
-
-        $this->setForm($this->createForm($user->getId(), $attributes));
+        $this->setUser($user);
+        $this->setForm($this->createForm());
     }
 
     /**
@@ -38,11 +40,25 @@ abstract class BaseProfile
     }
 
     /**
-     * @param int $userId
-     * @param array $attributes
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
+    }
+
+    /**
      * @return Model
      */
-    abstract public function createForm(int $userId, array $attributes): Model;
+    abstract public function createForm(): Model;
 
     /**
      * @return string

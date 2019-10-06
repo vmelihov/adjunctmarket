@@ -8,11 +8,17 @@ use yii\base\Model;
 
 class AdjunctProfile extends BaseProfile
 {
-    public function createForm(int $userId, array $attributes): Model
+    /**
+     * @inheritDoc
+     */
+    public function createForm(): Model
     {
-        $form = new AdjunctProfileForm(['user_id' => $userId]);
+        $user = $this->getUser();
+        $form = new AdjunctProfileForm(['user_id' => $user->getId()]);
 
-        if ($attributes) {
+        if ($user->profile) {
+            $attributes = $user->profile->getAttributes();
+
             $form->setAttributes($attributes);
             $form->teach_locations = json_decode($attributes['teach_locations'], true);
             $form->specialities = implode(' ', json_decode($attributes['specialities'], true));

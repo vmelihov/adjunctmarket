@@ -9,16 +9,20 @@ use yii\base\Model;
 class InstitutionProfile extends BaseProfile
 {
     /**
-     * @param int $userId
-     * @param array $attributes
-     * @return Model
+     * @inheritDoc
      */
-    public function createForm(int $userId, array $attributes): Model
+    public function createForm(): Model
     {
-        $form = new InstitutionProfileForm(['user_id' => $userId]);
+        $user = $this->getUser();
+        $form = new InstitutionProfileForm([
+            'user_id' => $user->getId(),
+            'email' => $user->email,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+        ]);
 
-        if ($attributes) {
-            $form->setAttributes($attributes);
+        if ($user->profile) {
+            $form->setAttributes($user->profile->getAttributes());
         }
 
         return $form;
