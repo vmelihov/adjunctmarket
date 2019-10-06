@@ -8,7 +8,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
 use frontend\assets\AppAsset;
-use common\widgets\Alert;
 use yii\widgets\Menu;
 
 $user = Helper::getUserIdentity();
@@ -148,7 +147,7 @@ AppAsset::register($this);
 </header>
 
 <div class="container">
-    <?= Alert::widget() ?>
+    <?php // Alert::widget() ?>
     <?= $content ?>
 </div>
 

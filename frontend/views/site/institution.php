@@ -51,15 +51,18 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
         <div class="p-prflinst__settings-content" style="display: block">
             <?php $form = ActiveForm::begin([
                 'id' => 'institution-profile-form',
+                'action' => Url::to(['institution/profile']),
                 'options' => [
                     'class' => 'p-prflinst__sform',
-//                'data-validate' => '6',
                 ],
-                'action' => Url::to(['institution/profile']),
                 'fieldConfig' => [
                     'template' => "{input}\n{error}",
                     'options' => [
                         'tag' => false,
+                    ],
+                    'errorOptions' => [
+                        'class' => 'p-prflinst__sform-block-iblock-error',
+                        'tag' => 'div'
                     ],
                 ],
             ]); ?>
@@ -93,11 +96,6 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                             <?= $form->field($model, 'first_name')->textInput([
                                 'class' => 'p-prflinst__sform-block-iblock-input js-textValidation',
                             ]) ?>
-
-                            <div class="p-prflinst__sform-block-iblock-error js-validateblockError">
-                                Please enter any
-                                words
-                            </div>
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -108,11 +106,6 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                             <?= $form->field($model, 'last_name')->textInput([
                                 'class' => 'p-prflinst__sform-block-iblock-input js-textValidation',
                             ]) ?>
-
-                            <div class="p-prflinst__sform-block-iblock-error js-validateblockError">
-                                Please enter any
-                                words
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -127,11 +120,6 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                                 'placeholder' => 'Work email address',
                                 'type' => 'email',
                             ]) ?>
-
-                            <div class="p-prflinst__sform-block-iblock-error js-validateblockError">
-                                Please enter any
-                                words
-                            </div>
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -142,11 +130,6 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                             <?= $form->field($model, 'position')->textInput([
                                 'class' => 'p-prflinst__sform-block-iblock-input js-textValidation',
                             ]) ?>
-
-                            <div class="p-prflinst__sform-block-iblock-error js-validateblockError">
-                                Please enter any
-                                words
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -172,8 +155,12 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                         <div class="p-prflinst__sform-block-iblock js-validateblock js-passParent">
                             <div class="js-passLine">
                                 <div class="p-prflinst__sform-block-iblock-icon js-passEye fa fa-eye"></div>
-                                <input placeholder="Password" type="password"
-                                       class="p-prflinst__sform-block-input js-passInput js-passValidation js-passValidation1"/>
+
+                                <?= $form->field($model, 'new_password')->passwordInput([
+                                    'placeholder' => 'New password',
+                                    'class' => 'p-prflinst__sform-block-input js-passInput js-passValidation js-passValidation1',
+                                ]) ?>
+
                             </div>
                             <div class="js-passLine d-none">
                                 <div class="p-prflinst__sform-block-iblock">
@@ -181,10 +168,6 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                                     <input placeholder="Password" type="text"
                                            class="p-prflinst__sform-block-input js-notPassInput"/>
                                 </div>
-                            </div>
-
-                            <div class="p-prflinst__sform-block-iblock-error js-validateblockError">
-                                Please enter any words
                             </div>
                         </div>
                     </div>
@@ -195,8 +178,12 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                                     <div
                                             class="p-prflinst__sform-block-iblock-icon js-passEye fa fa-eye">
                                     </div>
-                                    <input placeholder="Confirm pasword" type="password"
-                                           class="p-prflinst__sform-block-input js-passInput js-passValidation js-passValidation2"/>
+
+                                    <?= $form->field($model, 'repeat_password')->passwordInput([
+                                        'placeholder' => 'Confirm password',
+                                        'class' => 'p-prflinst__sform-block-input js-passInput js-passValidation js-passValidation2',
+                                    ]) ?>
+
                                 </div>
                             </div>
                             <div class="js-passLine d-none">
@@ -206,11 +193,8 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                                     </div>
                                     <input placeholder="Confirm pasword" type="text"
                                            class="p-prflinst__sform-block-input js-notPassInput"/>
-                                </div>
-                            </div>
 
-                            <div class="p-prflinst__sform-block-iblock-error js-validateblockError">
-                                Password dont match
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -233,6 +217,25 @@ $script = <<< JS
     $('.js-selectize').selectize({
         create: true,
         sortField: 'text'
+    });
+
+    $('.p-prflinst__sform-block-iblock-error').each(function(i, element){
+        if ($(element).text() != '') {
+            $(element).show();
+        }
+    });
+
+    $('#institution-profile-form').on('afterValidate', function(e, m) {
+        $.each(m, function(key, errors){
+            var id = '#' + key;
+            if (errors.length > 0) {
+                $(id).siblings('.p-prflinst__sform-block-iblock-error').first().text(errors[0]).show();
+            } else {
+                $(id).siblings('.p-prflinst__sform-block-iblock-error').first().hide();
+            }
+        });
+
+        return true;
     });
 JS;
 $this->registerJs($script, View::POS_READY);

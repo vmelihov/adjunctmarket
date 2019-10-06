@@ -5,6 +5,7 @@ namespace frontend\forms;
 use common\models\Institution;
 use common\models\University;
 use common\models\User;
+use yii\base\Exception;
 use yii\base\Model;
 use yii\base\UserException;
 
@@ -19,6 +20,8 @@ class InstitutionProfileForm extends Model
     public $first_name;
     public $last_name;
     public $email;
+    public $new_password;
+    public $repeat_password;
 
     /**
      * {@inheritdoc}
@@ -26,7 +29,7 @@ class InstitutionProfileForm extends Model
     public function rules(): array
     {
         return [
-            [['user_id', 'university_id'], 'required'],
+            [['user_id', 'university_id', 'first_name', 'last_name', 'email'], 'required'],
             [['title', 'description', 'position'], 'trim'],
             [['id', 'user_id'], 'number'],
             [['university_id'], 'exist', 'skipOnError' => true, 'targetClass' => University::class, 'targetAttribute' => ['university_id' => 'id']],
@@ -35,12 +38,18 @@ class InstitutionProfileForm extends Model
             ['email', 'email'],
             [['first_name', 'last_name'], 'string', 'max' => 255],
             [['first_name', 'last_name'], 'trim'],
+
+            ['new_password', 'string', 'skipOnEmpty' => true, 'min' => 8],
+            ['new_password', 'match', 'skipOnEmpty' => true, 'pattern' => '/[0-9]+/', 'message' => 'Password should contain at least 1 number.'],
+            ['new_password', 'match', 'skipOnEmpty' => true, 'pattern' => '/[A-Z]+/', 'message' => 'Password should contain at least 1 character in uppercase'],
+            ['repeat_password', 'compare', 'compareAttribute' => 'new_password', 'message' => "Passwords don't match"],
         ];
     }
 
     /**
      * @return bool
      * @throws UserException
+     * @throws Exception
      */
     public function save(): bool
     {
@@ -58,6 +67,7 @@ class InstitutionProfileForm extends Model
     /**
      * @return bool
      * @throws UserException
+     * @throws Exception
      */
     private function saveUser(): bool
     {
@@ -88,6 +98,19 @@ class InstitutionProfileForm extends Model
         if ($this->last_name && $user->last_name != $this->last_name) {
             $user->last_name = $this->last_name;
             $needSave = true;
+        }
+
+        if ($this->new_password) {
+            if (!$this->repeat_password) {
+                $this->addError('repeat_password', 'Please repeat password');
+
+                return false;
+            }
+
+            if ($this->new_password === $this->repeat_password) {
+                $user->setPassword($this->new_password);
+                $needSave = true;
+            }
         }
 
         if ($needSave && !$user->save()) {
@@ -126,4 +149,8 @@ class InstitutionProfileForm extends Model
 
         return true;
     }
+
+//$user->validatePassword($this->password)
+//$user->setPassword($this->password);
+
 }
