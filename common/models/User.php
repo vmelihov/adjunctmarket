@@ -81,6 +81,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['email', 'email'],
+            ['email', 'unique'],
             [['first_name', 'last_name'], 'string'],
             [['password_reset_token'], 'unique'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
@@ -138,6 +139,15 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findByEmail(string $email): ?User
     {
         return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
+    }
+
+    /**
+     * @param string $newEmail
+     * @return bool
+     */
+    public function isEmailUniqueForOtherUsers(string $newEmail): bool
+    {
+        return !static::find()->where('id != :id and email = \':email\'', ['id' => $this->getId(), 'type' => $newEmail])->one();
     }
 
     /**
