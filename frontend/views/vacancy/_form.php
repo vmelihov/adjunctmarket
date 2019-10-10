@@ -238,6 +238,20 @@ $script = <<< JS
     $('#modalPublishButton').on('click', function() {
         $('#submitButton').submit();
     });
+    
+    let teach_period_id_arr = new Map([
+        ['1', 'Full Semester'],
+        ['2', 'Occasional Lecturing'],
+        ['3', 'Either of the two']
+    ]);
+    
+    let teach_type_id_arr = new Map([
+        ['1', 'Online'],
+        ['2', 'In person'],
+        ['3', 'Both']
+    ]);
+    
+    console.log(teach_period_id_arr);
 
     $(".js-submit").on("click", function () {
         if (!$(this).prop('disabled')) {
@@ -245,35 +259,25 @@ $script = <<< JS
 
             $("#modalTitle").text($("#title").val());
             $("#modalDescription").text($("#description").val());
-            $("#modalCategory").text($("#category").val());
+            $("#modalCategory").text($("#category").attr('selected', 'true').text());
 
             if ($("#tExpYes").prop("checked")) {
-                var _text = "";
-
-                if ($("#online").prop("checked")) {
-                    _text = "Online";
-                }
-                if ($("#inPerson").prop("checked")) {
-                    _text += "In person";
-                }
-                if ($("#online").prop("checked") && $("#inPerson").prop("checked")) {
-                    _text += "Online, In person";
-                }
-                $("#modalTExp").text(_text);
-            }
-            $("#modalEducation").text($("#edLevel").val());
-
-            if ($("#fullSemester").prop("checked")) {
-                $("#modalTypeOfTeaching").text("Full Semester");
-            }
-            if ($("#occasionalLecturing").prop("checked")) {
-                $("#modalTypeOfTeaching").text("Occasional Lecturing");
-            }
-            if ($("#either").prop("checked")) {
-                $("#modalTypeOfTeaching").text("Either of the two");
+                $('input[name="Vacancy[teach_type_id]"]').each(function(i, e) {
+                    if ($(e).prop('checked')) {
+                        $("#modalTExp").text(teach_type_id_arr.get($(e).val()));
+                    }
+                });
             }
 
-            $("#modalLocation").text($("#location").val());
+            $("#modalEducation").text($("#edLevel").attr('selected', 'true').text());
+            
+            $('input[name="Vacancy[teach_period_id]"]').each(function(i, e) {
+                if ($(e).prop('checked')) {
+                    $("#modalTypeOfTeaching").text(teach_period_id_arr.get($(e).val()));
+                }
+            });
+
+            $("#modalLocation").text($("#location").attr('selected', 'true').text());
         }
         event.preventDefault();
     });
