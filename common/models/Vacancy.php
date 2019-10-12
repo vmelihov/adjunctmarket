@@ -61,7 +61,7 @@ class Vacancy extends ActiveRecord
         return [
             [['institution_user_id', 'title', 'description', 'specialty_id'], 'required'],
             [['institution_user_id', 'specialty_id', 'area_id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id', 'created', 'updated', 'deleted', 'views'], 'integer'],
-            [['title', 'description'], 'string', 'max' => 200],
+            [['title', 'description'], 'string', 'max' => 3000],
             [['education_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Education::class, 'targetAttribute' => ['education_id' => 'id']],
             [['specialty_id'], 'exist', 'skipOnError' => true, 'targetClass' => Specialty::class, 'targetAttribute' => ['specialty_id' => 'id']],
             [['institution_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['institution_user_id' => 'id']],
