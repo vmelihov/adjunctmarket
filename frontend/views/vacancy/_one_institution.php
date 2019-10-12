@@ -70,6 +70,8 @@ use yii\helpers\Html;
             <?= Html::a('Edit Vacancy', ['update', 'id' => $model->id], ['class' => 'g-vlist__one-options-content-link']) ?>
             <?php if ($model->deleted): ?>
                 <?= Html::a('Publish again', ['publish', 'id' => $model->id], ['class' => 'g-vlist__one-options-content-link']) ?>
+            <?php else: ?>
+                <?= Html::a('Unpublish', ['unpublish', 'id' => $model->id], ['class' => 'g-vlist__one-options-content-link']) ?>
             <?php endif; ?>
         </div>
     </div>

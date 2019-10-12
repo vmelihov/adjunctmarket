@@ -167,7 +167,6 @@ class VacancyController extends Controller
     /**
      * @param $id
      * @return mixed
-     * @throws InvalidConfigException
      * @throws NotFoundHttpException
      */
     public function actionPublish($id)
@@ -176,7 +175,21 @@ class VacancyController extends Controller
         $model->deleted = 0;
         $model->save();
 
-        return $this->actionIndex();
+        return $this->redirect('index');
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws NotFoundHttpException
+     */
+    public function actionUnpublish($id)
+    {
+        $model = $this->findModel($id);
+        $model->deleted = 1;
+        $model->save();
+
+        return $this->redirect('index');
     }
 
     /**
