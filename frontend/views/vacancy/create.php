@@ -10,7 +10,6 @@ $this->registerCssFile('@web/css/create-vacancy.css', ['depends' => [AppAsset::c
 
 $this->title = 'Create Vacancy';
 ?>
-
 <div class="p-cv g-content">
     <h1 class="p-cv__title"><?= Html::encode($this->title) ?></h1>
 

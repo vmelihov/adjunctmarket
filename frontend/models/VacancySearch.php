@@ -12,9 +12,12 @@ use common\models\Vacancy;
 class VacancySearch extends Vacancy
 {
     public const PAGE_SIZE = 5;
+    public const FAST_FILTER_ARCHIVE = 'archive';
+    public const FAST_FILTER_ACTUAL = 'actual';
 
     public $specialities;
     public $areas;
+    public $fastFilter;
 
     /**
      * {@inheritdoc}
@@ -62,6 +65,10 @@ class VacancySearch extends Vacancy
             return $dataProvider;
         }
 
+        $dataProvider->setTotalCount($this->getTotalCount());
+
+        $this->applyFastFilter();
+
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
@@ -107,5 +114,30 @@ class VacancySearch extends Vacancy
     protected function getAreaIds(): array
     {
         return $this->areas ? explode(' ', trim($this->areas)) : [];
+    }
+
+    protected function applyFastFilter(): void
+    {
+        if ($this->fastFilter) {
+            switch ($this->fastFilter) {
+                case self::FAST_FILTER_ARCHIVE:
+                    $this->deleted = 1;
+                    break;
+                case self::FAST_FILTER_ACTUAL:
+                    $this->deleted = 0;
+                    break;
+            }
+        }
+    }
+
+    protected function getTotalCount(): int
+    {
+        $query = Vacancy::find();
+
+        if ($this->institution_user_id) {
+            $query->where(['=', 'institution_user_id', $this->institution_user_id]);
+        }
+
+        return $query->count();
     }
 }

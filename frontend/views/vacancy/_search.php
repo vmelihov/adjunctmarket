@@ -16,10 +16,8 @@ use yii\widgets\ActiveForm;
 /* @var $model frontend\models\VacancySearch */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->registerCssFile('@web/css/feed.css', ['depends' => [AppAsset::class]]);
 $this->registerCssFile('@web/extension/selectize/css/selectize.css', ['depends' => [AppAsset::class]]);
 
-$this->registerJsFile('@web/js/vacancy-card.js', ['depends' => [AppAsset::class]]);
 $this->registerJsFile('@web/js/feed.js', ['depends' => [AppAsset::class]]);
 $this->registerJsFile('@web/extension/selectize/js/standalone/selectize.min.js', ['depends' => [AppAsset::class]]);
 

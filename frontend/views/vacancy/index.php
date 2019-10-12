@@ -1,7 +1,7 @@
 <?php
 
 use common\models\Vacancy;
-use common\src\helpers\Helper;
+use frontend\assets\AppAsset;
 use frontend\models\VacancySearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
@@ -15,14 +15,11 @@ use yii\web\View;
 $this->title = 'Vacancies';
 $this->params['breadcrumbs'][] = $this->title;
 
-$user = Helper::getUserIdentity();
+$this->registerCssFile('@web/css/feed.css', ['depends' => [AppAsset::class]]);
+$this->registerJsFile('@web/js/vacancy-card.js', ['depends' => [AppAsset::class]]);
 ?>
 <div class="p-feed">
     <h1 class="p-jobs__title"><?= Html::encode($this->title) ?></h1>
-
-    <?php if ($user->isInstitution()): ?>
-        <?= Html::a('Create Vacancy', ['create'], ['class' => 'btn btn-success']) ?>
-    <?php endif; ?>
 
     <div class="p-feed__filter">
         <div class="p-feed__filter-vacancies js-vacancies">

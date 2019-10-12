@@ -8,6 +8,7 @@ use frontend\models\VacancySearch;
 use Throwable;
 use Yii;
 use common\models\Vacancy;
+use yii\base\InvalidConfigException;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -67,13 +68,25 @@ class VacancyController extends Controller
     /**
      * Lists all Vacancy models.
      * @return mixed
+     * @throws InvalidConfigException
      */
     public function actionIndex()
     {
         $params = Yii::$app->request->getQueryParams();
         $page = Yii::$app->request->post('page', 0);
-
+        $user = Helper::getUserIdentity();
         $searchModel = new VacancySearch();
+
+        if ($user && $user->isInstitution()) {
+            $params[$searchModel->formName()]['institution_user_id'] = $user->getId();
+        } else {
+            $params[$searchModel->formName()]['deleted'] = 0;
+        }
+
+        if (isset($params['ff'])) {
+            $searchModel->fastFilter = $params['ff'];
+        }
+
         $dataProvider = $searchModel->search($params, $page);
 
         $string = '';
@@ -85,7 +98,9 @@ class VacancyController extends Controller
             return $string;
         }
 
-        return $this->render('index', [
+        $view = $user->isInstitution() ? 'index_institution.php' : 'index';
+
+        return $this->render($view, [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -147,6 +162,21 @@ class VacancyController extends Controller
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws InvalidConfigException
+     * @throws NotFoundHttpException
+     */
+    public function actionPublish($id)
+    {
+        $model = $this->findModel($id);
+        $model->deleted = 0;
+        $model->save();
+
+        return $this->actionIndex();
     }
 
     /**
