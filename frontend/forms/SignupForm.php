@@ -2,6 +2,7 @@
 
 namespace frontend\forms;
 
+use common\models\Institution;
 use Yii;
 use yii\base\Exception;
 use yii\base\Model;
@@ -119,10 +120,10 @@ class SignupForm extends Model
     private function saveInstitutionProfile(User $user): void
     {
         try {
-            $profileForm = new InstitutionProfileForm();
-            $profileForm->user_id = $user->getId();
-            $profileForm->university_id = $this->university_id;
-            $profileForm->save();
+            $profile = new Institution();
+            $profile->user_id = $user->getId();
+            $profile->university_id = $this->university_id;
+            $profile->save();
         } catch (\Exception $e) {
             Yii::getLogger()->log('Error creating profile. ' . $e->getMessage(), Logger::LEVEL_ERROR);
         }
