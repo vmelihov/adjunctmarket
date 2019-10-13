@@ -126,4 +126,16 @@ class Adjunct extends ActiveRecord
     {
         return self::findOne(['user_id' => $userId]);
     }
+
+    public function getSpecialitiesArray(): array
+    {
+        return json_decode($this->specialities, true);
+    }
+
+    public function getLocationsArray(): array
+    {
+        $decoded = json_decode($this->teach_locations, true);
+
+        return is_array($decoded) ? $decoded : [$decoded];
+    }
 }

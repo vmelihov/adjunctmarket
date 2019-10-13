@@ -12,6 +12,10 @@ use yii\db\ActiveRecord;
  */
 class TeachingType extends ActiveRecord
 {
+    public const ONLINE = 1;
+    public const IN_PERSON = 2;
+    public const BOTH = 3;
+
     /**
      * {@inheritdoc}
      */

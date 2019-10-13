@@ -12,6 +12,12 @@ use yii\db\ActiveRecord;
  */
 class TeachingTime extends ActiveRecord
 {
+    public const DURING_THE_DAY = 1;
+    public const EVENINGS_ONLY = 2;
+    public const WEEKENDS = 3;
+    public const EVENINGS_AND_WEEKENDS = 4;
+    public const EITHER_OF_THE_THREE = 5;
+
     /**
      * {@inheritdoc}
      */
