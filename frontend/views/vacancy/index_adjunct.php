@@ -1,7 +1,9 @@
 <?php
 
 use common\models\Vacancy;
+use common\src\helpers\Helper;
 use frontend\assets\AppAsset;
+use frontend\models\Relevance\AdjunctVacancyRelevance;
 use frontend\models\VacancySearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
@@ -14,13 +16,37 @@ use yii\helpers\Html;
 $this->title = 'Vacancies';
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->registerCssFile('@web/css/feed.css', ['depends' => [AppAsset::class]]);
+$this->registerCssFile('@web/css/feed-auth.css', ['depends' => [AppAsset::class]]);
 $this->registerJsFile('@web/js/vacancy-card.js', ['depends' => [AppAsset::class]]);
+
+$user = Helper::getUserIdentity();
+$relevance = new AdjunctVacancyRelevance($user->profile);
 ?>
 <div class="p-feed">
     <h1 class="p-jobs__title"><?= Html::encode($this->title) ?></h1>
 
     <div class="p-feed__filter">
+        <div class="p-feed__filter-vacancies js-vacancies">
+            <div class="p-feed__filter-vacancies-chosen js-vacanciesBtn">
+                <div class="p-feed__filter-vacancies-chosen-text js-vacanciesBtnText">
+                    All Vacancies
+                </div>
+                <div class="p-feed__filter-vacancies-chosen-icon fal fa-chevron-down"></div>
+            </div>
+
+            <div class="p-feed__filter-vacancies-list js-vacanciesList">
+                <div class="p-feed__filter-vacancies-list-one">
+                    All Vacancies
+                </div>
+                <div class="p-feed__filter-vacancies-list-one">
+                    Recomended
+                </div>
+                <div class="p-feed__filter-vacancies-list-one">
+                    Saved
+                </div>
+            </div>
+        </div>
+
         <div class="p-feed__filter-sort">
             <div class="p-feed__filter-sort-text">Sort:</div>
             <div class="p-feed__filter-sort-drop dropdown">
@@ -53,7 +79,7 @@ $this->registerJsFile('@web/js/vacancy-card.js', ['depends' => [AppAsset::class]
 
     <div id="itemList" class="g-vlist">
         <?php foreach ($dataProvider->getModels() as $vacancy) : ?>
-            <?= $this->render('_one', ['model' => $vacancy]) ?>
+            <?= $this->render('_one_adjunct', ['model' => $vacancy, 'adjunct' => $user->profile]) ?>
         <?php endforeach; ?>
     </div>
 

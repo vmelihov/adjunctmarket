@@ -28,15 +28,15 @@ class VacancyController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index', 'view', 'create', 'update', 'delete'],
+                'only' => ['view', 'create', 'update', 'delete', 'publish', 'unpublish'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'view'],
+                        'actions' => ['view'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['create', 'update', 'delete'],
+                        'actions' => ['create', 'update', 'delete', 'publish', 'unpublish'],
                         'allow' => self::isInstitution(),
                         'roles' => ['@'],
                     ],
@@ -46,6 +46,8 @@ class VacancyController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
+                    'update' => ['POST'],
+                    'create' => ['POST'],
                 ],
             ],
         ];
@@ -77,9 +79,18 @@ class VacancyController extends Controller
         $user = Helper::getUserIdentity();
         $searchModel = new VacancySearch();
 
-        if ($user && $user->isInstitution()) {
-            $params[$searchModel->formName()]['institution_user_id'] = $user->getId();
+        // todo разнести всю эту срань по стратегиям
+        if ($user) {
+            $view = $user->isInstitution() ? 'index_institution' : 'index_adjunct';
+            $oneView = $user->isInstitution() ? '_one_institution' : '_one_adjunct';
+            if ($user->isInstitution()) {
+                $params[$searchModel->formName()]['institution_user_id'] = $user->getId();
+            } else {
+                $params[$searchModel->formName()]['deleted'] = 0;
+            }
         } else {
+            $view = 'index';
+            $oneView = '_one';
             $params[$searchModel->formName()]['deleted'] = 0;
         }
 
@@ -92,13 +103,16 @@ class VacancyController extends Controller
         $string = '';
         if (Yii::$app->request->isAjax) {
             foreach ($dataProvider->getModels() as $vacancy) {
-                $string .= $this->renderPartial('_one', ['model' => $vacancy]);
+                if ($user && $user->isAdjunct()) {
+                    $viewParams = ['model' => $vacancy, 'adjunct' => $user->profile];
+                } else {
+                    $viewParams = ['model' => $vacancy];
+                }
+                $string .= $this->renderPartial($oneView, $viewParams);
             }
 
             return $string;
         }
-
-        $view = $user->isInstitution() ? 'index_institution.php' : 'index';
 
         return $this->render($view, [
             'searchModel' => $searchModel,

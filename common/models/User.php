@@ -27,7 +27,7 @@ use yii\web\IdentityInterface;
  * @property string $password write-only password
  * @property string $image
  *
- * @property ActiveRecord $profile
+ * @property Adjunct|Institution $profile
  */
 class User extends ActiveRecord implements IdentityInterface
 {

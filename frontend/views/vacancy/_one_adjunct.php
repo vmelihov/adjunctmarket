@@ -1,11 +1,15 @@
 <?php
 
+use common\models\Adjunct;
 use common\models\Vacancy;
 use common\src\helpers\DateTimeHelper;
+use frontend\models\Relevance\AdjunctVacancyRelevance;
 use yii\helpers\Html;
 
 /** @var Vacancy $model */
+/** @var Adjunct $adjunct */
 
+$relevance = new AdjunctVacancyRelevance($adjunct);
 ?>
 <div class="g-vlist__one js-one">
     <div class="g-vlist__one-header">
@@ -47,28 +51,28 @@ use yii\helpers\Html;
 
     <div class="g-vlist__one-footer js-footer">
         <div class="g-vlist__one-footer-column">
-            <?php if ($model->teachType): ?>
-                <div class="g-vlist__one-footer-item">
+            <?php if ($model->teach_type_id): ?>
+                <div class="g-vlist__one-footer-item<?= !$relevance->isTeachTypeRelevant($model->teach_type_id) ? ' m-none' : '' ?>">
                     <span class="g-vlist__one-footer-item-name">Teaching experience:</span> <?= $model->teachType->name ?>
                 </div>
             <?php endif; ?>
 
             <?php if ($model->education): ?>
-                <div class="g-vlist__one-footer-item">
+                <div class="g-vlist__one-footer-item"<?= !$relevance->isEducationRelevant($model->education) ? ' m-none' : '' ?>>
                     <span class="g-vlist__one-footer-item-name">Education:</span> <?= $model->education->name ?>
                 </div>
             <?php endif; ?>
         </div>
 
         <div class="g-vlist__one-footer-column">
-            <?php if ($model->teachTime): ?>
-                <div class="g-vlist__one-footer-item">
+            <?php if ($model->teach_time_id): ?>
+                <div class="g-vlist__one-footer-item"<?= !$relevance->isTeachTimeRelevant($model->teach_time_id) ? ' m-none' : '' ?>>
                     <span class="g-vlist__one-footer-item-name">Type of teaching:</span> <?= $model->teachTime->name ?>
                 </div>
             <?php endif; ?>
 
             <?php if ($model->area): ?>
-                <div class="g-vlist__one-footer-item">
+                <div class="g-vlist__one-footer-item"<?= !$relevance->isLocationRelevant($model->area) ? ' m-none' : '' ?>>
                     <span class="g-vlist__one-footer-item-name">Location:</span> <?= $model->area->state->name . ', ' . $model->area->name ?>
                 </div>
             <?php endif; ?>

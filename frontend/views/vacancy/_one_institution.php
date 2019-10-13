@@ -47,21 +47,31 @@ use yii\helpers\Html;
 
     <div class="g-vlist__one-footer js-footer">
         <div class="g-vlist__one-footer-column">
-            <div class="g-vlist__one-footer-item">
-                <span class="g-vlist__one-footer-item-name">Teaching experience:</span> <?= $model->teachType ? $model->teachType->name : '' ?>
-            </div>
-            <div class="g-vlist__one-footer-item">
-                <span class="g-vlist__one-footer-item-name">Education:</span> <?= $model->education ? $model->education->name : '' ?>
-            </div>
+            <?php if ($model->teachType): ?>
+                <div class="g-vlist__one-footer-item">
+                    <span class="g-vlist__one-footer-item-name">Teaching experience:</span> <?= $model->teachType->name ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($model->education): ?>
+                <div class="g-vlist__one-footer-item">
+                    <span class="g-vlist__one-footer-item-name">Education:</span> <?= $model->education->name ?>
+                </div>
+            <?php endif; ?>
         </div>
 
         <div class="g-vlist__one-footer-column">
-            <div class="g-vlist__one-footer-item">
-                <span class="g-vlist__one-footer-item-name">Type of teaching:</span> <?= $model->teachTime ? $model->teachTime->name : '' ?>
-            </div>
-            <div class="g-vlist__one-footer-item">
-                <span class="g-vlist__one-footer-item-name">Location:</span> <?= $model->area ? $model->area->state->name . ', ' . $model->area->name : '' ?>
-            </div>
+            <?php if ($model->teachTime): ?>
+                <div class="g-vlist__one-footer-item">
+                    <span class="g-vlist__one-footer-item-name">Type of teaching:</span> <?= $model->teachTime->name ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($model->area): ?>
+                <div class="g-vlist__one-footer-item">
+                    <span class="g-vlist__one-footer-item-name">Location:</span> <?= $model->area->state->name . ', ' . $model->area->name ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
