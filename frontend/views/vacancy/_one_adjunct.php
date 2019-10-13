@@ -58,7 +58,7 @@ $relevance = new AdjunctVacancyRelevance($adjunct);
             <?php endif; ?>
 
             <?php if ($model->education): ?>
-                <div class="g-vlist__one-footer-item"<?= !$relevance->isEducationRelevant($model->education) ? ' m-none' : '' ?>>
+                <div class="g-vlist__one-footer-item<?= !$relevance->isEducationRelevant($model->education) ? ' m-none' : '' ?>">
                     <span class="g-vlist__one-footer-item-name">Education:</span> <?= $model->education->name ?>
                 </div>
             <?php endif; ?>
@@ -66,14 +66,22 @@ $relevance = new AdjunctVacancyRelevance($adjunct);
 
         <div class="g-vlist__one-footer-column">
             <?php if ($model->teach_time_id): ?>
-                <div class="g-vlist__one-footer-item"<?= !$relevance->isTeachTimeRelevant($model->teach_time_id) ? ' m-none' : '' ?>>
+                <div class="g-vlist__one-footer-item<?= !$relevance->isTeachTimeRelevant($model->teach_time_id) ? ' m-none' : '' ?>">
                     <span class="g-vlist__one-footer-item-name">Type of teaching:</span> <?= $model->teachTime->name ?>
                 </div>
             <?php endif; ?>
 
             <?php if ($model->area): ?>
-                <div class="g-vlist__one-footer-item"<?= !$relevance->isLocationRelevant($model->area) ? ' m-none' : '' ?>>
+                <div class="g-vlist__one-footer-item<?= !$relevance->isLocationRelevant($model->area) ? ' m-none' : '' ?>">
                     <span class="g-vlist__one-footer-item-name">Location:</span> <?= $model->area->state->name . ', ' . $model->area->name ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <div class="g-vlist__one-footer-column">
+            <?php if ($model->teachPeriod): ?>
+                <div class="g-vlist__one-footer-item<?= !$relevance->isTeachPeriodRelevant($model->teach_period_id) ? ' m-none' : '' ?>">
+                    <span class="g-vlist__one-footer-item-name">Type of teaching:</span> <?= $model->teachPeriod->name ?>
                 </div>
             <?php endif; ?>
         </div>

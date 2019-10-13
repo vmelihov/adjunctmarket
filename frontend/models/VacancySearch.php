@@ -141,6 +141,7 @@ class VacancySearch extends Vacancy
                     $this->education_id = $profile->education_id;
                     $this->teach_type_id = $profile->teach_type_id;
                     $this->teach_time_id = $profile->teach_time_id;
+                    $this->teach_period_id = $profile->teach_period_id;
 
                     break;
             }

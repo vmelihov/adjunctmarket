@@ -12,6 +12,10 @@ use yii\db\ActiveRecord;
  */
 class TeachingPeriod extends ActiveRecord
 {
+    public const FULL_SEMESTER = 1;
+    public const OCCASIONAL_LECTURING = 2;
+    public const BOTH = 3;
+
     /**
      * {@inheritdoc}
      */

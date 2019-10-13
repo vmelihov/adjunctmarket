@@ -73,5 +73,13 @@ use yii\helpers\Html;
                 </div>
             <?php endif; ?>
         </div>
+
+        <div class="g-vlist__one-footer-column">
+            <?php if ($model->teachPeriod): ?>
+                <div class="g-vlist__one-footer-item">
+                    <span class="g-vlist__one-footer-item-name">Type of teaching:</span> <?= $model->teachPeriod->name ?>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
 </div>

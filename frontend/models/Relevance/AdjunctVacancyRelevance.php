@@ -3,6 +3,7 @@
 namespace frontend\models\Relevance;
 
 use common\models\Adjunct;
+use common\models\TeachingPeriod;
 use common\models\TeachingTime;
 use common\models\TeachingType;
 
@@ -33,6 +34,17 @@ class AdjunctVacancyRelevance
         $teachTypeId = $this->getAdjunct()->teach_type_id;
 
         return $teachTypeId === TeachingType::BOTH ? true : $teachTypeId == $value;
+    }
+
+    /**
+     * @param $value
+     * @return bool
+     */
+    public function isTeachPeriodRelevant($value): bool
+    {
+        $teachPeriodId = $this->getAdjunct()->teach_period_id;
+
+        return $teachPeriodId === TeachingPeriod::BOTH ? true : $teachPeriodId == $value;
     }
 
     /**
