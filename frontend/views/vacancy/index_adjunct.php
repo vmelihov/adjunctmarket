@@ -36,13 +36,10 @@ $relevance = new AdjunctVacancyRelevance($user->profile);
 
             <div class="p-feed__filter-vacancies-list js-vacanciesList">
                 <div class="p-feed__filter-vacancies-list-one">
-                    All Vacancies
+                    <?= Html::a('All Vacancies', ['index']) ?>
                 </div>
                 <div class="p-feed__filter-vacancies-list-one">
-                    Recomended
-                </div>
-                <div class="p-feed__filter-vacancies-list-one">
-                    Saved
+                    <?= Html::a('Recomended', ['index', 'ff' => VacancySearch::FAST_FILTER_RECOMMENDED]) ?>
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use common\src\helpers\Helper;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Vacancy;
@@ -14,6 +15,7 @@ class VacancySearch extends Vacancy
     public const PAGE_SIZE = 5;
     public const FAST_FILTER_ARCHIVE = 'archive';
     public const FAST_FILTER_ACTUAL = 'actual';
+    public const FAST_FILTER_RECOMMENDED = 'recommended';
 
     public $specialities;
     public $areas;
@@ -125,6 +127,21 @@ class VacancySearch extends Vacancy
                     break;
                 case self::FAST_FILTER_ACTUAL:
                     $this->deleted = 0;
+                    break;
+                case self::FAST_FILTER_RECOMMENDED:
+                    $user = Helper::getUserIdentity();
+
+                    if (!$user || !$user->isAdjunct()) {
+                        return;
+                    }
+
+                    $profile = $user->profile;
+
+                    $this->area_id = $profile->getLocationsArray()[0];
+                    $this->education_id = $profile->education_id;
+                    $this->teach_type_id = $profile->teach_type_id;
+                    $this->teach_time_id = $profile->teach_time_id;
+
                     break;
             }
         }
