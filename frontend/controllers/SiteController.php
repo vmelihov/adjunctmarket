@@ -21,6 +21,7 @@ use common\models\LoginForm;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\ResetPasswordForm;
 use Yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * Site controller
@@ -188,13 +189,21 @@ class SiteController extends Controller
     {
         $model = new SignupForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('popup', [
-                'text' => 'We have sent an email with a confirmation link to your email address',
-                'class' => 'm-mail',
-            ]);
+        if ($model->load(Yii::$app->request->post())) {
+            if (Yii::$app->request->isAjax) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
 
-            return $this->goHome();
+                return ActiveForm::validate($model, ['email']);
+            }
+
+            if ($model->signup()) {
+                Yii::$app->session->setFlash('popup', [
+                    'text' => 'We have sent an email with a confirmation link to your email address',
+                    'class' => 'm-mail',
+                ]);
+
+                return $this->goHome();
+            }
         }
 
         return $this->render('signup', [

@@ -6,7 +6,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
-use yii\bootstrap\ActiveForm;
+use yii\widgets\ActiveForm;
 
 /* @var $this View */
 /* @var $model frontend\forms\SignupForm */
@@ -32,6 +32,7 @@ $this->title = 'Registration';
                 'id' => 'reg-form',
                 'class' => 'p-reg__form needs-validation',
             ],
+            'enableAjaxValidation' => true,
             'fieldConfig' => [
                 'template' => "{input}\n{error}",
                 'errorOptions' => [
@@ -213,7 +214,6 @@ $script = <<< JS
     });
  
     $('#reg-form').on('afterValidate', function(e, m) {
-       
         
         $.each(m, function(key, errors){
             console.log(key, errors);

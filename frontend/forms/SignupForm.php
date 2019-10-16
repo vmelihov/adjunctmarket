@@ -45,7 +45,7 @@ class SignupForm extends Model
             ['email', 'trim'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => User::class, 'message' => 'This email address has already been taken.'],
+            ['email', 'unique', 'skipOnError' => false, 'targetClass' => User::class, 'message' => 'This email address has already been taken.'],
             ['password', 'string', 'min' => 8],
             ['password', 'match', 'pattern' => '/[0-9]+/', 'message' => 'Password should contain at least 1 number.'],
             ['password', 'match', 'pattern' => '/[A-Z]+/', 'message' => 'Password should contain at least 1 character in uppercase'],
