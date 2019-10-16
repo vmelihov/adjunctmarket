@@ -43,4 +43,6 @@ phpunit.phar
 /backend/web/robots.txt
 /composer.lock
 
+/frontend/web/user
+
 /_tmp
