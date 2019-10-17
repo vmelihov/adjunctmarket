@@ -20,7 +20,7 @@ use yii\filters\AccessControl;
 use common\models\LoginForm;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\ResetPasswordForm;
-use Yii\web\Response;
+use yii\web\Response;
 use yii\widgets\ActiveForm;
 
 /**
