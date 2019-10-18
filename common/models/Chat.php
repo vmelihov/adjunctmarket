@@ -125,7 +125,7 @@ class Chat extends ActiveRecord
      * @param int $adjunctId
      * @return null|ActiveRecord|Chat
      */
-    public static function findForVacancyAndAdjunct(int $vacancyId, int $adjunctId): ?ActiveRecord
+    public static function findForVacancyAndAdjunct(int $vacancyId, int $adjunctId): ?self
     {
         return self::find()
             ->where(['vacancy_id' => $vacancyId, 'adjunct_user_id' => $adjunctId])
@@ -137,7 +137,7 @@ class Chat extends ActiveRecord
      * @param int $adjunctId
      * @return null|ActiveRecord|Chat
      */
-    public static function findByInstitutionAndAdjunct(int $institutionId, int $adjunctId): ?ActiveRecord
+    public static function findByInstitutionAndAdjunct(int $institutionId, int $adjunctId): ?self
     {
         return self::find()
             ->where(['institution_user_id' => $institutionId, 'adjunct_user_id' => $adjunctId])
