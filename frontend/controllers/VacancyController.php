@@ -133,9 +133,12 @@ class VacancyController extends Controller
 
         if ($user->isAdjunct()) {
             Vacancy::incrementView($id);
+            $view = 'view_adjunct';
+        } else {
+            $view = 'view_institution';
         }
 
-        return $this->render('view', [
+        return $this->render($view, [
             'model' => $this->findModel($id),
         ]);
     }
