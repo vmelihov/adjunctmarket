@@ -50,7 +50,7 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
 
         <div class="p-prflinst__settings">
             <div class="p-prflinst__settings-ava">
-                <img src="<?= UserImageHelper::getUserImageUrl($user) ?>"
+                <img src="<?= UserImageHelper::getUrl($user) ?>"
                      alt="" class="p-prflinst__settings-ava-img"/>
                 <?php /*
                 <div class="p-prflinst__settings-ava-status" title="Offline"></div>

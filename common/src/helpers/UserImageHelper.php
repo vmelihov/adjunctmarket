@@ -3,11 +3,15 @@
 namespace common\src\helpers;
 
 use common\models\User;
+use RuntimeException;
+use Yii;
+use yii\helpers\FileHelper;
 use yii\helpers\Url;
 
 class UserImageHelper
 {
     /**
+     * @param User $user
      * @return string
      */
     public static function generateImageName(User $user): string
@@ -19,12 +23,46 @@ class UserImageHelper
      * @param User $user
      * @return string
      */
-    public static function getUserImageUrl(User $user): string
+    public static function getUrl(User $user): string
     {
         if ($user->image) {
-            return Url::to('@web/user/') . $user->image;
+            return Url::to('@web/user/') . $user->id . '/' . $user->image;
         }
 
         return Url::to('@web/img/default_avatar.jpg');
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public static function unlinkUserImageUrl(User $user): bool
+    {
+        $file = self::getUserFolder($user) . '/' . $user->image;
+
+        if (is_file($file)) {
+            return FileHelper::unlink($file);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param User $user
+     * @return string
+     */
+    public static function getUserFolder(User $user): string
+    {
+        $path = Yii::getAlias('@webroot/user/') . $user->id;
+
+        if (is_dir($path)) {
+            return $path;
+        }
+
+        if (!mkdir($path) && !is_dir($path)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
+        }
+
+        return $path;
     }
 }

@@ -29,7 +29,7 @@ if ($chat = Chat::findForVacancyAndAdjunct($model->id, $user->getId())) {
 <div class="p-sja">
     <div class="p-sja__settings">
         <div class="p-sja__settings-ava">
-            <img src="<?= UserImageHelper::getUserImageUrl($institution) ?>" alt="" class="p-sja__settings-ava-img"/>
+            <img src="<?= UserImageHelper::getUrl($institution) ?>" alt="" class="p-sja__settings-ava-img"/>
         </div>
 
         <div class="p-sja__settings-name">

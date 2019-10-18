@@ -6,11 +6,9 @@ use common\models\Institution;
 use common\models\University;
 use common\models\User;
 use common\src\helpers\UserImageHelper;
-use Yii;
 use yii\base\Exception;
 use yii\base\Model;
 use yii\base\UserException;
-use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
 class InstitutionProfileForm extends Model
@@ -125,12 +123,13 @@ class InstitutionProfileForm extends Model
 
         if ($this->uploadedFile) {
             $fileName = UserImageHelper::generateImageName($user) . '.' . $this->uploadedFile->extension;
+            $folder = UserImageHelper::getUserFolder($user);
 
             if ($user->image) {
-                FileHelper::unlink(Yii::getAlias('@webroot') . '/user/' . $user->image);
+                UserImageHelper::unlinkUserImageUrl($user);
             }
 
-            if ($this->uploadedFile->saveAs('user/' . $fileName)) {
+            if ($this->uploadedFile->saveAs($folder . '/' . $fileName)) {
                 $this->uploadedFile = null;
                 $user->image = $fileName;
                 $needSave = true;
