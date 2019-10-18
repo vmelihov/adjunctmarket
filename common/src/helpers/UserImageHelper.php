@@ -15,6 +15,10 @@ class UserImageHelper
         return $user->getId() . '_avatar';
     }
 
+    /**
+     * @param User $user
+     * @return string
+     */
     public static function getUserImageUrl(User $user): string
     {
         if ($user->image) {

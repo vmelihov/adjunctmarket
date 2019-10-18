@@ -16,7 +16,7 @@ $relevance = new AdjunctVacancyRelevance($adjunct);
         <?= Html::a(HTML::encode($model->title), ['view', 'id' => $model->id], ['class' => 'g-vlist__one-header-title']) ?>
 
         <div class="g-vlist__one-header-cat">
-            <?= Html::encode("{$model->specialty->faculty->name} - {$model->specialty->name} / {$model->user->profile->university->name}") ?>
+            <?= Html::encode("{$model->specialty->faculty->name} - {$model->specialty->name} / {$model->institution->profile->university->name}") ?>
         </div>
 
         <div class="g-vlist__one-header-right">

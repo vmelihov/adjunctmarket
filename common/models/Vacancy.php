@@ -26,7 +26,7 @@ use yii\db\ActiveRecord;
  *
  * @property Education $education
  * @property Specialty $specialty
- * @property User $user
+ * @property User $institution
  * @property Area $area
  * @property TeachingPeriod $teachPeriod
  * @property TeachingTime $teachTime
@@ -126,7 +126,7 @@ class Vacancy extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getUser(): ActiveQuery
+    public function getInstitution(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'institution_user_id']);
     }
