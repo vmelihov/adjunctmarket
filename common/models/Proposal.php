@@ -1,9 +1,7 @@
 <?php
 
-namespace app\models;
+namespace common\models;
 
-use common\models\User;
-use common\models\Vacancy;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -18,6 +16,7 @@ use yii\db\ActiveRecord;
  * @property int $updated
  * @property int $adjunct_id
  * @property int $vacancy_id
+ * @property string $attaches
  *
  * @property User $adjunct
  * @property Vacancy $vacancy
@@ -42,6 +41,7 @@ class Proposal extends ActiveRecord
             [['id', 'state', 'created', 'updated', 'adjunct_id', 'vacancy_id'], 'integer'],
             [['letter'], 'string', 'max' => 4000],
             [['id'], 'unique'],
+            [['attaches'], 'string', 'max' => 400],
             [['adjunct_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['adjunct_id' => 'id']],
             [['vacancy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Vacancy::class, 'targetAttribute' => ['vacancy_id' => 'id']],
         ];
@@ -71,6 +71,7 @@ class Proposal extends ActiveRecord
             'updated' => 'Updated',
             'adjunct_id' => 'Adjunct ID',
             'vacancy_id' => 'Vacancy ID',
+            'attaches' => 'Attaches',
         ];
     }
 
