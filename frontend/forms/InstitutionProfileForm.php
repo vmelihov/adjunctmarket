@@ -126,7 +126,7 @@ class InstitutionProfileForm extends Model
             $folder = UserImageHelper::getUserFolder($user);
 
             if ($user->image) {
-                UserImageHelper::unlinkUserImageUrl($user);
+                UserImageHelper::unlinkUserImage($user);
             }
 
             if ($this->uploadedFile->saveAs($folder . '/' . $fileName)) {

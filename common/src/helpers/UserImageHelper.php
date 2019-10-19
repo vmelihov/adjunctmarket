@@ -5,6 +5,7 @@ namespace common\src\helpers;
 use common\models\User;
 use RuntimeException;
 use Yii;
+use yii\base\Exception;
 use yii\helpers\FileHelper;
 use yii\helpers\Url;
 
@@ -35,8 +36,9 @@ class UserImageHelper
     /**
      * @param User $user
      * @return bool
+     * @throws Exception
      */
-    public static function unlinkUserImageUrl(User $user): bool
+    public static function unlinkUserImage(User $user): bool
     {
         $file = self::getUserFolder($user) . '/' . $user->image;
 
@@ -50,19 +52,16 @@ class UserImageHelper
     /**
      * @param User $user
      * @return string
+     * @throws Exception
      */
     public static function getUserFolder(User $user): string
     {
         $path = Yii::getAlias('@webroot/user/') . $user->id;
 
-        if (is_dir($path)) {
+        if (FileHelper::createDirectory($path)) {
             return $path;
         }
 
-        if (!mkdir($path) && !is_dir($path)) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
-        }
-
-        return $path;
+        throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
     }
 }
