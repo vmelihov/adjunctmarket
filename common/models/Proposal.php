@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\src\helpers\FileHelper;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -23,6 +24,10 @@ use yii\db\ActiveRecord;
  */
 class Proposal extends ActiveRecord
 {
+    public const STATE_ACTIVE = 1;
+    public const STATE_INACTIVE = 2;
+    public const STATE_DELETED = 3;
+
     /**
      * {@inheritdoc}
      */
@@ -37,7 +42,7 @@ class Proposal extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['id', 'adjunct_id', 'vacancy_id'], 'required'],
+            [['adjunct_id', 'vacancy_id'], 'required'],
             [['id', 'state', 'created', 'updated', 'adjunct_id', 'vacancy_id'], 'integer'],
             [['letter'], 'string', 'max' => 4000],
             [['id'], 'unique'],
@@ -89,5 +94,27 @@ class Proposal extends ActiveRecord
     public function getVacancy(): ActiveQuery
     {
         return $this->hasOne(Vacancy::class, ['id' => 'vacancy_id']);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttachesArray(): array
+    {
+        return $this->attaches ? json_decode($this->attaches, true) : [];
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttachesUrlArray(): array
+    {
+        $result = [];
+
+        foreach ($this->getAttachesArray() as $fileName) {
+            $result[$fileName] = FileHelper::getVacancyUrl($this->adjunct_id, $this->vacancy_id) . '/' . $fileName;
+        }
+
+        return $result;
     }
 }

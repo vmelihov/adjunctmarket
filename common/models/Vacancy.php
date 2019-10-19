@@ -179,4 +179,13 @@ class Vacancy extends ActiveRecord
     {
         return self::findAll(['deleted' => 0]);
     }
+
+    /**
+     * @param int $adjunctId
+     * @return Proposal|ActiveRecord|null
+     */
+    public function getProposalForAdjunct(int $adjunctId): ?Proposal
+    {
+        return Proposal::find()->where(['vacancy_id' => $this->id])->andWhere(['adjunct_id' => $adjunctId])->one();
+    }
 }
