@@ -100,13 +100,10 @@ class ProposalController extends Controller
     public function actionCreate()
     {
         $model = new ProposalForm();
-        $adjunct = Helper::getUserIdentity();
 
-        if ($adjunct && Yii::$app->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->save($adjunct)) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
 
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
@@ -126,9 +123,8 @@ class ProposalController extends Controller
     {
         $proposal = $this->findModel($id);
         $model = ProposalForm::createByProposal($proposal);
-        $user = Helper::getUserIdentity();
 
-        if ($user && $model->load(Yii::$app->request->post()) && $model->save($user)) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

@@ -6,6 +6,7 @@ use common\models\Proposal;
 use common\models\User;
 use common\models\Vacancy;
 use common\src\helpers\FileHelper;
+use common\src\helpers\Helper;
 use yii\base\Exception;
 use yii\base\Model;
 use yii\web\UploadedFile;
@@ -36,12 +37,15 @@ class ProposalForm extends Model
     }
 
     /**
-     * @param User $adjunct
      * @return bool
      * @throws Exception
      */
-    public function save(User $adjunct): bool
+    public function save(): bool
     {
+        if (!$adjunct = Helper::getUserIdentity()) {
+            return false;
+        }
+
         if (!$this->validate()) {
             return false;
         }
