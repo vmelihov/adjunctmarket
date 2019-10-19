@@ -2,37 +2,47 @@
 
 namespace common\src\helpers;
 
-use common\models\User;
 use RuntimeException;
 use Yii;
 use yii\base\Exception;
 use yii\helpers\FileHelper as YiiFileHelper;
+use yii\helpers\Url;
 
 class FileHelper
 {
     /**
-     * @param User $user
+     * @param int $userId
      * @return string
      * @throws Exception
      */
-    public static function getUserFolder(User $user): string
+    public static function getUserFolder(int $userId): string
     {
-        $path = Yii::getAlias('@webroot/user/') . $user->id;
+        $path = Yii::getAlias('@webroot/') . self::getUserRelativeFolder($userId);
 
         return self::create($path);
     }
 
     /**
-     * @param User $user
-     * @param int $vacancy_id
+     * @param int $userId
+     * @param int $vacancyId
      * @return string
      * @throws Exception
      */
-    public static function getVacancyFolder(User $user, int $vacancy_id): string
+    public static function getVacancyFolder(int $userId, int $vacancyId): string
     {
-        $path = self::getUserFolder($user) . '/vacancy_' . $vacancy_id;
+        $path = Yii::getAlias('@webroot/') . self::getVacancyRelativeFolder($userId, $vacancyId);
 
         return self::create($path);
+    }
+
+    /**
+     * @param int $userId
+     * @param int $vacancyId
+     * @return string
+     */
+    public static function getVacancyUrl(int $userId, int $vacancyId): string
+    {
+        return Url::to('@web/') . self::getVacancyRelativeFolder($userId, $vacancyId);
     }
 
     /**
@@ -40,12 +50,31 @@ class FileHelper
      * @return string
      * @throws Exception
      */
-    private static function create(string $path): string
+    protected static function create(string $path): string
     {
         if (YiiFileHelper::createDirectory($path)) {
             return $path;
         }
 
         throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
+    }
+
+    /**
+     * @param int $userId
+     * @return string
+     */
+    protected static function getUserRelativeFolder(int $userId): string
+    {
+        return 'user/' . $userId;
+    }
+
+    /**
+     * @param int $userId
+     * @param int $vacancyId
+     * @return string
+     */
+    protected static function getVacancyRelativeFolder(int $userId, int $vacancyId): string
+    {
+        return self::getUserRelativeFolder($userId) . '/vacancy_' . $vacancyId;
     }
 }

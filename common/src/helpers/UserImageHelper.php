@@ -38,7 +38,7 @@ class UserImageHelper extends \common\src\helpers\FileHelper
      */
     public static function unlinkUserImage(User $user): bool
     {
-        $file = self::getUserFolder($user) . '/' . $user->image;
+        $file = self::getUserFolder($user->getId()) . '/' . $user->image;
 
         if (is_file($file)) {
             return FileHelper::unlink($file);
