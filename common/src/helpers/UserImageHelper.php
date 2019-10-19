@@ -3,13 +3,11 @@
 namespace common\src\helpers;
 
 use common\models\User;
-use RuntimeException;
-use Yii;
 use yii\base\Exception;
 use yii\helpers\FileHelper;
 use yii\helpers\Url;
 
-class UserImageHelper
+class UserImageHelper extends \common\src\helpers\FileHelper
 {
     /**
      * @param User $user
@@ -47,21 +45,5 @@ class UserImageHelper
         }
 
         return true;
-    }
-
-    /**
-     * @param User $user
-     * @return string
-     * @throws Exception
-     */
-    public static function getUserFolder(User $user): string
-    {
-        $path = Yii::getAlias('@webroot/user/') . $user->id;
-
-        if (FileHelper::createDirectory($path)) {
-            return $path;
-        }
-
-        throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
     }
 }
