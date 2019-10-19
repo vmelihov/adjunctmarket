@@ -1,5 +1,6 @@
 <?php
 
+use frontend\assets\AppAsset;
 use frontend\forms\ProposalForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -9,11 +10,13 @@ use yii\widgets\ActiveForm;
 /* @var $this View */
 /* @var $model ProposalForm */
 /* @var $form ActiveForm */
+
+$this->registerCssFile('@web/css/single-job-adjunct.css', ['depends' => [AppAsset::class]]);
 ?>
 
 <?php $form = ActiveForm::begin([
     'id' => 'proposal-form',
-    'action' => Url::to(['proposal/create']),
+    'action' => Url::to(['proposal/update']),
     'fieldConfig' => [
         'template' => "{input}\n{error}",
         'options' => [
@@ -35,15 +38,27 @@ use yii\widgets\ActiveForm;
     <div class="p-sja__modal-content-files">
         <div class="p-sja__modal-content-files-title">
             Attached Files:
+            <div style="margin-bottom: 20px">
+                <?= $form->field($model, 'files[]')->fileInput(['multiple' => true]) ?>
+            </div>
+            <?php foreach ($model->getAttachesArray() as $file): ?>
+                <div class="p-sja__modal-content-files-one">
+                    <span class="p-sja__modal-content-files-one-text">
+                        <?= $file ?>
+                    </span>
+                    <a href="<?= Url::to(['unlink', 'proposalId' => $model->id, 'fileName' => $file]) ?>">delete</a>
+                </div>
+            <?php endforeach; ?>
         </div>
-        <?= $form->field($model, 'files[]')->fileInput(['multiple' => true]) ?>
     </div>
 
+<?= $form->field($model, 'id')->hiddenInput() ?>
 <?= $form->field($model, 'state')->hiddenInput() ?>
 <?= $form->field($model, 'adjunct_id')->hiddenInput() ?>
 <?= $form->field($model, 'vacancy_id')->hiddenInput() ?>
+<?= $form->field($model, 'attaches')->hiddenInput() ?>
 
-<?= Html::submitButton('Publish', ['class' => 'p-sja__modal-content-submit']) ?>
+<?= Html::submitButton('Save', ['class' => 'p-sja__modal-content-submit']) ?>
 
 <?php ActiveForm::end(); ?>
 

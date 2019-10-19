@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\User;
+use common\src\helpers\FileHelper;
 use common\src\helpers\Helper;
 use frontend\forms\ProposalForm;
 use Throwable;
@@ -10,10 +11,13 @@ use Yii;
 use common\models\Proposal;
 use yii\base\Exception;
 use yii\data\ActiveDataProvider;
+use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\helpers\FileHelper as YiiFileHelper;
+use yii\web\Response;
 
 class ProposalController extends Controller
 {
@@ -25,7 +29,7 @@ class ProposalController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['create', 'edit', 'delete', 'publish', 'unpublish'],
+                'only' => ['create', 'edit', 'update', 'delete', 'publish', 'unpublish'],
                 'rules' => [
                     [
                         'actions' => ['view'],
@@ -33,7 +37,7 @@ class ProposalController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['create', 'edit', 'delete', 'publish', 'unpublish'],
+                        'actions' => ['create', 'edit', 'update', 'delete', 'publish', 'unpublish'],
                         'allow' => self::isAdjunct(),
                         'roles' => ['@'],
                     ],
@@ -42,7 +46,8 @@ class ProposalController extends Controller
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST'],
+                    'create' => ['POST'],
+                    'update' => ['POST'],
                 ]
             ],
         ];
@@ -103,7 +108,7 @@ class ProposalController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
 
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['vacancy/view', 'id' => $model->vacancy_id]);
         }
 
         return $this->render('create', [
@@ -112,8 +117,6 @@ class ProposalController extends Controller
     }
 
     /**
-     * Updates an existing Proposal model.
-     * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      * @throws Exception
@@ -124,8 +127,22 @@ class ProposalController extends Controller
         $proposal = $this->findModel($id);
         $model = ProposalForm::createByProposal($proposal);
 
+        return $this->render('edit', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * @return string|Response
+     * @throws Exception
+     */
+    public function actionUpdate()
+    {
+        $model = new ProposalForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+
+            return $this->redirect(['vacancy/view', 'id' => $model->vacancy_id]);
         }
 
         return $this->render('edit', [
@@ -139,14 +156,51 @@ class ProposalController extends Controller
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $proposal = $this->findModel($id);
+        $user = Helper::getUserIdentity();
+        $vacancyId = $proposal->vacancy_id;
 
-        return $this->redirect(['index']);
+        if ($user) {
+            $folder = FileHelper::getVacancyFolder($user->getId(), $vacancyId);
+            YiiFileHelper::removeDirectory($folder);
+        }
+
+        $proposal->delete();
+
+        return $this->redirect(['vacancy/view', 'id' => $vacancyId]);
+    }
+
+    /**
+     * @param int $proposalId
+     * @param string $fileName
+     * @return Response
+     * @throws Exception
+     * @throws NotFoundHttpException
+     */
+    public function actionUnlink(int $proposalId, string $fileName)
+    {
+        $proposal = $this->findModel($proposalId);
+        $user = Helper::getUserIdentity();
+
+        $attaches = $proposal->getAttachesArray();
+        $key = array_search($fileName, $attaches, false);
+
+        if ($user && $key !== false) {
+            $folder = FileHelper::getVacancyFolder($user->getId(), $proposal->vacancy_id);
+            $path = $folder . '/' . $fileName;
+            YiiFileHelper::unlink($path);
+
+            unset($attaches[$key]);
+            $proposal->attaches = json_encode($attaches);
+            $proposal->save();
+        }
+
+        return $this->redirect(['edit', 'id' => $proposalId]);
     }
 
     /**

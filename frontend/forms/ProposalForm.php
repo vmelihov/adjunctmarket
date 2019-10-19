@@ -22,7 +22,7 @@ class ProposalForm extends Model
      * @var UploadedFile[]
      */
     public $files;
-    public $savedFiles = [];
+    public $attaches;
 
     public function rules(): array
     {
@@ -30,6 +30,7 @@ class ProposalForm extends Model
             [['adjunct_id', 'vacancy_id', 'state'], 'required'],
             [['id', 'state', 'adjunct_id', 'vacancy_id'], 'integer'],
             [['letter'], 'string', 'max' => 4000],
+            [['attaches'], 'safe'],
             [['adjunct_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['adjunct_id' => 'id']],
             [['vacancy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Vacancy::class, 'targetAttribute' => ['vacancy_id' => 'id']],
             [['files'], 'file', 'skipOnEmpty' => true, 'maxFiles' => 10],
@@ -54,12 +55,17 @@ class ProposalForm extends Model
             return false;
         }
 
-        $proposal = new Proposal();
+        if ($this->id) {
+            $proposal = Proposal::findOne($this->id);
+        } else {
+            $proposal = new Proposal();
+        }
+
         $proposal->letter = htmlspecialchars($this->letter);
         $proposal->adjunct_id = $adjunct->getId();
         $proposal->vacancy_id = $this->vacancy_id;
         $proposal->state = $this->state;
-        $proposal->attaches = json_encode($this->savedFiles);
+        $proposal->attaches = $this->attaches;
 
         if (!$proposal->save()) {
             $this->addErrors($proposal->getErrors());
@@ -80,6 +86,7 @@ class ProposalForm extends Model
     public function upload(User $user): bool
     {
         $files = UploadedFile::getInstances($this, 'files');
+        $newFiles = [];
 
         foreach ($files as $file) {
 
@@ -87,10 +94,14 @@ class ProposalForm extends Model
             $folder = FileHelper::getVacancyFolder($user->id, $this->vacancy_id);
 
             if ($file->saveAs($folder . '/' . $fileName)) {
-                $this->savedFiles[] = $fileName;
+                $newFiles[] = $fileName;
             } else {
                 $this->addError('files', 'File upload error: ' . $file->name);
             }
+        }
+
+        if ($newFiles) {
+            $this->mergeFiles($newFiles);
         }
 
         return true;
@@ -113,8 +124,23 @@ class ProposalForm extends Model
     {
         $form = new self;
         $form->setAttributes($proposal->getAttributes());
-        $form->savedFiles = $proposal->getAttachesArray();
 
         return $form;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttachesArray(): array
+    {
+        return json_decode($this->attaches, true) ?? [];
+    }
+
+    /**
+     * @param array $newFiles
+     */
+    protected function mergeFiles(array $newFiles): void
+    {
+        $this->attaches = json_encode(array_merge($this->getAttachesArray(), $newFiles));
     }
 }

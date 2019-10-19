@@ -217,7 +217,8 @@ JS;
                        class="p-sja-proposals__content-one-footer-edit">
                         Edit Proposal
                     </a>
-                    <a href="<?= Url::to(['proposal/delete']) ?>" class="p-sja-proposals__content-one-footer-delete">
+                    <a href="<?= Url::to(['proposal/delete', 'id' => $proposal->id]) ?>"
+                       class="p-sja-proposals__content-one-footer-delete">
                         Delete Proposal
                     </a>
                 </div>
