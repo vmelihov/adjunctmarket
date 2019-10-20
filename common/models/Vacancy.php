@@ -31,6 +31,8 @@ use yii\db\ActiveRecord;
  * @property TeachingPeriod $teachPeriod
  * @property TeachingTime $teachTime
  * @property TeachingType $teachType
+ * @property Proposal[] $proposals
+ * @property Chat[] $chats
  */
 class Vacancy extends ActiveRecord
 {
@@ -161,6 +163,22 @@ class Vacancy extends ActiveRecord
     public function getTeachType(): ActiveQuery
     {
         return $this->hasOne(TeachingType::class, ['id' => 'teach_type_id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getProposals(): ActiveQuery
+    {
+        return $this->hasMany(Proposal::class, ['vacancy_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getChats(): ActiveQuery
+    {
+        return $this->hasMany(Chat::class, ['vacancy_id' => 'id']);
     }
 
     /**

@@ -46,7 +46,6 @@ class VacancyController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
-                    'update' => ['POST'],
                     'create' => ['POST'],
                 ],
             ],

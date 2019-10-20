@@ -104,12 +104,18 @@ class Chat extends ActiveRecord
     }
 
     /**
+     * @param bool $sort
      * @return ActiveQuery
      */
-    public function getMessages(): ActiveQuery
+    public function getMessages(bool $sort = true): ActiveQuery
     {
-        return $this->hasMany(Message::class, ['chat_id' => 'id'])
-            ->orderBy(['created' => SORT_DESC]);
+        $query = $this->hasMany(Message::class, ['chat_id' => 'id']);
+
+        if ($sort) {
+            $query->orderBy(['created' => SORT_DESC]);
+        }
+
+        return $query;
     }
 
     /**
@@ -152,12 +158,24 @@ class Chat extends ActiveRecord
     }
 
     /**
+     * @param int $vacancyId
+     * @param int $adjunctId
+     * @return Chat|ActiveRecord|null
+     */
+    public static function findByVacancyAndAdjunct(int $vacancyId, int $adjunctId): ?self
+    {
+        return self::find()
+            ->where(['vacancy_id' => $vacancyId, 'adjunct_user_id' => $adjunctId])
+            ->one();
+    }
+
+    /**
      * @param int $userId
      * @return Message[]
      */
     public function getUnreadMessagesForUserId(int $userId): array
     {
-        return $this->getMessages()
+        return $this->getMessages(false)
             ->andWhere(['<>', 'author_user_id', $userId])
             ->andWhere(['read' => Message::STATUS_UNREAD])
             ->all();
@@ -169,7 +187,7 @@ class Chat extends ActiveRecord
      */
     public function getCountUnreadMessagesForUserId(int $userId): int
     {
-        return $this->getMessages()
+        return $this->getMessages(false)
             ->andWhere(['<>', 'author_user_id', $userId])
             ->andWhere(['read' => Message::STATUS_UNREAD])
             ->count();
