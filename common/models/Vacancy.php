@@ -23,6 +23,7 @@ use yii\db\ActiveRecord;
  * @property int $updated
  * @property int $deleted
  * @property int $views
+ * @property string $saved_proposals
  *
  * @property Education $education
  * @property Specialty $specialty
@@ -205,5 +206,62 @@ class Vacancy extends ActiveRecord
     public function getProposalForAdjunct(int $adjunctId): ?Proposal
     {
         return Proposal::find()->where(['vacancy_id' => $this->id])->andWhere(['adjunct_id' => $adjunctId])->one();
+    }
+
+    /**
+     * @return array
+     */
+    public function getSavedProposalsArray(): array
+    {
+        return json_decode($this->saved_proposals, true) ?? [];
+    }
+
+    /**
+     * @param array $proposals
+     */
+    public function setSavedProposalsArray(array $proposals): void
+    {
+        $this->saved_proposals = json_encode(array_values($proposals));
+    }
+
+    /**
+     * @param int $proposalId
+     * @return bool
+     */
+    public function isSavedProposal(int $proposalId): bool
+    {
+        return in_array($proposalId, $this->getSavedProposalsArray(), true);
+    }
+
+    /**
+     * @param int $proposalId
+     * @return bool
+     */
+    public function addSavedProposal(int $proposalId): bool
+    {
+        $array = $this->getSavedProposalsArray();
+        $array[] = $proposalId;
+        $this->setSavedProposalsArray($array);
+
+        return $this->save();
+    }
+
+    /**
+     * @param int $proposalId
+     * @return bool
+     */
+    public function removeSavedProposal(int $proposalId): bool
+    {
+        $array = $this->getSavedProposalsArray();
+        $key = array_search($proposalId, $array, true);
+
+        if ($key !== false) {
+            unset($array[$key]);
+            $this->setSavedProposalsArray($array);
+
+            return $this->save();
+        }
+
+        return true;
     }
 }

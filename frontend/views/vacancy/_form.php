@@ -166,7 +166,7 @@ $user = Helper::getUserIdentity();
     </div>
 </div>
 
-    <button class="p-cv__form-submit js-submit" <?= $model->id ? '' : 'disabled' ?>><?= $model->id ? 'Save' : 'Create' ?></button>
+    <button class="p-cv__form-submit<?= $model->id ? '' : ' js-submit' ?>"<?= $model->id ? '' : ' disabled' ?>><?= $model->id ? 'Save' : 'Create' ?></button>
 
     <div style="display: none">
         <?= Html::submitButton('Publish', ['class' => 'btn', 'id' => 'submitButton']) ?>

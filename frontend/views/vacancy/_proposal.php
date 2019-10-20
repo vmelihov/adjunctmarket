@@ -2,14 +2,16 @@
 
 use common\models\Chat;
 use common\models\Proposal;
+use common\models\Vacancy;
 use common\src\helpers\UserImageHelper;
 use yii\helpers\Url;
 
 /** @var Proposal $proposal */
-/** @var int $vacancyId */
+/** @var Vacancy $vacancy */
 /** @var int $userId */
 /** @var int $num */
 
+$isSaved = $vacancy->isSavedProposal($proposal->id);
 ?>
 <div class="p-sj-proposals__content-one" style="display: none" data-value="<?= $num ?>">
     <div class="p-sj-proposals__content-one-header">
@@ -33,7 +35,7 @@ use yii\helpers\Url;
             </div>
             <div class="p-sj-proposals__content-one-header-right-item">
                 <?php
-                if ($chat = Chat::findByVacancyAndAdjunct($vacancyId, $proposal->adjunct_id)) {
+                if ($chat = Chat::findByVacancyAndAdjunct($vacancy->id, $proposal->adjunct_id)) {
                     $countUnreadMessages = $chat->getCountUnreadMessagesForUserId($userId);
                     $chatUrl = Url::to(['/chat/view', 'chatId' => $chat->id], true);
                     $chatTitle = $countUnreadMessages . ' new message';
@@ -47,7 +49,8 @@ use yii\helpers\Url;
                 </a>
             </div>
             <div class="p-sj-proposals__content-one-header-right-item">
-                <div class="p-sj-proposals__content-one-header-right-item-fav fal fa-heart js-fav"></div>
+                <div class="p-sj-proposals__content-one-header-right-item-fav fal fa-heart js-fav<?= $isSaved ? ' fas' : '' ?>"
+                     data-value="<?= $proposal->id ?>"></div>
             </div>
         </div>
     </div>

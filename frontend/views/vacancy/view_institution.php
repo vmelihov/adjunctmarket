@@ -15,6 +15,12 @@ $this->registerCssFile('@web/css/single-job.css', ['depends' => [AppAsset::class
 
 $user = Helper::getUserIdentity();
 $proposals = $model->proposals;
+$savedProposal = [];
+foreach ($proposals as $prop) {
+    if ($model->isSavedProposal($prop->id)) {
+        $savedProposal[] = $prop;
+    }
+}
 $suitableAdjuncts = [];
 ?>
 
@@ -32,9 +38,9 @@ $suitableAdjuncts = [];
                 <div class="p-sj__content-params-one">
                     <span class="p-sj__content-params-one-title">Category:</span>
                     <span class="p-sj__content-params-one-text">
-                    <?= Html::encode($model->specialty->faculty->name) ?> /
-                    <?= Html::encode($model->specialty->name) ?>
-                </span>
+                <?= Html::encode($model->specialty->faculty->name) ?> /
+                <?= Html::encode($model->specialty->name) ?>
+            </span>
                 </div>
 
                 <?php if ($model->teachType): ?>
@@ -118,7 +124,7 @@ $suitableAdjuncts = [];
                 </a>
                 <a class="p-sj-proposals__filter-btn" id="saved-link" data-toggle="list" href="#saved"
                    role="tab" aria-controls="saved">
-                    Saved (1)
+                    Saved (<?= count($savedProposal) ?>)
                 </a>
             </div>
 
@@ -137,17 +143,29 @@ $suitableAdjuncts = [];
                 foreach ($proposals as $proposal): ?>
                     <?= $this->render('_proposal', [
                         'proposal' => $proposal,
-                        'vacancyId' => $model->id,
+                        'vacancy' => $model,
                         'userId' => $user->getId(),
                         'num' => $i++,
                     ]) ?>
                 <?php endforeach; ?>
                 <div class="p-sj-proposals__content-more" id="loadMore">Load More</div>
             </div>
+            <div class="tab-pane fade" id="saved" role="tabpanel" aria-labelledby="saved-link">
+                <?php $i = 1;
+                foreach ($savedProposal as $proposal): ?>
+                    <?= $this->render('_proposal', [
+                        'proposal' => $proposal,
+                        'vacancy' => $model,
+                        'userId' => $user->getId(),
+                        'num' => $i++,
+                    ]) ?>
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
 
 <?php
+$ajaxUrl = Url::to(['vacancy/proposal']);
 $script = <<< JS
 
 window.proposalCount = $(".p-sj-proposals__content-one").length;
@@ -175,8 +193,27 @@ loadMore();
 
 $('#loadMore').on('click', loadMore);
 
-$(".js-fav").on("click", function () {
-    $(this).toggleClass("fas");
+$(".p-sj-proposals__content-one-header-right-item-fav").on("click", function () {
+    let element = $(this);
+    let action = element.hasClass('fas') ? 'remove' : 'save';
+    let proposalId = element.attr('data-value');
+
+    if (!proposalId) {
+        return false;
+    }
+    
+    $.ajax({
+        type: 'post',
+        url: '$ajaxUrl',
+        data: {
+            'vacancyId': $model->id,
+            'proposalId': proposalId,
+            'action': action,
+        },
+        success: function() {
+            element.toggleClass("fas");
+        }
+    });    
 });
 JS;
 $this->registerJs($script, yii\web\View::POS_READY);

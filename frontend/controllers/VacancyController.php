@@ -225,6 +225,37 @@ class VacancyController extends Controller
     }
 
     /**
+     * @return int
+     * @throws NotFoundHttpException
+     */
+    public function actionProposal(): int
+    {
+        if (Yii::$app->request->isAjax) {
+            $params = Yii::$app->request->post();
+
+            if (!$params['action'] || !$params['proposalId'] || !$params['vacancyId']) {
+                return 0;
+            }
+
+            $vacancy = $this->findModel($params['vacancyId']);
+
+            if (!$vacancy) {
+                return 0;
+            }
+
+            if ($params['action'] === 'save') {
+                $vacancy->addSavedProposal($params['proposalId']);
+            } elseif ($params['action'] === 'remove') {
+                $vacancy->removeSavedProposal($params['proposalId']);
+            }
+
+            return 1;
+        }
+
+        return 0;
+    }
+
+    /**
      * Finds the Vacancy model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
