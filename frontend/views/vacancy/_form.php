@@ -166,7 +166,7 @@ $user = Helper::getUserIdentity();
     </div>
 </div>
 
-    <button class="p-cv__form-submit js-submit" disabled>Create</button>
+    <button class="p-cv__form-submit js-submit" disabled>Save</button>
 
     <div style="display: none">
         <?= Html::submitButton('Publish', ['class' => 'btn', 'id' => 'submitButton']) ?>
@@ -251,8 +251,6 @@ $script = <<< JS
         ['3', 'Both']
     ]);
     
-    console.log(teach_period_id_arr);
-
     $(".js-submit").on("click", function () {
         if (!$(this).prop('disabled')) {
             $('#vacancyModal').modal();
