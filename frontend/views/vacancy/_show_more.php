@@ -6,7 +6,7 @@ use yii\web\View;
 ?>
 
 <div class="p-feed__load">
-    <div id="showMore" class="p-feed__load-btn">Load More Vacancies</div>
+    <div id="showMore" class="p-prflinst__filter-add-link" style="margin: 20px auto">Load More Vacancies</div>
 </div>
 
 <?php
