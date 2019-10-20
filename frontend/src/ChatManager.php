@@ -28,10 +28,11 @@ class ChatManager
 
     /**
      * @param int $param
+     * @param int|null $vacancyId
      * @return Chat
      * @throws Exception
      */
-    public function create(int $param): Chat
+    public function create(int $param, int $vacancyId = null): Chat
     {
         $user = $this->getUser();
 
@@ -46,7 +47,7 @@ class ChatManager
             $adjunctId = $param;
             $institutionId = $user->getId();
 
-            return $this->createInstitutionChat($institutionId, $adjunctId);
+            return $this->createInstitutionChat($institutionId, $adjunctId, $vacancyId);
         }
 
         throw new Exception('Something went wrong');
@@ -85,17 +86,25 @@ class ChatManager
     /**
      * @param int $institutionId
      * @param int $adjunctId
+     * @param int|null $vacancyId
      * @return Chat
      */
-    protected function createInstitutionChat(int $institutionId, int $adjunctId): Chat
+    protected function createInstitutionChat(int $institutionId, int $adjunctId, int $vacancyId = null): Chat
     {
-        $chat = Chat::findOne([
+        $params = [
             'adjunct_user_id' => $adjunctId,
             'institution_user_id' => $institutionId,
-        ]);
+        ];
+
+        if ($vacancyId) {
+            $params['vacancy_id'] = $vacancyId;
+        }
+
+        $chat = Chat::findOne($params);
 
         if (!$chat) {
             $chat = new Chat();
+            $chat->vacancy_id = $vacancyId;
             $chat->adjunct_user_id = $adjunctId;
             $chat->institution_user_id = $institutionId;
 

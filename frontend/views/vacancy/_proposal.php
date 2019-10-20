@@ -40,7 +40,7 @@ $isSaved = $vacancy->isSavedProposal($proposal->id);
                     $chatUrl = Url::to(['/chat/view', 'chatId' => $chat->id], true);
                     $chatTitle = $countUnreadMessages . ' new message';
                 } else {
-                    $chatUrl = Url::to(['/chat/create', 'param' => $proposal->adjunct_id], true);
+                    $chatUrl = Url::to(['/chat/create', 'param' => $proposal->adjunct_id, 'vacancyId' => $vacancy->id], true);
                     $chatTitle = 'Start chatting';
                 } ?>
                 <a href="<?= $chatUrl ?>" class="p-sj-proposals__content-one-header-right-item-link">

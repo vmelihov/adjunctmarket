@@ -85,13 +85,14 @@ class ChatController extends Controller
 
     /**
      * @param int $param
+     * @param int|null $vacancyId
      * @return mixed
      * @throws \Exception
      */
-    public function actionCreate(int $param)
+    public function actionCreate(int $param, int $vacancyId = null)
     {
         $chatManager = $this->createChatManager();
-        $chat = $chatManager->create($param);
+        $chat = $chatManager->create($param, $vacancyId);
         $newMessage = $chatManager->createMessage($chat);
 
         return $this->render('view', [
