@@ -22,6 +22,7 @@ $user = Helper::getUserIdentity();
 $institution = $model->institution;
 
 if ($chat = Chat::findForVacancyAndAdjunct($model->id, $user->getId())) {
+    $countUnreadMessages = $chat->getCountUnreadMessagesForUserId($user->getId());
     $chatUrl = Url::to(['/chat/view', 'chatId' => $chat->id], true);
 } else {
     $chatUrl = Url::to(['/chat/create', 'param' => $model->id], true);
@@ -185,16 +186,16 @@ JS;
                     */ ?>
                     </div>
 
-                    <?php /*
-                <div class="p-sja-proposals__content-one-header-right">
-                    <div class="p-sja-proposals__content-one-header-right-item">
-                        <a href="" class="p-sja-proposals__content-one-header-right-item-link">
-                            <span class="fal fa-envelope"></span>
-                            <span class="p-sja-proposals__content-one-header-right-item-link-text">1 new message</span>
-                        </a>
-                    </div>
-                </div>
-                */ ?>
+                    <?php if ($chat): ?>
+                        <div class="p-sja-proposals__content-one-header-right">
+                            <div class="p-sja-proposals__content-one-header-right-item">
+                                <a href="<?= $chatUrl ?>" class="p-sja-proposals__content-one-header-right-item-link">
+                                    <span class="fal fa-envelope"></span>
+                                    <span class="p-sja-proposals__content-one-header-right-item-link-text"><?= $countUnreadMessages ?> new message</span>
+                                </a>
+                            </div>
+                        </div>
+                    <?php endif; ?>
 
                 </div>
 

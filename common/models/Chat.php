@@ -30,15 +30,22 @@ class Chat extends ActiveRecord
     }
 
     /**
-     * @param int $id
+     * @param User $user
      * @return array
      */
-    public static function findByUserId(int $id): array
+    public static function findListByUser(User $user): array
     {
-        return self::find()
-            ->where(['adjunct_user_id' => $id])
-            ->orWhere(['institution_user_id' => $id])
-            ->all();
+        $query = self::find();
+
+        if ($user->isAdjunct()) {
+            $query->where(['adjunct_user_id' => $user->getId()]);
+        } elseif ($user->isInstitution()) {
+            $query->where(['institution_user_id' => $user->getId()]);
+        } else {
+            return [];
+        }
+
+        return $query->all();
     }
 
     /**
@@ -142,6 +149,30 @@ class Chat extends ActiveRecord
         return self::find()
             ->where(['institution_user_id' => $institutionId, 'adjunct_user_id' => $adjunctId])
             ->one();
+    }
+
+    /**
+     * @param int $userId
+     * @return Message[]
+     */
+    public function getUnreadMessagesForUserId(int $userId): array
+    {
+        return $this->getMessages()
+            ->andWhere(['<>', 'author_user_id', $userId])
+            ->andWhere(['read' => Message::STATUS_UNREAD])
+            ->all();
+    }
+
+    /**
+     * @param int $userId
+     * @return int
+     */
+    public function getCountUnreadMessagesForUserId(int $userId): int
+    {
+        return $this->getMessages()
+            ->andWhere(['<>', 'author_user_id', $userId])
+            ->andWhere(['read' => Message::STATUS_UNREAD])
+            ->count();
     }
 
 }

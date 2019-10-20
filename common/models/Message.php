@@ -22,6 +22,9 @@ use yii\db\ActiveRecord;
  */
 class Message extends ActiveRecord
 {
+    public const STATUS_UNREAD = 0;
+    public const STATUS_READ = 1;
+
     public function behaviors(): array
     {
         return [

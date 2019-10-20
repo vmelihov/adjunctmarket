@@ -23,7 +23,7 @@ class ChatManager
     {
         $user = $this->getUser();
 
-        return Chat::findByUserId($user->getId());
+        return Chat::findListByUser($user);
     }
 
     /**
@@ -134,6 +134,19 @@ class ChatManager
         $message->author_user_id = $this->getUser()->getId();
 
         return $message;
+    }
+
+    /**
+     * @param Chat $chat
+     */
+    public function setReadStatusNewMessages($chat): void
+    {
+        $messages = $chat->getUnreadMessagesForUserId($this->getUser()->getId());
+
+        foreach ($messages as $message) {
+            $message->read = Message::STATUS_READ;
+            $message->save();
+        }
     }
 
 }

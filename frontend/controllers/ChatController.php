@@ -69,6 +69,7 @@ class ChatController extends Controller
     {
         if ($chat = Chat::findOne($chatId)) {
             $chatManager = $this->createChatManager();
+            $chatManager->setReadStatusNewMessages($chat);
             $newMessage = $chatManager->createMessage($chat);
 
             return $this->render('view', [
