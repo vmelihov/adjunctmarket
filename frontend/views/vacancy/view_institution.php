@@ -174,6 +174,10 @@ function loadMore() {
 loadMore();
 
 $('#loadMore').on('click', loadMore);
+
+$(".js-fav").on("click", function () {
+    $(this).toggleClass("fas");
+});
 JS;
 $this->registerJs($script, yii\web\View::POS_READY);
 ?>
