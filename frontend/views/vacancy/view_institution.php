@@ -1,7 +1,9 @@
 <?php
 
+use common\models\Adjunct;
 use common\models\Vacancy;
 use common\src\helpers\Helper;
+use common\src\helpers\UserImageHelper;
 use frontend\assets\AppAsset;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -15,13 +17,14 @@ $this->registerCssFile('@web/css/single-job.css', ['depends' => [AppAsset::class
 
 $user = Helper::getUserIdentity();
 $proposals = $model->proposals;
+$suitableAdjuncts = Adjunct::getSuitableForVacancy($model);
+
 $savedProposal = [];
 foreach ($proposals as $prop) {
     if ($model->isSavedProposal($prop->id)) {
         $savedProposal[] = $prop;
     }
 }
-$suitableAdjuncts = [];
 ?>
 
     <div class="p-sj">
@@ -38,9 +41,9 @@ $suitableAdjuncts = [];
                 <div class="p-sj__content-params-one">
                     <span class="p-sj__content-params-one-title">Category:</span>
                     <span class="p-sj__content-params-one-text">
-                <?= Html::encode($model->specialty->faculty->name) ?> /
-                <?= Html::encode($model->specialty->name) ?>
-            </span>
+                        <?= Html::encode($model->specialty->faculty->name) ?> /
+                        <?= Html::encode($model->specialty->name) ?>
+                    </span>
                 </div>
 
                 <?php if ($model->teachType): ?>
@@ -103,9 +106,9 @@ $suitableAdjuncts = [];
             <?php foreach ($suitableAdjuncts as $adjunct): ?>
                 <div class="p-sj__aside-adjunct">
                     <img class="p-sj__aside-adjunct-ava"
-                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2RHmCLDTk_bBOlgUjzhSUMK3cpF8JYBTkqoRtsmNKZXASWNj9HA"
+                         src="<?= UserImageHelper::getUrl($adjunct->user) ?>"
                          alt=""/>
-                    <a class="p-sj__aside-adjunct-name" href="">Chris Pratt</a>
+                    <a class="p-sj__aside-adjunct-name" href=""><?= Html::encode($adjunct->user->getUsername()) ?></a>
                 </div>
             <?php endforeach; ?>
         </div>

@@ -86,4 +86,12 @@ class AdjunctVacancyRelevance
     {
         return $this->adjunct->education == $value;
     }
+
+    /**
+     * todo
+     */
+    public function isFullRelevant()
+    {
+
+    }
 }

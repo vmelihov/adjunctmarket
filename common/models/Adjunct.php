@@ -111,7 +111,7 @@ class Adjunct extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return ActiveQuery|User
      */
     public function getUser(): ActiveQuery
     {
@@ -137,5 +137,42 @@ class Adjunct extends ActiveRecord
         $decoded = json_decode($this->teach_locations, true);
 
         return is_array($decoded) ? $decoded : [$decoded];
+    }
+
+    /**
+     * @param Vacancy $vacancy
+     * @return self[]
+     * todo вынести в AdjunctVacancyRelevance
+     */
+    public static function getSuitableForVacancy(Vacancy $vacancy): array
+    {
+        $query = self::find();
+
+        if ($vacancy->education_id) {
+            $query->andWhere(['education_id' => $vacancy->education_id]);
+        }
+        if ($vacancy->teach_type_id) {
+            $query->andWhere(['teach_type_id' => $vacancy->teach_type_id]);
+        }
+        if ($vacancy->teach_time_id) {
+            $query->andWhere(['teach_time_id' => $vacancy->teach_time_id]);
+        }
+        if ($vacancy->teach_period_id) {
+            $query->andWhere(['teach_period_id' => $vacancy->teach_period_id]);
+        }
+
+        $res = $query->all();
+
+        /** @var Adjunct $item */
+        foreach ($res as $key => $item) {
+            if (
+                ($vacancy->area_id && !in_array($vacancy->area_id, $item->getLocationsArray()))
+                || ($vacancy->specialty_id && !in_array($vacancy->specialty_id, $item->getSpecialitiesArray()))
+            ) {
+                unset($res[$key]);
+            }
+        }
+
+        return $res;
     }
 }
