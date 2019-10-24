@@ -161,7 +161,7 @@ class Adjunct extends ActiveRecord
             $query->andWhere(['teach_period_id' => $vacancy->teach_period_id]);
         }
 
-        $res = $query->all();
+        $res = $query->limit(5)->all();
 
         /** @var Adjunct $item */
         foreach ($res as $key => $item) {
