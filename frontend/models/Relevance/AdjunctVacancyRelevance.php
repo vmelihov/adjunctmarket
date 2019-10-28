@@ -6,6 +6,7 @@ use common\models\Adjunct;
 use common\models\TeachingPeriod;
 use common\models\TeachingTime;
 use common\models\TeachingType;
+use common\models\Vacancy;
 
 class AdjunctVacancyRelevance
 {
@@ -84,14 +85,35 @@ class AdjunctVacancyRelevance
      */
     public function isEducationRelevant($value): bool
     {
-        return $this->adjunct->education == $value;
+        return $this->adjunct->education_id == $value;
     }
 
     /**
-     * todo
+     * @param Vacancy $vacancy
+     * @return bool
      */
-    public function isFullRelevant()
+    public function isFullRelevant(Vacancy $vacancy): bool
     {
+        if ($this->isTeachTypeRelevant($vacancy->teach_type_id)) {
+            return false;
+        }
 
+        if ($this->isTeachPeriodRelevant($vacancy->teach_period_id)) {
+            return false;
+        }
+
+        if ($this->isTeachTimeRelevant($vacancy->teach_time_id)) {
+            return false;
+        }
+
+        if ($this->isLocationRelevant($vacancy->area_id)) {
+            return false;
+        }
+
+        if ($this->isEducationRelevant($vacancy->education_id)) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -5,6 +5,7 @@ use common\models\Vacancy;
 use common\src\helpers\Helper;
 use common\src\helpers\UserImageHelper;
 use frontend\assets\AppAsset;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
@@ -18,6 +19,7 @@ $this->registerCssFile('@web/css/single-job.css', ['depends' => [AppAsset::class
 $user = Helper::getUserIdentity();
 $proposals = $model->proposals;
 $suitableAdjuncts = Adjunct::getSuitableForVacancy($model);
+$suitableAdjunctsIds = ArrayHelper::map($suitableAdjuncts, 'id', 'id');
 
 $savedProposal = [];
 foreach ($proposals as $prop) {
@@ -133,7 +135,7 @@ foreach ($proposals as $prop) {
 
             <div class="p-sj-proposals__filter-show">
                 <label class="ui-checkbox">
-                    <input type="checkbox" name=""/>
+                    <input id="showSuitable" type="checkbox" name=""/>
                     <span class="ui-checkbox__decor"></span>
                     <span class="ui-checkbox__text m-mbHide">Show only suitable</span>
                     <span class="ui-checkbox__text m-mbShow">Only suitable</span>
@@ -149,6 +151,7 @@ foreach ($proposals as $prop) {
                         'vacancy' => $model,
                         'userId' => $user->getId(),
                         'num' => $i++,
+                        'isSuitable' => in_array($proposal->adjunct_id, $suitableAdjunctsIds, true),
                     ]) ?>
                 <?php endforeach; ?>
                 <div class="p-sj-proposals__content-more" id="loadMore">Load More</div>
@@ -161,6 +164,7 @@ foreach ($proposals as $prop) {
                         'vacancy' => $model,
                         'userId' => $user->getId(),
                         'num' => $i++,
+                        'isSuitable' => in_array($proposal->adjunct_id, $suitableAdjunctsIds, true),
                     ]) ?>
                 <?php endforeach; ?>
             </div>
@@ -171,13 +175,13 @@ foreach ($proposals as $prop) {
 $ajaxUrl = Url::to(['vacancy/proposal']);
 $script = <<< JS
 
-window.proposalCount = $(".p-sj-proposals__content-one").length;
+window.proposalCount = $("#all .p-sj-proposals__content-one").length;
 window.proposalLastShow = 0;
-window.pageSize = 5;
+window.pageSize = 1;
 
 function loadMore() {
     let cnt = 0;
-    $(".p-sj-proposals__content-one").each(function(i, element) {
+    $("#all .p-sj-proposals__content-one").each(function(i, element) {
         let index = i+1;
         if (index <= (window.proposalLastShow + pageSize) && index > window.proposalLastShow) {
             $(element).show();
@@ -216,7 +220,21 @@ $(".p-sj-proposals__content-one-header-right-item-fav").on("click", function () 
         success: function() {
             element.toggleClass("fas");
         }
-    });    
+    });
+});
+
+$('#showSuitable').on('change', function(){
+    let suitable = $(this).prop('checked') ? 1 : 0;
+    
+    if (suitable === 0) {
+        $('#all .p-sj-proposals__content-one').show();
+    } else {
+        $('#all .p-sj-proposals__content-one').each(function() {
+            if ($(this).attr('data-suitable') == 0) {
+                $(this).hide();
+            }
+        });
+    }
 });
 JS;
 $this->registerJs($script, yii\web\View::POS_READY);
