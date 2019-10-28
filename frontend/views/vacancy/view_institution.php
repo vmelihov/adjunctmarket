@@ -152,6 +152,7 @@ foreach ($proposals as $prop) {
                         'userId' => $user->getId(),
                         'num' => $i++,
                         'isSuitable' => in_array($proposal->adjunct_id, $suitableAdjunctsIds, true),
+                        'isSavedTab' => false,
                     ]) ?>
                 <?php endforeach; ?>
                 <div class="p-sj-proposals__content-more" id="loadMore">Load More</div>
@@ -165,6 +166,7 @@ foreach ($proposals as $prop) {
                         'userId' => $user->getId(),
                         'num' => $i++,
                         'isSuitable' => in_array($proposal->adjunct_id, $suitableAdjunctsIds, true),
+                        'isSavedTab' => true,
                     ]) ?>
                 <?php endforeach; ?>
             </div>
@@ -177,7 +179,7 @@ $script = <<< JS
 
 window.proposalCount = $("#all .p-sj-proposals__content-one").length;
 window.proposalLastShow = 0;
-window.pageSize = 1;
+window.pageSize = 5;
 
 function loadMore() {
     let cnt = 0;

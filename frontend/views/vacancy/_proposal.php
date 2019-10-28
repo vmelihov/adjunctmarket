@@ -11,10 +11,11 @@ use yii\helpers\Url;
 /** @var int $userId */
 /** @var int $num */
 /** @var bool $isSuitable */
+/** @var bool $isSavedTab */
 
 $isSaved = $vacancy->isSavedProposal($proposal->id);
 ?>
-<div class="p-sj-proposals__content-one" style="display: none" data-value="<?= $num ?>"
+<div class="p-sj-proposals__content-one" style="display: <?= $isSavedTab ? 'block' : 'none' ?>" data-value="<?= $num ?>"
      data-suitable="<?= (int)$isSuitable ?>">
     <div class="p-sj-proposals__content-one-header">
         <div class="p-sj-proposals__content-one-header-left">
