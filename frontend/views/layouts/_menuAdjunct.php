@@ -1,6 +1,7 @@
 <?php
 
 use common\models\User;
+use common\src\helpers\Helper;
 use common\src\helpers\UserImageHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -25,13 +26,18 @@ echo Menu::widget([
     'activeCssClass' => 'active',
 ]);
 
+$unreadMessageCount = Helper::getUnreadMessageCount($user);
 ?>
 
 <div class="g-header__content-user" id="userMenu">
-    <a href="" class="g-header__content-user-messages m-no"></a>
-    <a href="" class="g-header__content-user-messages m-view">
-        <span>99</span>
-    </a>
+    <?php if ($unreadMessageCount > 0): ?>
+        <a href="<?= Url::to(['/chat/index']) ?>" class="g-header__content-user-messages m-view">
+            <span><?= $unreadMessageCount ?></span>
+        </a>
+    <?php else: ?>
+        <a href="<?= Url::to(['/chat/index']) ?>" class="g-header__content-user-messages m-no"></a>
+    <?php endif; ?>
+
     <div class="g-header__content-user-link js-activeOnOff" data-id="userMenu">
         <div class="g-header__content-user-link-icon fa fa-chevron-down"></div>
         <div class="g-header__content-user-link-ava">
