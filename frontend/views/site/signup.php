@@ -123,6 +123,8 @@ $this->title = 'Registration';
 
                 <?= $form->field($model, 'university_id', [
                     'template' => '{input}',
+                    'enableAjaxValidation' => false,
+                    'enableClientValidation' => false,
                     'options' => [
                         'tag' => false,
                     ]
@@ -216,13 +218,12 @@ $script = <<< JS
     $('#reg-form').on('afterValidate', function(e, m) {
         
         $.each(m, function(key, errors){
-            console.log(key, errors);
             var id = '#' + key;
 
             if (errors.length > 0) {
-                $(id).siblings().first().show();
+                $(id).siblings().first().text(errors[0]).show();
             } else {
-                $(id).siblings().first().hide();
+                $(id).siblings().first().text('').hide();
             }
         });
 
