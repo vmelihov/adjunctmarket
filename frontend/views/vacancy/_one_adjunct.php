@@ -58,7 +58,7 @@ $relevance = new AdjunctVacancyRelevance($adjunct);
             <?php endif; ?>
 
             <?php if ($model->education): ?>
-                <div class="g-vlist__one-footer-item<?= !$relevance->isEducationRelevant($model->education) ? ' m-none' : '' ?>">
+                <div class="g-vlist__one-footer-item<?= !$relevance->isEducationRelevant($model->education->id) ? ' m-none' : '' ?>">
                     <span class="g-vlist__one-footer-item-name">Education:</span> <?= $model->education->name ?>
                 </div>
             <?php endif; ?>
