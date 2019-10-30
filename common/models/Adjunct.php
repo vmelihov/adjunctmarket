@@ -140,6 +140,16 @@ class Adjunct extends ActiveRecord
     }
 
     /**
+     * @return Area[]
+     */
+    public function getLocations(): array
+    {
+        $locationIds = $this->getLocationsArray();
+
+        return Area::find()->where(['in', 'id', $locationIds])->all();
+    }
+
+    /**
      * @param Vacancy $vacancy
      * @return self[]
      * todo вынести в AdjunctVacancyRelevance
