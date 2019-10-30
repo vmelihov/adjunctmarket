@@ -73,6 +73,15 @@ class DictionaryHelper
     /**
      * @return DictionaryHelper
      */
+    public function prepareAreaWithStateGroup(): self
+    {
+        $this->result = ArrayHelper::map(Area::findWithStateName(), 'id', 'name', 'state');
+        return $this;
+    }
+
+    /**
+     * @return DictionaryHelper
+     */
     public function prepareEducation(): self
     {
         $this->result = ArrayHelper::map(Education::find()->all(), 'id', 'name');
