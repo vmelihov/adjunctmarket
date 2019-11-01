@@ -49,19 +49,15 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
         ]); ?>
 
         <div class="p-prflinst__settings">
-            <div class="p-prflinst__settings-ava">
-                <img src="<?= UserImageHelper::getUrl($user) ?>"
-                     alt="" class="p-prflinst__settings-ava-img"/>
-                <?php /*
-                <div class="p-prflinst__settings-ava-status" title="Offline"></div>
-                <div class="p-prflinst__settings-ava-status m-online" title="Online"></div>
-                */ ?>
+            <div class="p-prflinst__settings-ava" style="margin-bottom: 10px">
+                <img style="max-width: 100px;" src="<?= UserImageHelper::getUrl($user) ?>" alt=""
+                     class="p-prflinst__settings-ava-img"/>
             </div>
 
             <div class="p-prflinst__settings-name">
                 <?= Html::encode($universities[$model->university_id]) ?>
             </div>
-            <div class="p-prflinst__settings-status">
+            <div class="p-prflinst__settings-status" style="margin-bottom: 20px">
                 <?= Html::encode($user->getUsername()) ?> <?= $model->position ? ' - ' . Html::encode($model->position) : '' ?>
             </div>
         </div>
@@ -133,7 +129,7 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                     </div>
                 </div>
 
-                <div class="p-prflinst__sform-block-iblock js-validateblock">
+                <div id="kostil" class="p-prflinst__sform-block-iblock js-validateblock">
                     <div class="p-prflinst__sform-block-iblock-label">Educational institution</div>
 
                     <?= $form->field($model, 'university_id')
@@ -235,6 +231,11 @@ $script = <<< JS
         });
 
         return true;
+    });
+    
+    $('#kostil .selectize-input').css({
+        'padding': '20px 50px 5px 15px',
+        'font-size': '15px'
     });
 JS;
 $this->registerJs($script, View::POS_READY);
