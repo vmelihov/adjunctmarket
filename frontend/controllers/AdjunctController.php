@@ -2,10 +2,10 @@
 
 namespace frontend\controllers;
 
-use common\models\Adjunct;
 use common\models\User;
 use common\src\helpers\Helper;
 use frontend\forms\AdjunctProfileForm;
+use frontend\models\AdjunctSearch;
 use Throwable;
 use Yii;
 use yii\filters\AccessControl;
@@ -79,13 +79,32 @@ class AdjunctController extends Controller
      */
     public function actionIndex(): string
     {
-        $adjuncts = Adjunct::find()
-            ->joinWith('user', false)
-            ->where(['=', 'user.user_type', User::TYPE_ADJUNCT])
-            ->andWhere(['=', 'user.status', User::STATUS_ACTIVE])
-            ->all();
+        $params = Yii::$app->request->getQueryParams();
+        $page = Yii::$app->request->post('page', 0);
+        $user = Helper::getUserIdentity();
+        $searchModel = new AdjunctSearch();
 
-        return $this->render('index', ['adjuncts' => $adjuncts]);
+        $dataProvider = $searchModel->search($params, $page);
+
+        $string = '';
+        if (Yii::$app->request->isAjax) {
+            foreach ($dataProvider->getModels() as $adjunct) {
+                $string .= $this->renderPartial('_one', [
+                    'adjunct' => $adjunct,
+                    'user' => $user,
+                ]);
+            }
+
+            return $string;
+        }
+
+        $favorites = $user->profile->getFavoriteAdjuncts();
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'favorites' => $favorites,
+        ]);
     }
 
     /**

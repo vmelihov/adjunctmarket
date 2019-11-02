@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\src\helpers\Helper;
 use frontend\forms\InstitutionProfileForm;
 use \Exception;
 use Yii;
@@ -86,5 +87,30 @@ class InstitutionController extends Controller
         }
 
         return $this->goHome();
+    }
+
+    /**
+     * @return int
+     */
+    public function actionFavorite(): int
+    {
+        if (Yii::$app->request->isAjax) {
+            $params = Yii::$app->request->post();
+            $user = Helper::getUserIdentity();
+
+            if (!$user || !$params['action'] || !$params['adjunctId']) {
+                return 0;
+            }
+
+            if ($params['action'] === 'save') {
+                $user->profile->addFavoriteAdjunct($params['adjunctId']);
+            } elseif ($params['action'] === 'remove') {
+                $user->profile->removeFavoriteAdjunct($params['adjunctId']);
+            }
+
+            return 1;
+        }
+
+        return 0;
     }
 }

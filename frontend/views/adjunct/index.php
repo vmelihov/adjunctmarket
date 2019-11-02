@@ -1,16 +1,18 @@
 <?php
 
 use common\models\Adjunct;
-use common\models\Chat;
 use common\src\helpers\Helper;
-use common\src\helpers\UserImageHelper;
 use frontend\assets\AppAsset;
+use frontend\models\AdjunctSearch;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
 
 /** @var $this View */
-/** @var $adjuncts Adjunct[] */
+/** @var $searchModel AdjunctSearch */
+/** @var $dataProvider ActiveDataProvider */
+/** @var $favorites Adjunct[] */
 
 $this->registerCssFile('@web/css/adjuncts-list.css', ['depends' => [AppAsset::class]]);
 
@@ -23,8 +25,10 @@ $user = Helper::getUserIdentity();
     <h1 class="p-al__title"><?= Html::encode($this->title) ?></h1>
 
     <div class="p-al__filter">
-        <a class="p-al__filter-sort-link active">All <span>Adjuncts</span> (<?= count($adjuncts) ?>)</a>
-        <a class="p-al__filter-sort-link">Favorite <span>Adjuncts</span> (12)</a>
+        <a class="p-al__filter-sort-link active" data-value="p-al_list-all">All <span>Adjuncts</span>
+            (<?= $dataProvider->getTotalCount() ?>)</a>
+        <a class="p-al__filter-sort-link" data-value="p-al_list-favorites">Favorite <span>Adjuncts</span>
+            (<?= count($favorites) ?>)</a>
 
         <!--        <label class="p-al__filter-free ui-checkbox">-->
         <!--            <input type="checkbox" name="">-->
@@ -40,99 +44,77 @@ $user = Helper::getUserIdentity();
         </div>
     </div>
 
-    <?= $this->render('_search.php', []) ?>
+    <?= $this->render('_search.php', ['model' => $searchModel]) ?>
 
-    <div class="p-al__list">
-        <?php foreach ($adjuncts as $adjunct): ?>
-            <div class="p-al__list-one js-one">
-                <div class="p-al__list-one-content">
-                    <div class="p-al__list-one-content-block m-man">
-                        <div class="p-al__list-one-content-block-ava">
-                            <img src="<?= UserImageHelper::getUrl($adjunct->user) ?>"
-                                 alt="" class="p-al__list-one-content-block-ava-img">
-                        </div>
-                        <a href="" class="p-al__list-one-content-block-name">
-                            <?= Html::encode($adjunct->user->getUsername()) ?>
-                        </a>
-                        <div class="p-al__list-one-content-block-status m-busy">Busy</div>
-                        <div class="p-al__list-one-content-block-place">
-                            Washington DC
-                        </div>
-                    </div>
-                    <div class="p-al__list-one-content-block m-tel">
-                        <a href="telTo:+1800882992" class="p-al__list-one-content-block-tel">+1 800 882 992</a>
-                        <div class="p-al__list-one-content-block-tel-title">Cellphone</div>
-                    </div>
-                    <div class="p-al__list-one-content-block m-social">
-                        <a href="" class="p-al__list-one-content-block-social fab fa-linkedin-in"></a>
-                        <a href="" class="p-al__list-one-content-block-social fab fa-facebook-f"></a>
-                        <a href="" class="p-al__list-one-content-block-social fab fa-whatsapp"></a>
-                    </div>
-                    <div class="p-al__list-one-content-block m-links">
-                        <?php if ($chat = Chat::findByInstitutionAndAdjunct($user->getId(), $adjunct->user->id)): ?>
-                            <a href="<?= Url::to(['/chat/view', 'chatId' => $chat->id], true) ?>"
-                               class="p-al__list-one-content-block-chatting">
-                                To chat
-                            </a>
-                        <?php else : ?>
-                            <a href="<?= Url::to(['/chat/create', 'param' => $adjunct->user->id], true) ?>"
-                               class="p-al__list-one-content-block-chatting">
-                                Start chatting
-                            </a>
-                        <?php endif; ?>
-                        <div class="p-al__list-one-content-block-fav fal fa-heart js-fav"></div>
-                    </div>
-                </div>
-                <div class="p-al__list-one-control active js-view">
-                    <div class="p-al__list-one-control-wrap">
-                        <div class="p-al__list-one-control-text">
-                            Expanded view
-                            <br/>
-                            Compact view
-                        </div>
-                    </div>
-                </div>
-                <div class="p-al__list-one-footer js-footer">
-                    <div class="p-al__list-one-footer-column">
-                        <?php if ($adjunct->teach_type_id): ?>
-                            <div class="p-al__list-one-footer-item">
-                                <span class="p-al__list-one-footer-item-name">Teaching experience:</span> <?= $adjunct->teachType->name ?>
-                            </div>
-                        <?php endif; ?>
+    <div class="p-al__list p-al_list-all">
+        <?php foreach ($dataProvider->getModels() as $adjunct): ?>
+            <?= $this->render('_one', [
+                'adjunct' => $adjunct,
+                'user' => $user,
+                'isFavorite' => $user->profile->isFavoriteAdjunct($adjunct->id),
+            ]) ?>
+        <?php endforeach; ?>
+    </div>
 
-                        <?php if ($adjunct->education): ?>
-                            <div class="p-al__list-one-footer-item">
-                                <span class="p-al__list-one-footer-item-name">Education:</span> <?= $adjunct->education->name ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-
-                    <div class="p-al__list-one-footer-column">
-                        <?php if ($adjunct->teach_time_id): ?>
-                            <div class="p-al__list-one-footer-item">
-                                <span class="p-al__list-one-footer-item-name">Type of teaching:</span> <?= $adjunct->teachTime->name ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php if ($adjunct->teach_locations): ?>
-                            <div class="p-al__list-one-footer-item">
-                                <span class="p-al__list-one-footer-item-name">Location:</span>
-                                <?php foreach ($adjunct->getLocations() as $location) {
-                                    echo $location->getNameWithState() . '<br>';
-                                } ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-
-                    <div class="p-al__list-one-footer-column">
-                        <?php if ($adjunct->teachPeriod): ?>
-                            <div class="p-al__list-one-footer-item">
-                                <span class="p-al__list-one-footer-item-name">Type of teaching:</span> <?= $adjunct->teachPeriod->name ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-            </div>
-        </div>
+    <div class="p-al__list p-al_list-favorites" style="display: none">
+        <?php foreach ($favorites as $favorite): ?>
+            <?= $this->render('_one', [
+                'adjunct' => $favorite,
+                'user' => $user,
+                'isFavorite' => true,
+            ]) ?>
         <?php endforeach; ?>
     </div>
 </div>
+
+<?php
+$ajaxUrl = Url::to(['institution/favorite']);
+$script = <<< JS
+$(".js-openFilter").on("click", function () {
+    $(this).toggleClass("active");
+    $(".js-filterContent").slideToggle();
+});
+
+$('.js-selectize').selectize({
+    create: true,
+    sortField: 'text'
+});
+
+$(".p-al__filter-sort-link").on("click", function () {
+    let element = $(this);
+    let listClass = element.attr('data-value');
+    
+    if (element.hasClass('active')) {
+        return false;
+    }
+    
+    $('.p-al__list').hide();
+    $('.' + listClass).show();
+    $(".p-al__filter-sort-link").toggleClass('active');
+});
+
+$(".p-al__list-one-content-block-fav").on("click", function () {
+    let element = $(this);
+    let action = element.hasClass('fas') ? 'remove' : 'save';
+    let id = element.attr('data-value');
+
+    if (!id) {
+        return false;
+    }
+
+    $.ajax({
+       type: 'post',
+       url: '$ajaxUrl',
+       data: {
+           'adjunctId': id,
+           'action': action,
+       },
+       success: function() {
+           element.toggleClass("fas");
+       }
+    });
+
+});
+JS;
+$this->registerJs($script, yii\web\View::POS_READY);
+?>
