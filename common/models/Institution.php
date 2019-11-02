@@ -14,6 +14,7 @@ use yii\db\ActiveRecord;
  * @property string $description
  * @property string $position
  * @property int $university_id
+ * @property string $favorite_adjuncts
  *
  * @property User $user
  * @property University $university
@@ -70,5 +71,70 @@ class Institution extends ActiveRecord
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
+    /**
+     * @return Adjunct[]
+     */
+    public function getFavoriteAdjuncts(): array
+    {
+        return Adjunct::findAll($this->getFavoriteAdjunctsArray());
+    }
+
+    /**
+     * @return array
+     */
+    public function getFavoriteAdjunctsArray(): array
+    {
+        return json_decode($this->favorite_adjuncts, true) ?? [];
+    }
+
+    /**
+     * @param array $ids
+     */
+    public function setFavoriteAdjunctsArray(array $ids): void
+    {
+        $this->favorite_adjuncts = json_encode(array_values($ids));
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function isFavoriteAdjunct(int $id): bool
+    {
+        return in_array($id, $this->getFavoriteAdjunctsArray(), true);
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function addFavoriteAdjunct(int $id): bool
+    {
+        $array = $this->getFavoriteAdjunctsArray();
+        $array[] = $id;
+        $this->setFavoriteAdjunctsArray($array);
+
+        return $this->save();
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function removeFavoriteAdjunct(int $id): bool
+    {
+        $array = $this->getFavoriteAdjunctsArray();
+        $key = array_search($id, $array, true);
+
+        if ($key !== false) {
+            unset($array[$key]);
+            $this->setFavoriteAdjunctsArray($array);
+
+            return $this->save();
+        }
+
+        return true;
     }
 }

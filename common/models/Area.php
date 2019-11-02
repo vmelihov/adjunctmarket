@@ -59,11 +59,12 @@ class Area extends ActiveRecord
     }
 
     /**
+     * @param string $separator
      * @return string
      */
-    public function getNameWithState(): string
+    public function getNameWithState(string $separator = ', '): string
     {
-        return $this->state->name . ', ' . $this->name;
+        return $this->state->name . $separator . $this->name;
     }
 
     /**
