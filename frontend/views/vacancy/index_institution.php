@@ -2,11 +2,13 @@
 
 use common\models\Vacancy;
 use common\src\helpers\Helper;
+use common\src\helpers\UserImageHelper;
 use frontend\assets\AppAsset;
 use frontend\models\VacancySearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\log\Logger;
 use yii\web\View;
 
 /* @var $this View */
@@ -17,12 +19,17 @@ use yii\web\View;
 $this->title = 'Vacancies';
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->registerCssFile('@web/css/profile-institution.css', ['depends' => [AppAsset::class]]);
-$this->registerJsFile('@web/js/profile-institution.js', ['depends' => [AppAsset::class]]);
-$this->registerJsFile('@web/js/vacancy-card.js', ['depends' => [AppAsset::class]]);
-$this->registerJsFile('@web/js/validation.js', ['depends' => [AppAsset::class]]);
+try {
+    $this->registerCssFile('@web/css/profile-institution.css', ['depends' => [AppAsset::class]]);
+    $this->registerJsFile('@web/js/profile-institution.js', ['depends' => [AppAsset::class]]);
+    $this->registerJsFile('@web/js/vacancy-card.js', ['depends' => [AppAsset::class]]);
+    $this->registerJsFile('@web/js/validation.js', ['depends' => [AppAsset::class]]);
+} catch (Exception $e) {
+    Yii::getLogger()->log($e->getMessage(), Logger::LEVEL_ERROR);
+}
 
 $user = Helper::getUserIdentity();
+$favorites = $user->profile->getFavoriteAdjuncts();
 ?>
 <div class="p-prflinst">
     <div class="p-prflinst__filter">
@@ -71,62 +78,26 @@ $user = Helper::getUserIdentity();
         <?php endif; ?>
     <?php endif; ?>
 
-    <div class="p-prflinst__fav">
-        <div class="p-prflinst__fav-title">
-            Favorite adjuncts
-        </div>
+    <?php if ($favorites): ?>
+        <div class="p-prflinst__fav">
+            <div class="p-prflinst__fav-title">
+                Favorite adjuncts
+            </div>
 
-        <div class="p-prflinst__fav-one">
-            <img src="https://specials-images.forbesimg.com/imageserve/5d25026d34a5c400084addc9/416x416.jpg?background=000000&cropX1=0&cropX2=3288&cropY1=471&cropY2=3758"
-                 class="p-prflinst__fav-one-ava" alt=""/>
-            <a href="" class="p-prflinst__fav-one-link">
-                <div class="p-prflinst__fav-one-link-name">
-                    Scarlett
+            <?php foreach ($favorites as $favorite): ?>
+                <div class="p-prflinst__fav-one">
+                    <img src="<?= UserImageHelper::getUrl($favorite->user) ?>" class="p-prflinst__fav-one-ava" alt=""/>
+                    <a href="" class="p-prflinst__fav-one-link">
+                        <div class="p-prflinst__fav-one-link-name">
+                            <?= Html::encode($favorite->user->first_name) ?>
+                        </div>
+                        <div class="p-prflinst__fav-one-link-name">
+                            <?= Html::encode($favorite->user->last_name) ?>
+                        </div>
+                    </a>
                 </div>
-                <div class="p-prflinst__fav-one-link-name">
-                    Johansson
-                </div>
-            </a>
+            <?php endforeach; ?>
         </div>
-
-        <div class="p-prflinst__fav-one">
-            <img src="https://specials-images.forbesimg.com/imageserve/5d25026d34a5c400084addc9/416x416.jpg?background=000000&cropX1=0&cropX2=3288&cropY1=471&cropY2=3758"
-                 class="p-prflinst__fav-one-ava" alt=""/>
-            <a href="" class="p-prflinst__fav-one-link">
-                <div class="p-prflinst__fav-one-link-name">
-                    Scarlett
-                </div>
-                <div class="p-prflinst__fav-one-link-name">
-                    Johansson
-                </div>
-            </a>
-        </div>
-
-        <div class="p-prflinst__fav-one">
-            <img src="https://specials-images.forbesimg.com/imageserve/5d25026d34a5c400084addc9/416x416.jpg?background=000000&cropX1=0&cropX2=3288&cropY1=471&cropY2=3758"
-                 class="p-prflinst__fav-one-ava" alt=""/>
-            <a href="" class="p-prflinst__fav-one-link">
-                <div class="p-prflinst__fav-one-link-name">
-                    Scarlett
-                </div>
-                <div class="p-prflinst__fav-one-link-name">
-                    Johansson
-                </div>
-            </a>
-        </div>
-
-        <div class="p-prflinst__fav-one">
-            <img src="https://specials-images.forbesimg.com/imageserve/5d25026d34a5c400084addc9/416x416.jpg?background=000000&cropX1=0&cropX2=3288&cropY1=471&cropY2=3758"
-                 class="p-prflinst__fav-one-ava" alt=""/>
-            <a href="" class="p-prflinst__fav-one-link">
-                <div class="p-prflinst__fav-one-link-name">
-                    Scarlett
-                </div>
-                <div class="p-prflinst__fav-one-link-name">
-                    Johansson Johansson Johansson
-                </div>
-            </a>
-        </div>
-    </div>
+    <?php endif; ?>
 
 </div>
