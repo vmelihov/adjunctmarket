@@ -45,7 +45,11 @@ class AdjunctVacancyRelevance
     {
         $teachPeriodId = $this->getAdjunct()->teach_period_id;
 
-        return $teachPeriodId === TeachingPeriod::BOTH ? true : $teachPeriodId == $value;
+        if ($teachPeriodId === TeachingPeriod::BOTH || $value == TeachingPeriod::BOTH) {
+            return true;
+        }
+
+        return $teachPeriodId == $value;
     }
 
     /**

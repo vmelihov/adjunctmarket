@@ -13,7 +13,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\VacancySearch */
+/* @var $model frontend\models\VacanciesSearch */
 /* @var $form yii\widgets\ActiveForm */
 
 $this->registerCssFile('@web/extension/selectize/css/selectize.css', ['depends' => [AppAsset::class]]);

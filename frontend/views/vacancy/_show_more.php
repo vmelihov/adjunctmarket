@@ -6,7 +6,16 @@ use yii\web\View;
 ?>
 
 <div class="p-feed__load">
-    <div id="showMore" class="p-prflinst__filter-add-link" style="margin: 20px auto">Load More Vacancies</div>
+    <div id="showMore" style="display: block;
+        width: 213px;
+        height: 48px;
+        text-align: center;
+        background:#2259B5;
+        color:#fff;
+        line-height: 46px;
+        cursor: pointer;
+        margin: 20px auto">Load More Vacancies
+    </div>
 </div>
 
 <?php

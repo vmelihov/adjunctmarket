@@ -34,7 +34,8 @@ $relevance = new AdjunctVacancyRelevance($adjunct);
     <div class="g-vlist__one-content">
         <div class="g-vlist__one-content-head">
             <div class="g-vlist__one-content-head-time">
-                Posted <?= DateTimeHelper::getTimeAgo($model->created) ?? '-' ?> minutes ago - Proposals 12
+                Posted <?= DateTimeHelper::getTimeAgo($model->created) ?? '-' ?> minutes ago -
+                Proposals <?= count($model->proposals) ?>
             </div>
             <div class="g-vlist__one-content-head-control active js-view">
                 <div class="g-vlist__one-content-head-control-text">
@@ -72,7 +73,7 @@ $relevance = new AdjunctVacancyRelevance($adjunct);
             <?php endif; ?>
 
             <?php if ($model->area): ?>
-                <div class="g-vlist__one-footer-item<?= !$relevance->isLocationRelevant($model->area) ? ' m-none' : '' ?>">
+                <div class="g-vlist__one-footer-item<?= !$relevance->isLocationRelevant($model->area_id) ? ' m-none' : '' ?>">
                     <span class="g-vlist__one-footer-item-name">Location:</span> <?= $model->area->state->name . ', ' . $model->area->name ?>
                 </div>
             <?php endif; ?>

@@ -2,14 +2,14 @@
 
 use common\models\Vacancy;
 use frontend\assets\AppAsset;
-use frontend\models\VacancySearch;
+use frontend\models\VacanciesSearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $vacancies Vacancy[] */
 /* @var $dataProvider ActiveDataProvider */
-/* @var $searchModel VacancySearch */
+/* @var $searchModel VacanciesSearch */
 
 $this->title = 'Vacancies';
 $this->params['breadcrumbs'][] = $this->title;

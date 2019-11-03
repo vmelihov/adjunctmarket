@@ -6,11 +6,12 @@ use common\src\helpers\Helper;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Vacancy;
+use common\models\TeachingPeriod;
 
 /**
- * VacancySearch represents the model behind the search form of `\common\models\Vacancy`.
+ * VacanciesSearch represents the model behind the search form of `\common\models\Vacancy`.
  */
-class VacancySearch extends Vacancy
+class VacanciesSearch extends Vacancy
 {
     public const PAGE_SIZE = 5;
     public const FAST_FILTER_ARCHIVE = 'archive';
@@ -141,7 +142,12 @@ class VacancySearch extends Vacancy
                     $this->education_id = $profile->education_id;
                     $this->teach_type_id = $profile->teach_type_id;
                     $this->teach_time_id = $profile->teach_time_id;
-                    $this->teach_period_id = $profile->teach_period_id;
+
+                    if ($profile->teach_period_id == TeachingPeriod::BOTH) {
+                        $this->teach_period_id = [TeachingPeriod::FULL_SEMESTER, TeachingPeriod::OCCASIONAL_LECTURING];
+                    } else {
+                        $this->teach_period_id = [TeachingPeriod::BOTH, $profile->teach_period_id];
+                    }
 
                     break;
             }

@@ -4,7 +4,7 @@ namespace frontend\controllers;
 
 use common\models\User;
 use common\src\helpers\Helper;
-use frontend\models\VacancySearch;
+use frontend\models\VacanciesSearch;
 use Throwable;
 use Yii;
 use common\models\Vacancy;
@@ -75,7 +75,7 @@ class VacancyController extends Controller
         $params = Yii::$app->request->getQueryParams();
         $page = Yii::$app->request->post('page', 0);
         $user = Helper::getUserIdentity();
-        $searchModel = new VacancySearch();
+        $searchModel = new VacanciesSearch();
 
         // todo разнести всю эту срань по стратегиям
         if ($user) {

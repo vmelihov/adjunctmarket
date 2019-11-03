@@ -4,14 +4,15 @@ use common\models\Vacancy;
 use common\src\helpers\Helper;
 use frontend\assets\AppAsset;
 use frontend\models\Relevance\AdjunctVacancyRelevance;
-use frontend\models\VacancySearch;
+use frontend\models\VacanciesSearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $vacancies Vacancy[] */
 /* @var $dataProvider ActiveDataProvider */
-/* @var $searchModel VacancySearch */
+/* @var $searchModel VacanciesSearch */
 
 $this->title = 'Vacancies';
 $this->params['breadcrumbs'][] = $this->title;
@@ -27,22 +28,20 @@ $relevance = new AdjunctVacancyRelevance($user->profile);
 
     <div class="p-feed__filter">
         <div class="p-feed__filter-vacancies js-vacancies">
-            <div class="p-feed__filter-vacancies-chosen">
-                <div class="p-feed__filter-vacancies-chosen-text">
-                    <?= Html::a('All Vacancies', ['index']) ?>
-                </div>
+            <a href="<?= Url::to(['vacancy/index']) ?>" class="p-feed__filter-vacancies-chosen">
+                <div class="p-feed__filter-vacancies-chosen-text">All Vacancies</div>
                 <div class="p-feed__filter-vacancies-chosen-icon fal fa-chevron-down"></div>
-            </div>
+            </a>
 
-            <div class="p-feed__filter-vacancies-chosen">
-                <div class="p-feed__filter-vacancies-chosen-text">
-                    <?= Html::a('Recomended', ['index', 'ff' => VacancySearch::FAST_FILTER_RECOMMENDED]) ?>
-                </div>
+            <a href="<?= Url::to(['index', 'ff' => VacanciesSearch::FAST_FILTER_RECOMMENDED]) ?>"
+               class="p-feed__filter-vacancies-chosen">
+                <div class="p-feed__filter-vacancies-chosen-text">Recomended</div>
                 <div class="p-feed__filter-vacancies-chosen-icon fal fa-chevron-down"></div>
-            </div>
+            </a>
         </div>
 
         <div class="p-feed__filter-sort">
+            <input type="hidden" class="js-sortInput"/>
             <div class="p-feed__filter-sort-text">Sort:</div>
             <div class="p-feed__filter-sort-drop dropdown">
                 <div class="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -55,9 +54,9 @@ $relevance = new AdjunctVacancyRelevance($user->profile);
                     </div>
                 </div>
                 <div class="dropdown-menu js-sortItems">
-                    <div class="dropdown-item">Fewest proposals</div>
-                    <div class="dropdown-item">Newest</div>
-                    <div class="dropdown-item">Relevance</div>
+                    <div class="dropdown-item" data-form="proposals">Fewest proposals</div>
+                    <div class="dropdown-item" data-form="newest">Newest</div>
+                    <div class="dropdown-item" data-form="relevance">Relevance</div>
                 </div>
             </div>
         </div>

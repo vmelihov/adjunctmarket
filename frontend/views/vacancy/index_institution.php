@@ -4,7 +4,7 @@ use common\models\Vacancy;
 use common\src\helpers\Helper;
 use common\src\helpers\UserImageHelper;
 use frontend\assets\AppAsset;
-use frontend\models\VacancySearch;
+use frontend\models\VacanciesSearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -14,7 +14,7 @@ use yii\web\View;
 /* @var $this View */
 /* @var $vacancies Vacancy[] */
 /* @var $dataProvider ActiveDataProvider */
-/* @var $searchModel VacancySearch */
+/* @var $searchModel VacanciesSearch */
 
 $this->title = 'Vacancies';
 $this->params['breadcrumbs'][] = $this->title;
@@ -47,10 +47,10 @@ $favorites = $user->profile->getFavoriteAdjuncts();
                     <?= Html::a('All Vacancies', ['index']) ?>
                 </div>
                 <div class="p-prflinst__filter-vacancies-list-one">
-                    <?= Html::a('Actual vacancies', ['index', 'ff' => VacancySearch::FAST_FILTER_ACTUAL]) ?>
+                    <?= Html::a('Actual vacancies', ['index', 'ff' => VacanciesSearch::FAST_FILTER_ACTUAL]) ?>
                 </div>
                 <div class="p-prflinst__filter-vacancies-list-one">
-                    <?= Html::a('Archive', ['index', 'ff' => VacancySearch::FAST_FILTER_ARCHIVE]) ?>
+                    <?= Html::a('Archive', ['index', 'ff' => VacanciesSearch::FAST_FILTER_ARCHIVE]) ?>
                 </div>
             </div>
         </div>
