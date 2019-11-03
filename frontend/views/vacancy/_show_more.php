@@ -6,7 +6,7 @@ use yii\web\View;
 ?>
 
 <div class="p-feed__load">
-    <div id="showMore" style="display: block;
+    <div id="showMore" style="
         width: 213px;
         height: 48px;
         text-align: center;
@@ -19,29 +19,31 @@ use yii\web\View;
 </div>
 
 <?php
-$page = (int)Yii::$app->request->get('page', 0);
-
 $script = <<< JS
     // запоминаем текущую страницу и их максимальное количество
-    var page = parseInt('$page');
+    var page = 0;
     var pageCount = parseInt('{$pageCount}');
     var loadingFlag = false;
+    
+    console.log(page, pageCount);
 
     $('#showMore').click(function() {
         if (!loadingFlag) {
             // выставляем блокировку
             loadingFlag = true;
             
+            page++;
+            
+            console.log(page, pageCount);
+            
             $.ajax({
                 type: 'post',
                 url: window.location.href,
                 data: {
                     // передаём номер нужной страницы методом POST
-                    'page': page + 1,
+                    'page': page,
                 },
                 success: function(data) {
-                    // увеличиваем номер текущей страницы и снимаем блокировку
-                    page++;
                     loadingFlag = false;
 
                     // вставляем полученные записи после имеющихся в наш блок

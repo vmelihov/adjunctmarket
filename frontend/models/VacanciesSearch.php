@@ -2,7 +2,10 @@
 
 namespace frontend\models;
 
+use common\models\User;
 use common\src\helpers\Helper;
+use frontend\models\Relevance\AdjunctVacancyRelevance;
+use frontend\src\DataProviderWithSort;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Vacancy;
@@ -18,9 +21,14 @@ class VacanciesSearch extends Vacancy
     public const FAST_FILTER_ACTUAL = 'actual';
     public const FAST_FILTER_RECOMMENDED = 'recommended';
 
+    public const SORT_NEWEST = 'newest';
+    public const SORT_RELEVANCE = 'Relevance';
+    public const SORT_FEWEST_PROPOSALS = 'proposals';
+
     public $specialities;
     public $areas;
     public $fastFilter;
+    public $sort = self::SORT_NEWEST;
 
     /**
      * {@inheritdoc}
@@ -29,7 +37,7 @@ class VacanciesSearch extends Vacancy
     {
         return [
             [['id', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id', 'created', 'updated', 'deleted', 'views', 'institution_user_id'], 'integer'],
-            [['title', 'description', 'specialities', 'areas'], 'safe'],
+            [['title', 'description', 'specialities', 'areas', 'sort'], 'safe'],
         ];
     }
 
@@ -46,19 +54,24 @@ class VacanciesSearch extends Vacancy
      * Creates data provider instance with search query applied
      *
      * @param array $params
-     *
      * @param int $page
      * @return ActiveDataProvider
      */
     public function search($params, int $page = 0): ActiveDataProvider
     {
+        $user = Helper::getUserIdentity();
         $query = Vacancy::find();
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider = new DataProviderWithSort([
             'query' => $query,
             'pagination' => [
                 'pageSize' => self::PAGE_SIZE,
                 'page' => $page,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'created' => SORT_ASC,
+                ]
             ],
         ]);
 
@@ -68,9 +81,11 @@ class VacanciesSearch extends Vacancy
             return $dataProvider;
         }
 
-        $dataProvider->setTotalCount($this->getTotalCount());
+        $dataProvider->setTotalCount($this->getTotalCount($user));
 
-        $this->applyFastFilter();
+        if ($user) {
+            $this->applyFastFilter($user);
+        }
 
         // grid filtering conditions
         $query->andFilterWhere([
@@ -87,6 +102,12 @@ class VacanciesSearch extends Vacancy
             'institution_user_id' => $this->institution_user_id,
         ]);
 
+        if (!$user || $user->isAdjunct()) {
+            $query->andFilterWhere(['deleted' => 0]);
+        } else {
+            $query->andFilterWhere(['deleted' => $this->deleted]);
+        }
+
         $specialtyIds = $this->getSpecialtyIds();
         if ($specialtyIds) {
             $query->andFilterWhere(['in', 'specialty_id', $specialtyIds]);
@@ -99,6 +120,10 @@ class VacanciesSearch extends Vacancy
 
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'description', $this->description]);
+
+        if ($this->sort && $this->sort !== self::SORT_NEWEST) {
+            $this->getSortCallback($user, $dataProvider);
+        }
 
         return $dataProvider;
     }
@@ -119,7 +144,10 @@ class VacanciesSearch extends Vacancy
         return $this->areas ? explode(' ', trim($this->areas)) : [];
     }
 
-    protected function applyFastFilter(): void
+    /**
+     * @param User $user
+     */
+    protected function applyFastFilter(User $user): void
     {
         if ($this->fastFilter) {
             switch ($this->fastFilter) {
@@ -130,8 +158,6 @@ class VacanciesSearch extends Vacancy
                     $this->deleted = 0;
                     break;
                 case self::FAST_FILTER_RECOMMENDED:
-                    $user = Helper::getUserIdentity();
-
                     if (!$user || !$user->isAdjunct()) {
                         return;
                     }
@@ -154,7 +180,11 @@ class VacanciesSearch extends Vacancy
         }
     }
 
-    protected function getTotalCount(): int
+    /**
+     * @param User|null $user
+     * @return int
+     */
+    protected function getTotalCount(?User $user): int
     {
         $query = Vacancy::find();
 
@@ -162,6 +192,32 @@ class VacanciesSearch extends Vacancy
             $query->where(['=', 'institution_user_id', $this->institution_user_id]);
         }
 
+        if (!$user || $user->isAdjunct()) {
+            $query->andFilterWhere(['deleted' => 0]);
+        }
+
         return $query->count();
+    }
+
+    /**
+     * @param User|null $user
+     * @param DataProviderWithSort $dataProvider
+     */
+    protected function getSortCallback(?User $user, DataProviderWithSort $dataProvider): void
+    {
+        $callback = null;
+
+        if ($this->sort == self::SORT_RELEVANCE && $user) {
+            $relevance = new AdjunctVacancyRelevance($user->profile);
+            $callback = static function (Vacancy $vacancy1, Vacancy $vacancy2) use ($relevance) {
+                return $relevance->getCountRelevant($vacancy2) <=> $relevance->getCountRelevant($vacancy1);
+            };
+        } elseif ($this->sort == self::SORT_FEWEST_PROPOSALS) {
+            $callback = static function (Vacancy $vacancy1, Vacancy $vacancy2) {
+                return count($vacancy2->proposals) <=> count($vacancy1->proposals);
+            };
+        }
+
+        $dataProvider->setSortCallback($callback);
     }
 }
