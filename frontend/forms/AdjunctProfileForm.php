@@ -85,7 +85,7 @@ class AdjunctProfileForm extends Model
         $adjunct->teach_period_id = $this->teach_period_id;
         $adjunct->teaching_experience_type_id = $this->teaching_experience_type_id;
 
-        $adjunct->teach_locations = $this->getArrayAsString($this->teach_locations);
+        $adjunct->teach_locations = $this->getArrayAsString(explode(' ', $this->teach_locations));
         $adjunct->specialities = $this->getArrayAsString(explode(' ', $this->specialities));
 
         return $adjunct->save() ? $adjunct : null;
