@@ -98,26 +98,57 @@ class AdjunctVacancyRelevance
      */
     public function isFullRelevant(Vacancy $vacancy): bool
     {
-        if ($this->isTeachTypeRelevant($vacancy->teach_type_id)) {
+        if (!$this->isTeachTypeRelevant($vacancy->teach_type_id)) {
             return false;
         }
 
-        if ($this->isTeachPeriodRelevant($vacancy->teach_period_id)) {
+        if (!$this->isTeachPeriodRelevant($vacancy->teach_period_id)) {
             return false;
         }
 
-        if ($this->isTeachTimeRelevant($vacancy->teach_time_id)) {
+        if (!$this->isTeachTimeRelevant($vacancy->teach_time_id)) {
             return false;
         }
 
-        if ($this->isLocationRelevant($vacancy->area_id)) {
+        if (!$this->isLocationRelevant($vacancy->area_id)) {
             return false;
         }
 
-        if ($this->isEducationRelevant($vacancy->education_id)) {
+        if (!$this->isEducationRelevant($vacancy->education_id)) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * @param Vacancy $vacancy
+     * @return int
+     */
+    public function getCountRelevant(Vacancy $vacancy): int
+    {
+        $result = 0;
+
+        if ($this->isTeachTypeRelevant($vacancy->teach_type_id)) {
+            $result++;
+        }
+
+        if ($this->isTeachPeriodRelevant($vacancy->teach_period_id)) {
+            $result++;
+        }
+
+        if ($this->isTeachTimeRelevant($vacancy->teach_time_id)) {
+            $result++;
+        }
+
+        if ($this->isLocationRelevant($vacancy->area_id)) {
+            $result++;
+        }
+
+        if ($this->isEducationRelevant($vacancy->education_id)) {
+            $result++;
+        }
+
+        return $result;
     }
 }
