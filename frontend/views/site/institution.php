@@ -2,23 +2,25 @@
 
 use common\src\helpers\DictionaryHelper;
 use common\src\helpers\Helper;
-use common\src\helpers\UserImageHelper;
 use frontend\assets\AppAsset;
 use frontend\forms\InstitutionProfileForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
+use yii\log\Logger;
 use yii\web\View;
 
 /* @var $this yii\web\View */
 /* @var $model InstitutionProfileForm */
 
-$this->registerCssFile('@web/extension/selectize/css/selectize.css', ['depends' => [AppAsset::class]]);
-$this->registerCssFile('@web/css/profile-institution.css', ['depends' => [AppAsset::class]]);
-
-$this->registerJsFile('@web/extension/selectize/js/standalone/selectize.min.js', ['depends' => [AppAsset::class]]);
-$this->registerJsFile('@web/js/profile-institution.js', ['depends' => [AppAsset::class]]);
-$this->registerJsFile('@web/js/validation.js', ['depends' => [AppAsset::class]]);
+try {
+    $this->registerCssFile('@web/extension/selectize/css/selectize.css');
+    $this->registerCssFile('@web/css/profile-edit.css', ['depends' => [AppAsset::class]]);
+    $this->registerJsFile('@web/extension/selectize/js/standalone/selectize.min.js', ['depends' => [AppAsset::class]]);
+    $this->registerJsFile('@web/js/validation.js', ['depends' => [AppAsset::class]]);
+} catch (Exception $e) {
+    Yii::getLogger()->log($e->getMessage(), Logger::LEVEL_ERROR);
+}
 
 $this->title = 'Institution Profile';
 
@@ -29,11 +31,13 @@ $dictionaryHelper = new DictionaryHelper();
 $universities = $dictionaryHelper->prepareUniversity()->getResult();
 ?>
 
-    <div class="p-prflinst">
+    <div class="p-predit">
+        <div class="p-predit__content">
         <?php $form = ActiveForm::begin([
             'id' => 'institution-profile-form',
             'action' => Url::to(['institution/profile']),
             'options' => [
+                'class' => 'p-predit__content-sform js-form',
                 'enctype' => 'multipart/form-data'
             ],
             'fieldConfig' => [
@@ -42,64 +46,55 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                     'tag' => false,
                 ],
                 'errorOptions' => [
-                    'class' => 'p-prflinst__sform-block-iblock-error',
+                    'class' => 'p-predit__content-sform-block-iblock-error',
                     'tag' => 'div'
                 ],
             ],
         ]); ?>
-
-        <div class="p-prflinst__settings">
-            <div class="p-prflinst__settings-ava" style="margin-bottom: 10px">
-                <img style="max-width: 100px;" src="<?= UserImageHelper::getUrl($user) ?>" alt=""
-                     class="p-prflinst__settings-ava-img"/>
-            </div>
-
-            <div class="p-prflinst__settings-name">
-                <?= Html::encode($universities[$model->university_id]) ?>
-            </div>
-            <div class="p-prflinst__settings-status" style="margin-bottom: 20px">
-                <?= Html::encode($user->getUsername()) ?> <?= $model->position ? ' - ' . Html::encode($model->position) : '' ?>
-            </div>
-        </div>
-
-        <div class="p-prflinst__settings-content" style="display: block">
-            <div class="p-prflinst__sform">
-            <div class="p-prflinst__sform-block">
-                <div class="p-prflinst__sform-block-title">
+            <div class="p-predit__content-sform-block">
+                <div class="p-predit__content-sform-block-title">
                     Edit Userpic
                 </div>
-                <?= $form->field($model, 'image_file')->fileInput() ?>
-                <div class="p-prflinst__sform-block-tooltip">
-                    <div class="p-prflinst__sform-block-tooltip-question">?</div>
-                    <div class="p-prflinst__sform-block-tooltip-popup">
+                <div style="display: inline-block">
+                    <?= $form->field($model, 'image_file')->fileInput() ?>
+                </div>
+                <div class="p-predit__content-sform-block-tooltip">
+                    <div class="p-predit__content-sform-block-tooltip-question">?</div>
+                    <div class="p-predit__content-sform-block-tooltip-popup">
                         Upload the symbol of institution to make your profile more recognizable
                     </div>
                 </div>
             </div>
 
-            <div class="p-prflinst__sform-block">
-                <div class="p-prflinst__sform-block-title">
+            <div class="p-predit__content-sform-block">
+                <div class="p-predit__content-sform-block-title">
                     General Settings
                 </div>
 
                 <div class="row">
                     <div class="col-lg-6">
-                        <div class="p-prflinst__sform-block-iblock js-validateblock">
-                            <div class="p-prflinst__sform-block-iblock-label">First name</div>
-                            <div class="p-prflinst__sform-block-iblock-icon fal fa-check js-validateblockOk"></div>
+                        <div class="p-predit__content-sform-block-iblock js-validateblock">
+                            <div class="p-predit__content-sform-block-iblock-label">First name
+                            </div>
+                            <div
+                                    class="p-predit__content-sform-block-iblock-icon fal fa-check js-validateblockOk">
+                            </div>
 
                             <?= $form->field($model, 'first_name')->textInput([
-                                'class' => 'p-prflinst__sform-block-iblock-input js-textValidation',
+                                'class' => 'p-predit__content-sform-block-iblock-input js-textValidation',
                             ]) ?>
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <div class="p-prflinst__sform-block-iblock js-validateblock">
-                            <div class="p-prflinst__sform-block-iblock-label">Last name</div>
-                            <div class="p-prflinst__sform-block-iblock-icon fal fa-check js-validateblockOk"></div>
+                        <div class="p-predit__content-sform-block-iblock js-validateblock">
+                            <div class="p-predit__content-sform-block-iblock-label">Last name
+                            </div>
+                            <div
+                                    class="p-predit__content-sform-block-iblock-icon fal fa-check js-validateblockOk">
+                            </div>
 
                             <?= $form->field($model, 'last_name')->textInput([
-                                'class' => 'p-prflinst__sform-block-iblock-input js-textValidation',
+                                'class' => 'p-predit__content-sform-block-iblock-input js-textValidation',
                             ]) ?>
                         </div>
                     </div>
@@ -107,87 +102,101 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
 
                 <div class="row">
                     <div class="col-lg-6">
-                        <div class="p-prflinst__sform-block-iblock js-validateblock">
-                            <div class="p-prflinst__sform-block-iblock-icon fal fa-check js-validateblockOk"></div>
+                        <div class="p-predit__content-sform-block-iblock js-validateblock">
+                            <div
+                                    class="p-predit__content-sform-block-iblock-icon fal fa-check js-validateblockOk">
+                            </div>
 
                             <?= $form->field($model, 'email')->textInput([
-                                'class' => 'p-prflinst__sform-block-input js-mailValidation',
+                                'class' => 'p-predit__content-sform-block-input js-mailValidation',
                                 'placeholder' => 'Work email address',
                                 'type' => 'email',
                             ]) ?>
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <div class="p-prflinst__sform-block-iblock js-validateblock">
-                            <div class="p-prflinst__sform-block-iblock-label">Position</div>
-                            <div class="p-prflinst__sform-block-iblock-icon fal fa-check js-validateblockOk"></div>
+                        <div class="p-predit__content-sform-block-iblock js-validateblock">
+                            <div class="p-predit__content-sform-block-iblock-label">Position
+                            </div>
+                            <div
+                                    class="p-predit__content-sform-block-iblock-icon fal fa-check js-validateblockOk">
+                            </div>
 
                             <?= $form->field($model, 'position')->textInput([
-                                'class' => 'p-prflinst__sform-block-iblock-input js-textValidation',
+                                'class' => 'p-predit__content-sform-block-iblock-input js-textValidation',
                             ]) ?>
                         </div>
                     </div>
                 </div>
 
-                <div id="kostil" class="p-prflinst__sform-block-iblock js-validateblock">
-                    <div class="p-prflinst__sform-block-iblock-label">Educational institution</div>
+                <div class="p-predit__content-sform-block-iblock js-validateblock">
+                    <div class="p-predit__content-sform-block-iblock-label">Educational institution
+                    </div>
+                    <div
+                            class="p-predit__content-sform-block-iblock-icon fal fa-check js-validateblockOk">
+                    </div>
 
                     <?= $form->field($model, 'university_id')
                         ->dropDownList($universities, [
+                            'id' => 'edInst',
                             'class' => 'js-selectize',
                         ])
                     ?>
                 </div>
             </div>
 
-            <div class="p-prflinst__sform-block">
-                <div class="p-prflinst__sform-block-title">
+            <div class="p-predit__content-sform-block">
+                <div class="p-predit__content-sform-block-title">
                     Security
                 </div>
 
                 <div class="row">
                     <div class="col-lg-6">
-                        <div class="p-prflinst__sform-block-iblock js-validateblock js-passParent">
+                        <div
+                                class="p-predit__content-sform-block-iblock js-validateblock js-passParent">
                             <div class="js-passLine">
-                                <div class="p-prflinst__sform-block-iblock-icon js-passEye fa fa-eye"></div>
+                                <div
+                                        class="p-predit__content-sform-block-iblock-icon js-passEye fa fa-eye">
+                                </div>
 
                                 <?= $form->field($model, 'new_password')->passwordInput([
                                     'placeholder' => 'New password',
-                                    'class' => 'p-prflinst__sform-block-input js-passInput js-passValidation js-passValidation1',
+                                    'class' => 'p-predit__content-sform-block-input js-passInput js-passValidation js-passValidation1',
                                 ]) ?>
-
                             </div>
                             <div class="js-passLine d-none">
-                                <div class="p-prflinst__sform-block-iblock">
-                                    <div class="p-prflinst__sform-block-iblock-icon js-passEye fa fa-eye-slash"></div>
+                                <div class="p-predit__content-sform-block-iblock">
+                                    <div
+                                            class="p-predit__content-sform-block-iblock-icon js-passEye fa fa-eye-slash">
+                                    </div>
                                     <input placeholder="Password" type="text"
-                                           class="p-prflinst__sform-block-input js-notPassInput"/>
+                                           class="p-predit__content-sform-block-input js-notPassInput"/>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <div class="p-prflinst__sform-block-iblock js-validateblock js-passParent">
+                        <div
+                                class="p-predit__content-sform-block-iblock js-validateblock js-passParent">
                             <div class="js-passLine">
-                                <div class="p-prflinst__sform-block-iblock">
+                                <div class="p-predit__content-sform-block-iblock">
                                     <div
-                                            class="p-prflinst__sform-block-iblock-icon js-passEye fa fa-eye">
+                                            class="p-predit__content-sform-block-iblock-icon js-passEye fa fa-eye">
                                     </div>
 
                                     <?= $form->field($model, 'repeat_password')->passwordInput([
                                         'placeholder' => 'Confirm password',
-                                        'class' => 'p-prflinst__sform-block-input js-passInput js-passValidation js-passValidation2',
+                                        'class' => 'p-predit__content-sform-block-input js-passInput js-passValidation js-passValidation2',
                                     ]) ?>
-
                                 </div>
                             </div>
                             <div class="js-passLine d-none">
-                                <div class="p-prflinst__sform-block-iblock">
+                                <div class="p-predit__content-sform-block-iblock">
                                     <div
-                                            class="p-prflinst__sform-block-iblock-icon js-passEye fa fa-eye-slash">
+                                            class="p-predit__content-sform-block-iblock-icon js-passEye fa fa-eye-slash">
                                     </div>
                                     <input placeholder="Confirm pasword" type="text"
-                                           class="p-prflinst__sform-block-input js-notPassInput"/>
+                                           class="p-predit__content-sform-block-input js-notPassInput"/>
                                 </div>
                             </div>
                         </div>
@@ -195,16 +204,14 @@ $universities = $dictionaryHelper->prepareUniversity()->getResult();
                 </div>
             </div>
 
-            <div class="p-prflinst__sform-block">
-                <?= Html::submitButton('Apply changes', ['class' => 'p-prflinst__sform-block-submit js-submit']) ?>
-            </div>
+            <div class="p-predit__content-sform-block">
+                <?= Html::submitButton('Apply changes', ['class' => 'p-predit__content-sform-block-submit']) ?>
             </div>
 
             <?= $form->field($model, 'id')->hiddenInput()->label(false) ?>
             <?= $form->field($model, 'user_id')->hiddenInput()->label(false) ?>
-        </div>
-
         <?php ActiveForm::end(); ?>
+    </div>
     </div>
 
 <?php
@@ -214,7 +221,7 @@ $script = <<< JS
         sortField: 'text'
     });
 
-    $('.p-prflinst__sform-block-iblock-error').each(function(i, element){
+    $('.p-predit__content-sform-block-iblock-error').each(function(i, element){
         if ($(element).text() != '') {
             $(element).show();
         }
@@ -224,18 +231,13 @@ $script = <<< JS
         $.each(m, function(key, errors){
             var id = '#' + key;
             if (errors.length > 0) {
-                $(id).siblings('.p-prflinst__sform-block-iblock-error').first().text(errors[0]).show();
+                $(id).siblings('.p-predit__content-sform-block-iblock-error').first().text(errors[0]).show();
             } else {
-                $(id).siblings('.p-prflinst__sform-block-iblock-error').first().hide();
+                $(id).siblings('.p-predit__content-sform-block-iblock-error').first().hide();
             }
         });
 
         return true;
-    });
-    
-    $('#kostil .selectize-input').css({
-        'padding': '20px 50px 5px 15px',
-        'font-size': '15px'
     });
 JS;
 $this->registerJs($script, View::POS_READY);
