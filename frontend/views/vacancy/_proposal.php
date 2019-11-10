@@ -4,7 +4,6 @@ use common\models\Chat;
 use common\models\Proposal;
 use common\models\Vacancy;
 use common\src\helpers\UserImageHelper;
-use yii\helpers\Url;
 
 /** @var Proposal $proposal */
 /** @var Vacancy $vacancy */
@@ -40,14 +39,13 @@ $isSaved = $vacancy->isSavedProposal($proposal->id);
                 <?php
                 if ($chat = Chat::findByInstitutionAndAdjunct($vacancy->institution_user_id, $proposal->adjunct_id)) {
                     $countUnreadMessages = $chat->getCountUnreadMessagesForUserId($userId);
-                    $chatAttr = 'onclick="openChat(' . $chat->id . ')"';
+                    $onClick = 'openChat(' . $chat->id . ')';
                     $chatTitle = $countUnreadMessages . ' new message';
                 } else {
-                    $chatUrl = Url::to(['/chat/create', 'param' => $proposal->adjunct_id], true);
+                    $onClick = 'createChat(' . $proposal->adjunct_id . ')';
                     $chatTitle = 'Start chatting';
                 } ?>
-                <a href="<?= $chatUrl ?? '#' ?>"
-                   class="p-sj-proposals__content-one-header-right-item-link" <?= $chatAttr ?? '' ?>>
+                <a href="#" class="p-sj-proposals__content-one-header-right-item-link" onclick="<?= $onClick ?>">
                     <span class="fal fa-envelope"></span>
                     <span class="m-mbHide"><?= $chatTitle ?></span>
                 </a>

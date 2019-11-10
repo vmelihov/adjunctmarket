@@ -136,6 +136,38 @@ class ChatController extends Controller
         ]);
     }
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
+    public function actionCreateAjax()
+    {
+        $response = [
+            'success' => false,
+            'body' => null,
+        ];
+
+        if (Yii::$app->request->isAjax && $user = Helper::getUserIdentity()) {
+            $post = Yii::$app->request->post();
+
+            if ($post['userId']) {
+                $chatManager = $this->createChatManager();
+                $chat = $chatManager->create($post['userId']);
+
+                $response = [
+                    'success' => true,
+                    'body' => [
+                        'chatId' => $chat->id,
+                    ],
+                ];
+            }
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        return $response;
+    }
+
 
     /**
      * @return ChatManager

@@ -5,7 +5,6 @@ use common\models\Chat;
 use common\models\User;
 use common\src\helpers\UserImageHelper;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 /** @var $adjunct Adjunct */
 /** @var $user User */
@@ -42,7 +41,7 @@ use yii\helpers\Url;
                     To chat
                 </a>
             <?php else : ?>
-                <a href="<?= Url::to(['/chat/create', 'param' => $adjunct->user->id], true) ?>"
+                <a href="#" onclick="createChat(<?= $adjunct->user->id ?>)"
                    class="p-al__list-one-content-block-chatting">
                     Start chatting
                 </a>

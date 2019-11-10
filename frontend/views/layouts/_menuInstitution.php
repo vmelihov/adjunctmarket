@@ -32,9 +32,9 @@ $unreadMessageCount = Helper::getUnreadMessageCount($user);
 
 <div class="g-header__content-user" id="userMenu">
     <?php if ($unreadMessageCount > 0): ?>
-        <a href="<?= Url::to(['/chat/index']) ?>" class="g-header__content-user-messages m-view">
+        <a class="g-header__content-user-messages m-view" onclick="$('#chatList').show()">
             <span><?= $unreadMessageCount ?></span>
-    </a>
+        </a>
     <?php else: ?>
         <a class="g-header__content-user-messages m-no" onclick="$('#chatList').show()"></a>
     <?php endif; ?>

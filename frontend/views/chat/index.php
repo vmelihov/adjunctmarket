@@ -71,6 +71,7 @@ $this->title = 'Chat List';
 
 <?php
 $ajaxChatUrl = Url::to(['/chat/view-ajax']);
+$ajaxCreateChatUrl = Url::to(['/chat/create-ajax']);
 $script = <<< JS
 
 function openChat(chatId) {
@@ -91,6 +92,21 @@ function openChat(chatId) {
                 $('#chatList').addClass("m-chatOpened");
                 $('#opponentName').text(result.opponent.name);
                 $('#opponentAvatar').attr('src', result.opponent.img);
+            }
+        }
+    });
+}
+
+function createChat(userId) {
+    $.ajax({
+        type: 'post',
+        url: '$ajaxCreateChatUrl',
+        data: {
+            'userId': userId,
+        },
+        success: function(data) {
+            if (data.success === true && data.body.chatId > 0) {
+                openChat(data.body.chatId);
             }
         }
     });
