@@ -8,15 +8,18 @@ use frontend\assets\AppAsset;
 use frontend\forms\ProposalForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\log\Logger;
 use yii\web\View;
-use yii\web\YiiAsset;
 
 /* @var $this View */
 /* @var $model Vacancy */
 
 $this->title = $model->title;
-$this->registerCssFile('@web/css/single-job-adjunct.css', ['depends' => [AppAsset::class]]);
-YiiAsset::register($this);
+try {
+    $this->registerCssFile('@web/css/single-job-adjunct.css', ['depends' => [AppAsset::class]]);
+} catch (Exception $e) {
+    Yii::getLogger()->log($e->getMessage(), Logger::LEVEL_ERROR);
+}
 
 $user = Helper::getUserIdentity();
 $institution = $model->institution;
@@ -25,7 +28,7 @@ if ($chat = Chat::findForVacancyAndAdjunct($model->id, $user->getId())) {
     $countUnreadMessages = $chat->getCountUnreadMessagesForUserId($user->getId());
     $chatUrl = Url::to(['/chat/view', 'chatId' => $chat->id], true);
 } else {
-    $chatUrl = Url::to(['/chat/create', 'param' => $model->id], true);
+    $chatUrl = Url::to(['/chat/create', 'param' => $model->institution_user_id], true);
 }
 
 $proposalForm = new ProposalForm();

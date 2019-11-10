@@ -5,7 +5,6 @@ namespace frontend\src;
 use common\models\Chat;
 use common\models\Message;
 use common\models\User;
-use common\models\Vacancy;
 use Exception;
 use RuntimeException;
 
@@ -14,11 +13,18 @@ class ChatManager
     /** @var User */
     protected $user;
 
+    /**
+     * ChatManager constructor.
+     * @param User $user
+     */
     public function __construct(User $user)
     {
         $this->setUser($user);
     }
 
+    /**
+     * @return array
+     */
     public function getChatList(): array
     {
         $user = $this->getUser();
@@ -28,83 +34,40 @@ class ChatManager
 
     /**
      * @param int $param
-     * @param int|null $vacancyId
      * @return Chat
      * @throws Exception
      */
-    public function create(int $param, int $vacancyId = null): Chat
+    public function create(int $param): Chat
     {
         $user = $this->getUser();
 
         if ($user->isAdjunct()) {
-            $vacancyId = $param;
+            $institutionId = $param;
             $adjunctId = $user->getId();
-
-            return $this->createAdjunctChat($vacancyId, $adjunctId);
-        }
-
-        if ($user->isInstitution()) {
+        } elseif ($user->isInstitution()) {
             $adjunctId = $param;
             $institutionId = $user->getId();
-
-            return $this->createInstitutionChat($institutionId, $adjunctId, $vacancyId);
+        } else {
+            throw new Exception('Something went wrong');
         }
 
-        throw new Exception('Something went wrong');
-    }
-
-    /**
-     * @param int $vacancyId
-     * @param int $adjunctId
-     * @return Chat
-     */
-    protected function createAdjunctChat(int $vacancyId, int $adjunctId): Chat
-    {
-        /** @var Vacancy $vacancy */
-        $vacancy = Vacancy::findOne($vacancyId);
-
-        $chat = Chat::findOne([
-            'vacancy_id' => $vacancyId,
-            'adjunct_user_id' => $adjunctId,
-            'institution_user_id' => $vacancy->institution_user_id,
-        ]);
-
-        if (!$chat) {
-            $chat = new Chat();
-            $chat->vacancy_id = $vacancyId;
-            $chat->adjunct_user_id = $adjunctId;
-            $chat->institution_user_id = $vacancy->institution_user_id;
-
-            if (!$chat->save()) {
-                throw new RuntimeException('Chat save error.');
-            }
-        }
-
-        return $chat;
+        return $this->getChat($institutionId, $adjunctId);
     }
 
     /**
      * @param int $institutionId
      * @param int $adjunctId
-     * @param int|null $vacancyId
      * @return Chat
      */
-    protected function createInstitutionChat(int $institutionId, int $adjunctId, int $vacancyId = null): Chat
+    protected function getChat(int $institutionId, int $adjunctId): Chat
     {
-        $params = [
+        $chat = Chat::findOne([
             'adjunct_user_id' => $adjunctId,
             'institution_user_id' => $institutionId,
-        ];
-
-        if ($vacancyId) {
-            $params['vacancy_id'] = $vacancyId;
-        }
-
-        $chat = Chat::findOne($params);
+        ]);
 
         if (!$chat) {
             $chat = new Chat();
-            $chat->vacancy_id = $vacancyId;
             $chat->adjunct_user_id = $adjunctId;
             $chat->institution_user_id = $institutionId;
 

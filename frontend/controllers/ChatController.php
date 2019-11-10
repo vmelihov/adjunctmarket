@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\Chat;
 use common\models\User;
 use common\src\helpers\Helper;
+use Exception;
 use frontend\src\ChatManager;
 use Yii;
 use yii\filters\AccessControl;
@@ -89,14 +90,13 @@ class ChatController extends Controller
 
     /**
      * @param int $param
-     * @param int|null $vacancyId
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
-    public function actionCreate(int $param, int $vacancyId = null)
+    public function actionCreate(int $param)
     {
         $chatManager = $this->createChatManager();
-        $chat = $chatManager->create($param, $vacancyId);
+        $chat = $chatManager->create($param);
         $newMessage = $chatManager->createMessage($chat);
 
         return $this->render('view', [
