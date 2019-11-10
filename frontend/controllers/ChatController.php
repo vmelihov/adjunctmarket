@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\Chat;
 use common\models\User;
 use common\src\helpers\Helper;
+use common\src\helpers\UserImageHelper;
 use Exception;
 use frontend\src\ChatManager;
 use Yii;
@@ -12,6 +13,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\ErrorAction;
+use yii\web\Response;
 
 class ChatController extends Controller
 {
@@ -60,7 +62,7 @@ class ChatController extends Controller
         $chatManager = $this->createChatManager();
         $chats = $chatManager->getChatList();
 
-        return $this->render('index', [
+        return $this->renderPartial('index', [
             'chats' => $chats,
             'user' => $user,
         ]);
@@ -68,24 +70,52 @@ class ChatController extends Controller
 
     /**
      * @param int $chatId
+     * @param bool $isHtml
      * @return mixed
      */
-    public function actionView(int $chatId)
+    public function actionView(int $chatId, bool $isHtml = true)
     {
-        if ($chat = Chat::findOne($chatId)) {
-            $chatManager = $this->createChatManager();
-            $chatManager->setReadStatusNewMessages($chat);
-            $newMessage = $chatManager->createMessage($chat);
+        $user = Helper::getUserIdentity();
 
-            return $this->render('view', [
-                'chat' => $chat,
-                'newMessage' => $newMessage,
-            ]);
+        if ($user && $chat = Chat::findOne($chatId)) {
+            if ($isHtml) {
+                $chatManager = $this->createChatManager();
+                $chatManager->setReadStatusNewMessages($chat);
+                $newMessage = $chatManager->createMessage($chat);
+
+                return $this->render('view', [
+                    'chat' => $chat,
+                    'newMessage' => $newMessage,
+                    'ajaxForm' => false,
+                ]);
+            }
+
+            return $this->prepareResponse($chat, $user);
         }
 
-        Yii::$app->session->setFlash('error', 'Chat undefined');
+        return $isHtml ? '' : [];
+    }
 
-        return $this->render('index');
+    /**
+     * @return array
+     */
+    public function actionViewAjax(): array
+    {
+        $response = [
+            'success' => false,
+            'body' => null,
+        ];
+
+        if (Yii::$app->request->isAjax && $user = Helper::getUserIdentity()) {
+            $post = Yii::$app->request->post();
+            if ($post['chatId'] && $chat = Chat::findOne($post['chatId'])) {
+                $response = $this->prepareResponse($chat, $user);
+            }
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        return $response;
     }
 
     /**
@@ -102,6 +132,7 @@ class ChatController extends Controller
         return $this->render('view', [
             'chat' => $chat,
             'newMessage' => $newMessage,
+            'ajaxForm' => false,
         ]);
     }
 
@@ -115,5 +146,33 @@ class ChatController extends Controller
         $user = Helper::getUserIdentity();
 
         return new ChatManager($user);
+    }
+
+    /**
+     * @param Chat $chat
+     * @param User $user
+     * @return array
+     */
+    protected function prepareResponse(Chat $chat, User $user): array
+    {
+        $chatManager = $this->createChatManager();
+        $chatManager->setReadStatusNewMessages($chat);
+        $newMessage = $chatManager->createMessage($chat);
+        $opponent = $chat->getOpponentUser($user);
+
+        return [
+            'success' => true,
+            'body' => [
+                'html' => $this->renderPartial('view', [
+                    'chat' => $chat,
+                    'newMessage' => $newMessage,
+                    'ajaxForm' => true,
+                ]),
+                'opponent' => [
+                    'name' => $opponent->getUsername(),
+                    'img' => UserImageHelper::getUrl($opponent),
+                ]
+            ]
+        ];
     }
 }

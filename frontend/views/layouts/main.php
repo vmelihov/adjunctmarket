@@ -5,6 +5,7 @@
 
 use common\src\helpers\Helper;
 use yii\helpers\Html;
+use yii\log\Logger;
 use yii\web\View;
 use frontend\assets\AppAsset;
 
@@ -50,6 +51,14 @@ AppAsset::register($this);
         </div>
     </div>
 </header>
+
+<?php
+try {
+    echo Yii::$app->runAction('chat/index');
+} catch (Exception $e) {
+    Yii::getLogger()->log($e->getMessage(), Logger::LEVEL_ERROR);
+}
+?>
 
 <div class="container">
     <?php // Alert::widget() ?>

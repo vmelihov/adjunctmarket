@@ -24,11 +24,11 @@ try {
 $user = Helper::getUserIdentity();
 $institution = $model->institution;
 
-if ($chat = Chat::findForVacancyAndAdjunct($model->id, $user->getId())) {
+if ($chat = Chat::findByInstitutionAndAdjunct($model->institution_user_id, $user->getId())) {
     $countUnreadMessages = $chat->getCountUnreadMessagesForUserId($user->getId());
-    $chatUrl = Url::to(['/chat/view', 'chatId' => $chat->id], true);
+    $chatAttr = 'href="#" onclick="openChat(' . $chat->id . ')"';
 } else {
-    $chatUrl = Url::to(['/chat/create', 'param' => $model->institution_user_id], true);
+    $chatAttr = 'href="' . Url::to(['/chat/create', 'param' => $model->institution_user_id], true) . '"';
 }
 
 $proposalForm = new ProposalForm();
@@ -56,7 +56,7 @@ $proposal = $model->getProposalForAdjunct($user->getId());
         <div class="p-sja__settings-right">
             <div class="p-sja__settings-right-chat">
                 <span class="fa fa-envelope p-sja__settings-right-chat-icon"></span>
-                <a class="p-sja__settings-right-chat-link" href="<?= $chatUrl ?>">Start chatting</a>
+                <a class="p-sja__settings-right-chat-link" <?= $chatAttr ?>>Start chatting</a>
             </div>
         </div>
     </div>
@@ -192,7 +192,7 @@ JS;
                     <?php if ($chat): ?>
                         <div class="p-sja-proposals__content-one-header-right">
                             <div class="p-sja-proposals__content-one-header-right-item">
-                                <a href="<?= $chatUrl ?>" class="p-sja-proposals__content-one-header-right-item-link">
+                                <a <?= $chatAttr ?> class="p-sja-proposals__content-one-header-right-item-link">
                                     <span class="fal fa-envelope"></span>
                                     <span class="p-sja-proposals__content-one-header-right-item-link-text"><?= $countUnreadMessages ?> new message</span>
                                 </a>

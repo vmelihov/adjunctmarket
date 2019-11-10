@@ -38,8 +38,7 @@ use yii\helpers\Url;
         </div>
         <div class="p-al__list-one-content-block m-links">
             <?php if ($chat = Chat::findByInstitutionAndAdjunct($user->getId(), $adjunct->user->id)): ?>
-                <a href="<?= Url::to(['/chat/view', 'chatId' => $chat->id], true) ?>"
-                   class="p-al__list-one-content-block-chatting">
+                <a href="#" class="p-al__list-one-content-block-chatting" onclick="openChat(<?= $chat->id ?>)">
                     To chat
                 </a>
             <?php else : ?>

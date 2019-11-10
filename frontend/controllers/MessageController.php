@@ -4,10 +4,13 @@ namespace frontend\controllers;
 
 use Yii;
 use common\models\Message;
+use yii\base\InvalidRouteException;
+use yii\console\Exception;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * MessageController implements the CRUD actions for Message model.
@@ -73,6 +76,30 @@ class MessageController extends Controller
         }
 
         return $this->redirectToChat($model->chat_id);
+    }
+
+    /**
+     * @return array
+     * @throws InvalidRouteException
+     * @throws Exception
+     */
+    public function actionCreateAjax(): array
+    {
+        $response = [
+            'success' => false,
+            'body' => null,
+        ];
+
+        if (Yii::$app->request->isAjax) {
+            $model = new Message();
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                $response = Yii::$app->runAction('chat/view', ['chatId' => $model->chat_id, 'isHtml' => false]);
+            }
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        return $response;
     }
 
     /**

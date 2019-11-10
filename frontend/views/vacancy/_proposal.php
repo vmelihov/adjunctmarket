@@ -40,13 +40,14 @@ $isSaved = $vacancy->isSavedProposal($proposal->id);
                 <?php
                 if ($chat = Chat::findByInstitutionAndAdjunct($vacancy->institution_user_id, $proposal->adjunct_id)) {
                     $countUnreadMessages = $chat->getCountUnreadMessagesForUserId($userId);
-                    $chatUrl = Url::to(['/chat/view', 'chatId' => $chat->id], true);
+                    $chatAttr = 'onclick="openChat(' . $chat->id . ')"';
                     $chatTitle = $countUnreadMessages . ' new message';
                 } else {
                     $chatUrl = Url::to(['/chat/create', 'param' => $proposal->adjunct_id], true);
                     $chatTitle = 'Start chatting';
                 } ?>
-                <a href="<?= $chatUrl ?>" class="p-sj-proposals__content-one-header-right-item-link">
+                <a href="<?= $chatUrl ?? '#' ?>"
+                   class="p-sj-proposals__content-one-header-right-item-link" <?= $chatAttr ?? '' ?>>
                     <span class="fal fa-envelope"></span>
                     <span class="m-mbHide"><?= $chatTitle ?></span>
                 </a>

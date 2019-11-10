@@ -6,6 +6,7 @@ use common\src\helpers\Helper;
 
 /** @var $chat Chat */
 /** @var $newMessage Message */
+/** @var $ajaxForm bool */
 
 $this->title = 'Chat';
 
@@ -13,7 +14,6 @@ $user = Helper::getUserIdentity();
 $opponent = $chat->getOpponentUser($user);
 ?>
 
-<div>
     <div class="g-chat__content-chat-body js-niceScroll">
         <?php
         /** @var Message $message */
@@ -25,9 +25,14 @@ $opponent = $chat->getOpponentUser($user);
         <?php endforeach; ?>
     </div>
 
-    <?= $this->render('@frontend/views/message/create', [
+<?php if ($ajaxForm) {
+    echo $this->render('@frontend/views/message/createAjax', [
         'message' => $newMessage,
         'chat' => $chat,
-    ]) ?>
-
-</div>
+    ]);
+} else {
+    echo $this->render('@frontend/views/message/create', [
+        'message' => $newMessage,
+        'chat' => $chat,
+    ]);
+} ?>

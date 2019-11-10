@@ -191,9 +191,9 @@ class Chat extends ActiveRecord
     }
 
     /**
-     * @return ActiveRecord|Message
+     * @return ActiveRecord|Message|null
      */
-    public function getLastMessage(): ActiveRecord
+    public function getLastMessage(): ?ActiveRecord
     {
         return $this->getMessages()->one();
     }

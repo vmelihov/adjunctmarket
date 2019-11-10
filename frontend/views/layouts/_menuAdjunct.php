@@ -13,7 +13,7 @@ use yii\widgets\Menu;
 
 $menuItems = [
     ['label' => 'Find Jobs', 'url' => ['/vacancy/index']],
-    ['label' => 'Messages', 'url' => ['/chat/index']],
+    ['label' => 'Messages', 'url' => '#', 'options' => ['onclick' => '$(\'#chatList\').show()']],
     ['label' => 'Proposals', 'url' => ['/proposal/index']],
 ];
 
@@ -35,7 +35,7 @@ $unreadMessageCount = Helper::getUnreadMessageCount($user);
             <span><?= $unreadMessageCount ?></span>
         </a>
     <?php else: ?>
-        <a href="<?= Url::to(['/chat/index']) ?>" class="g-header__content-user-messages m-no"></a>
+        <a class="g-header__content-user-messages m-no" onclick="$('#chatList').show()"></a>
     <?php endif; ?>
 
     <div class="g-header__content-user-link js-activeOnOff" data-id="userMenu">
