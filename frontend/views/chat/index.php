@@ -75,7 +75,7 @@ $script = <<< JS
 
 function openChat(chatId) {
     $('#chatList').show();
-    
+
     $.ajax({
         type: 'post',
         url: '$ajaxChatUrl',
@@ -84,9 +84,9 @@ function openChat(chatId) {
         },
         success: function(data) {
             if (data.success === true) {
-                
+
                 let result = data.body;
-                
+
                 $('#chatAjax').html(result.html);
                 $('#chatList').addClass("m-chatOpened");
                 $('#opponentName').text(result.opponent.name);
