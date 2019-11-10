@@ -55,10 +55,14 @@ class ChatController extends Controller
      */
     public function actionIndex()
     {
+        $user = Helper::getUserIdentity();
         $chatManager = $this->createChatManager();
         $chats = $chatManager->getChatList();
 
-        return $this->render('index', ['chats' => $chats]);
+        return $this->render('index', [
+            'chats' => $chats,
+            'user' => $user,
+        ]);
     }
 
     /**

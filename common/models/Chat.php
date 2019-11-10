@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use common\src\helpers\Helper;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -112,20 +111,18 @@ class Chat extends ActiveRecord
         $query = $this->hasMany(Message::class, ['chat_id' => 'id']);
 
         if ($sort) {
-            $query->orderBy(['created' => SORT_DESC]);
+            $query->orderBy(['created' => SORT_ASC]);
         }
 
         return $query;
     }
 
     /**
+     * @param User $user
      * @return User
      */
-    public function getOpponentUser(): User
+    public function getOpponentUser(User $user): User
     {
-        /** @var User $user */
-        $user = Helper::getUserIdentity();
-
         if ($user->getId() === $this->adjunct_user_id) {
             return $this->institutionUser;
         }
@@ -191,6 +188,14 @@ class Chat extends ActiveRecord
             ->andWhere(['<>', 'author_user_id', $userId])
             ->andWhere(['read' => Message::STATUS_UNREAD])
             ->count();
+    }
+
+    /**
+     * @return ActiveRecord|Message
+     */
+    public function getLastMessage(): ActiveRecord
+    {
+        return $this->getMessages()->one();
     }
 
 }
