@@ -9,14 +9,18 @@ use frontend\assets\AppAsset;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
+use yii\log\Logger;
 
 $this->title = 'Log in to get start';
-$this->params['breadcrumbs'][] = $this->title;
 
-$this->registerCssFile('@web/css/registration.css', ['depends' => [AppAsset::class]]);
-$this->registerJsFile('@web/extension/selectize/js/standalone/selectize.min.js', ['depends' => [AppAsset::class]]);
-$this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class]]);
-
+try {
+    $this->registerCssFile('@web/css/registration.css', ['depends' => [AppAsset::class]]);
+    $this->registerJsFile('@web/extension/selectize/js/standalone/selectize.min.js', ['depends' => [AppAsset::class]]);
+    $this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class]]);
+    $this->registerJsFile('@web/js/validation.js', ['depends' => [AppAsset::class]]);
+} catch (Exception $e) {
+    Yii::getLogger()->log($e->getMessage(), Logger::LEVEL_ERROR);
+}
 ?>
 
 <div class="p-reg p-login g-content js-regForm">
@@ -31,6 +35,10 @@ $this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class]]);
             'template' => "{input}\n{error}",
             'options' => [
                 'tag' => false,
+            ],
+            'errorOptions' => [
+                'tag' => 'div',
+                'class' => 'p-reg__form-iblock-error js-validateblockError',
             ],
         ],
     ]); ?>
@@ -56,12 +64,18 @@ $this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class]]);
                 'placeholder' => 'Work email address',
                 'required' => '',
             ]) ?>
+
+            <?php if ($model->getErrors('email')) : ?>
+                <div class="p-reg__form-iblock-error" style="display: block">
+                    <?= $model->getErrors('email')[0] ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
-    <div class="form-group js-passParent">
-        <div class="js-passLine">
-            <div class="p-reg__form-iblock">
+    <div class="form-group">
+        <div class="p-reg__form-iblock js-passParent">
+            <div class="js-passLine">
                 <div class="p-reg__form-iblock-icon js-passEye fa fa-eye"></div>
                 <?= $form->field($model, 'password')->passwordInput([
                     'class' => 'p-reg__form-input js-passInput',
@@ -69,12 +83,18 @@ $this->registerJsFile('@web/js/reg.js', ['depends' => [AppAsset::class]]);
                     'required' => '',
                 ]) ?>
             </div>
-        </div>
-        <div class="js-passLine d-none">
-            <div class="p-reg__form-iblock">
-                <div class="p-reg__form-iblock-icon js-passEye fa fa-eye-slash"></div>
-                <input placeholder="Password" type="text" class="p-reg__form-input js-notPassInput"/>
+            <div class="js-passLine d-none">
+                <div class="p-reg__form-iblock">
+                    <div class="p-reg__form-iblock-icon js-passEye fa fa-eye-slash"></div>
+                    <input placeholder="Password" type="text"
+                           class="p-reg__form-input js-notPassInput"/>
+                </div>
             </div>
+            <?php if (count($model->getErrors('password')) > 0)  : ?>
+                <div class="p-reg__form-iblock-error" style="display: block">
+                    <?= $model->getErrors('password')[0] ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
