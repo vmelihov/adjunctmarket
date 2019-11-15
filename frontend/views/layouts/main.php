@@ -53,10 +53,12 @@ AppAsset::register($this);
 </header>
 
 <?php
-try {
-    echo Yii::$app->runAction('chat/index');
-} catch (Exception $e) {
-    Yii::getLogger()->log($e->getMessage(), Logger::LEVEL_ERROR);
+if ($user) {
+    try {
+        echo Yii::$app->runAction('chat/index');
+    } catch (Exception $e) {
+        Yii::getLogger()->log($e->getMessage(), Logger::LEVEL_ERROR);
+    }
 }
 ?>
 

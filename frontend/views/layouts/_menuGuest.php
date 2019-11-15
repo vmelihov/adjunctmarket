@@ -10,7 +10,7 @@ $menuItems = [
     ['label' => 'How it works', 'url' => ['/site/index']],
     ['label' => 'Find Jobs', 'url' => ['/vacancy/index']],
     ['label' => 'Adjuncts', 'url' => ['/adjunct/index']],
-    ['label' => 'Post a Job', 'url' => ['/site/login']],
+    ['label' => 'Post a Job', 'url' => ['/vacancy/create']],
 ];
 
 echo Menu::widget([
