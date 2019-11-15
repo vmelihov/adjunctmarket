@@ -132,6 +132,7 @@ $this->title = 'Registration';
                     ->dropDownList($universities, [
                         'class' => 'js-selectize',
                         'placeholder' => 'Choose institution',
+                        'prompt' => 'Choose institution'
                     ])
                 ?>
             </div>
