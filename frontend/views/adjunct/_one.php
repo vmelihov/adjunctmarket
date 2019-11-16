@@ -61,9 +61,9 @@ use yii\helpers\Html;
     </div>
     <div class="p-al__list-one-footer js-footer">
         <div class="p-al__list-one-footer-column">
-            <?php if ($adjunct->teach_type_id): ?>
+            <?php if ($adjunct->teaching_experience_type_id): ?>
                 <div class="p-al__list-one-footer-item">
-                    <span class="p-al__list-one-footer-item-name">Teaching experience:</span> <?= $adjunct->teachType->name ?>
+                    <span class="p-al__list-one-footer-item-name">Teaching experience:</span> <?= $adjunct->teachingExperienceType->name ?>
                 </div>
             <?php endif; ?>
 

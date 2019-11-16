@@ -36,7 +36,7 @@ foreach ($proposals as $prop) {
             </div>
 
             <div class="p-sj__content-text">
-                <?= Html::encode($model->description) ?>
+                <?= nl2br(Html::encode($model->description)) ?>
             </div>
 
             <div class="p-sj__content-params">

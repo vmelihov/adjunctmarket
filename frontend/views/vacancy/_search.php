@@ -232,7 +232,7 @@ $user = Helper::getUserIdentity();
                     </label>
                 </div>
 
-                <div class="p-feed__filter-content-block" id="expirienceBlock">
+                <div class="p-feed__filter-content-block" id="expirienceBlock" style="display: none;">
                     <?= $form->field($model, 'teach_type_id')
                         ->radioList($teachingTypes, [
                             'item' => HtmlHelper::getCallbackRadioItem(),

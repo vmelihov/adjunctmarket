@@ -4,6 +4,7 @@ use common\models\Chat;
 use common\models\Proposal;
 use common\models\Vacancy;
 use common\src\helpers\UserImageHelper;
+use yii\helpers\Html;
 
 /** @var Proposal $proposal */
 /** @var Vacancy $vacancy */
@@ -59,7 +60,7 @@ $isSaved = $vacancy->isSavedProposal($proposal->id);
 
     <div class="p-sj-proposals__content-one-content">
         <div class="p-sj-proposals__content-one-content-text">
-            <?= $proposal->letter ?>
+            <?= nl2br(Html::encode($proposal->letter)) ?>
         </div>
         <?php if ($attaches = $proposal->getAttachesUrlArray()): ?>
             <div class="p-sj-proposals__content-one-content-attachments">

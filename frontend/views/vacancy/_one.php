@@ -1,7 +1,6 @@
 <?php
 
 use common\models\Vacancy;
-use common\src\helpers\DateTimeHelper;
 use yii\helpers\Html;
 
 /** @var Vacancy $model */
@@ -30,7 +29,7 @@ use yii\helpers\Html;
     <div class="g-vlist__one-content">
         <div class="g-vlist__one-content-head">
             <div class="g-vlist__one-content-head-time">
-                Posted <?= DateTimeHelper::getTimeAgo($model->created) ?? '-' ?> minutes ago -
+                Posted <?= date('m/d/Y', $model->created) ?> -
                 Proposals <?= count($model->proposals) ?>
             </div>
             <div class="g-vlist__one-content-head-control active js-view">
@@ -41,8 +40,8 @@ use yii\helpers\Html;
                 </div>
             </div>
         </div>
-        <div class="g-vlist__one-content-body js-body">
-            <?= HTML::encode($model->description) ?>
+        <div class="g-vlist__one-content-body js-body" style="display: none;">
+            <?= nl2br(HTML::encode($model->description)) ?>
         </div>
     </div>
 
