@@ -10,7 +10,6 @@ use Throwable;
 use Yii;
 use common\models\Proposal;
 use yii\base\Exception;
-use yii\data\ActiveDataProvider;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -74,12 +73,15 @@ class ProposalController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Proposal::find(),
-        ]);
+        if (!$user = Helper::getUserIdentity()) {
+            return $this->goHome();
+        }
+
+        $proposals = Proposal::findByAdjunct($user->getId());
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
+            'proposals' => $proposals,
+            'user' => $user,
         ]);
     }
 
