@@ -111,6 +111,14 @@ class Adjunct extends ActiveRecord
     }
 
     /**
+     * @return ActiveQuery
+     */
+    public function getTeachingExperienceType(): ActiveQuery
+    {
+        return $this->hasOne(TeachingType::class, ['id' => 'teaching_experience_type_id']);
+    }
+
+    /**
      * @return ActiveQuery|User
      */
     public function getUser(): ActiveQuery
