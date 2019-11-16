@@ -70,7 +70,7 @@ class VacanciesSearch extends Vacancy
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'created' => SORT_ASC,
+                    'created' => SORT_DESC,
                 ]
             ],
         ]);
