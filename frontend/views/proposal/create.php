@@ -9,6 +9,9 @@ use yii\widgets\ActiveForm;
 /* @var $this View */
 /* @var $model ProposalForm */
 /* @var $form ActiveForm */
+
+$model->letter = nl2br($model->letter);
+
 ?>
 
 <?php $form = ActiveForm::begin([
@@ -18,14 +21,19 @@ use yii\widgets\ActiveForm;
         'template' => "{input}\n{error}",
         'options' => [
             'tag' => false,
-        ]
+        ],
+        'errorOptions' => [
+            'class' => 'proposal__form-iblock-error',
+            'style' => 'position: absolute;left: 20px;top: 100%;margin-top: 5px;font-size: 15px;color:#EB5757;display: none;',
+            'tag' => 'div'
+        ],
     ],
 ]); ?>
 
     <div class="p-sja__modal-content-title">
         Cover Letter
     </div>
-    <div class="p-sja__modal-content-message">
+    <div class="p-sja__modal-content-message" style="position: relative">
         <?= $form->field($model, 'letter')->textarea([
             'class' => 'p-sja__modal-content-message-textarea',
             'maxlength' => true
@@ -53,9 +61,9 @@ $script = <<< JS
         $.each(m, function(key, errors){
             let id = '#' + key;
             if (typeof errors !== 'undefined' && errors.length > 0) {
-                $(id).parent().children('.help-block-error').text(errors[0]).addClass('error');
+                $(id).parent().children('.proposal__form-iblock-error').text(errors[0]).show();
             } else {
-                $(id).parent().children('.help-block-error').text('').removeClass('error');
+                $(id).parent().children('.proposal__form-iblock-error').text('').hide();
             }
         });
 

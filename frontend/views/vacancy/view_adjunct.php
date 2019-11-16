@@ -67,7 +67,7 @@ $proposal = $model->getProposalForAdjunct($user->getId());
         </div>
 
         <div class="p-sja__content-text">
-            <?= Html::encode($model->description) ?>
+            <?= nl2br(Html::encode($model->description)) ?>
         </div>
 
         <div class="p-sja__content-params">
@@ -192,8 +192,8 @@ JS;
                     <?php if ($chat): ?>
                         <div class="p-sja-proposals__content-one-header-right">
                             <div class="p-sja-proposals__content-one-header-right-item">
-                                <a href="#" onclick="<?= $onClick ?>">
-                                    class="p-sja-proposals__content-one-header-right-item-link">
+                                <a href="#" onclick="<?= $onClick ?>"
+                                   class="p-sja-proposals__content-one-header-right-item-link">
                                     <span class="fal fa-envelope"></span>
                                     <span class="p-sja-proposals__content-one-header-right-item-link-text"><?= $countUnreadMessages ?> new message</span>
                                 </a>
@@ -205,7 +205,7 @@ JS;
 
                 <div class="p-sja-proposals__content-one-content">
                     <div class="p-sja-proposals__content-one-content-text">
-                        <?= Html::encode($proposal->letter) ?>
+                        <?= nl2br(Html::encode($proposal->letter)) ?>
                     </div>
                     <?php if ($attaches = $proposal->getAttachesUrlArray()): ?>
                         <div class="p-sja-proposals__content-one-content-attachments">

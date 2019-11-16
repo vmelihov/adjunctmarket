@@ -27,7 +27,7 @@ class ProposalForm extends Model
     public function rules(): array
     {
         return [
-            [['adjunct_id', 'vacancy_id', 'state'], 'required'],
+            [['adjunct_id', 'vacancy_id', 'state', 'letter'], 'required'],
             [['id', 'state', 'adjunct_id', 'vacancy_id'], 'integer'],
             [['letter'], 'string', 'max' => 4000],
             [['attaches'], 'safe'],

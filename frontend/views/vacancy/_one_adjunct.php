@@ -46,7 +46,7 @@ $relevance = new AdjunctVacancyRelevance($adjunct);
             </div>
         </div>
         <div class="g-vlist__one-content-body js-body">
-            <?= HTML::encode($model->description) ?>
+            <?= nl2br(HTML::encode($model->description)) ?>
         </div>
     </div>
 
