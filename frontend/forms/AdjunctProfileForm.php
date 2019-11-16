@@ -48,16 +48,11 @@ class AdjunctProfileForm extends Model
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            [
-                [
-                    'user_id',
-                ],
-                'required'
-            ],
-            ['documents', 'safe'],
+            [['user_id'], 'required'],
+            [['documents'], 'safe'],
             [
                 [
                     'title',
@@ -89,7 +84,6 @@ class AdjunctProfileForm extends Model
                 ],
                 'number'
             ],
-//            ['confirm', 'compare', 'compareValue' => 1, 'message' => 'You must confirm'],
         ];
     }
 
@@ -104,9 +98,8 @@ class AdjunctProfileForm extends Model
             return false;
         }
 
-        $saveUserResult = $this->saveUser();
-
         $saveProfileResult = $this->saveAdjunct();
+        $saveUserResult = $this->saveUser();
 
         return $saveUserResult && $saveProfileResult;
     }
@@ -176,7 +169,11 @@ class AdjunctProfileForm extends Model
         $adjunct->whatsapp = $this->whatsapp;
         $adjunct->documents = json_encode($this->documents);
 
-        return $adjunct->save();
+        $result = $adjunct->save();
+
+        $this->id = $adjunct->id;
+
+        return $result;
     }
 
     /**
@@ -214,7 +211,7 @@ class AdjunctProfileForm extends Model
      */
     protected function mergeFiles(array $newFiles): void
     {
-        $this->documents = array_merge($this->getDocuments(), $newFiles);
+        $this->documents = array_unique(array_merge($this->getDocuments(), $newFiles));
     }
 
     /**

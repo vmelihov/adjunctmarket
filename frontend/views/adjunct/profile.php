@@ -76,6 +76,9 @@ $specialitiesArray = explode(' ', $model->specialities);
         ],
     ]); ?>
 
+    <?= $form->field($model, 'id')->hiddenInput()->label(false) ?>
+    <?= $form->field($model, 'user_id')->hiddenInput()->label(false) ?>
+
     <div class="p-epa__tab js-tab active" id="general">
         <div class="p-epa__tab-title">General Settings</div>
             <div class="p-epa__tab-block">
@@ -249,9 +252,6 @@ $specialitiesArray = explode(' ', $model->specialities);
                     ])
                 ?>
             </div>
-
-            <?= $form->field($model, 'id')->hiddenInput()->label(false) ?>
-            <?= $form->field($model, 'user_id')->hiddenInput()->label(false) ?>
 
             <?= Html::submitButton('Apply changes', ['class' => 'p-epa__tab-submit']) ?>
     </div>
@@ -496,15 +496,22 @@ $specialitiesArray = explode(' ', $model->specialities);
 
 <?php
 $script = <<< JS
-    $('#adjunct-profile-form').on('afterValidate', function(e, m) {
-        
+    $('#adjunct-profile-form')
+    .on('beforeValidate', function(e, m, u) {
+        console.log('e, m');
+        console.log(e, m, u);
+    })
+    .on('afterValidate', function(e, m) {
+
         $.each(m, function(key, errors){
+            
+            console.log(errors);
+            
             var id = '#' + key;
             if (typeof errors !== 'undefined' && errors.length > 0) {
-                console.log(id, $(id).parent());
-                $(id).parent().children('.help-block-error').text(errors[0]).addClass('error');
+                $(id).parent().children('.p-epa__tab-iblock-error js-validateblockError').text(errors[0]).show();
             } else {
-                $(id).parent().children('.help-block-error').text('').removeClass('error');
+                $(id).parent().children('.p-epa__tab-iblock-error js-validateblockError').text('').hide();
             }
         });
 
@@ -545,5 +552,5 @@ $script = <<< JS
     
     $('#ooooooo').click();
 JS;
-$this->registerJs($script, View::POS_READY);
+$this->registerJs($script, View::POS_END);
 ?>

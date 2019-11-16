@@ -8,9 +8,11 @@ use common\src\helpers\FileHelper;
 use common\src\helpers\Helper;
 use frontend\forms\AdjunctProfileForm;
 use frontend\models\AdjunctSearch;
+use frontend\models\profile\strategy\AdjunctProfile;
 use Throwable;
 use Yii;
 use yii\base\Exception;
+use yii\base\UserException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\FileHelper as YiiFileHelper;
@@ -38,7 +40,7 @@ class AdjunctController extends Controller
                     ],
                     [
                         'actions' => ['profile'],
-                        'allow' => true,
+                        'allow' => !self::isInstitution(),
                         'roles' => ['@'],
                     ],
                 ],
@@ -46,7 +48,6 @@ class AdjunctController extends Controller
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'profile' => ['post'],
                 ],
             ],
         ];
@@ -118,24 +119,29 @@ class AdjunctController extends Controller
     /**
      * @return string|Response
      * @throws Exception
-     * @throws \yii\base\UserException
+     * @throws UserException
      */
     public function actionProfile()
     {
-        $model = new AdjunctProfileForm();
+        $user = Helper::getUserIdentity();
 
-        if ($post = Yii::$app->request->post()) {
+        if ($user && $post = Yii::$app->request->post()) {
 
+            /** @var AdjunctProfileForm $model */
+            $model = (new AdjunctProfile($user))->getForm();
             $model->teaching_experience = $post['teaching_experience'] ?? 0;
             $model->uploadedFile = UploadedFile::getInstance($model, 'image_file');
 
             if ($model->load($post) && $model->save()) {
                 Yii::$app->session->setFlash('success', 'Profile is saved success');
-
-                return $this->redirect(['site/profile']);
             }
 
             Yii::$app->session->setFlash('error', $model->getErrors());
+
+            return $this->render('profile', [
+                'model' => $model,
+                'user' => $user,
+            ]);
         }
 
         return $this->goHome();
