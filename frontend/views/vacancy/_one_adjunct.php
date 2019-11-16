@@ -2,7 +2,6 @@
 
 use common\models\Adjunct;
 use common\models\Vacancy;
-use common\src\helpers\DateTimeHelper;
 use frontend\models\Relevance\AdjunctVacancyRelevance;
 use yii\helpers\Html;
 
@@ -34,7 +33,7 @@ $relevance = new AdjunctVacancyRelevance($adjunct);
     <div class="g-vlist__one-content">
         <div class="g-vlist__one-content-head">
             <div class="g-vlist__one-content-head-time">
-                Posted <?= DateTimeHelper::getTimeAgo($model->created) ?? '-' ?> minutes ago -
+                Posted <?= date('m/d/Y', $model->created) ?> -
                 Proposals <?= count($model->proposals) ?>
             </div>
             <div class="g-vlist__one-content-head-control active js-view">
