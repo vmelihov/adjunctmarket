@@ -311,6 +311,11 @@ $specialitiesArray = explode(' ', $model->specialities);
                                     'class' => 'p-epa__tab-block-input js-mailValidation',
                                     'placeholder' => 'Work email address',
                             ]) ?>
+
+                            <?php if ($eEmail = $model->getFirstError('email')): ?>
+                                <div class="p-epa__tab-iblock-error js-validateblockError"
+                                     style="display: block"><?= $eEmail ?></div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -415,80 +420,83 @@ $specialitiesArray = explode(' ', $model->specialities);
                 <?php endforeach; ?>
             </div>
 
-        <input type="submit" class="p-epa__tab-submit js-submit" value="Apply changes"/>
+        <?= Html::submitButton('Apply changes', ['class' => 'p-epa__tab-submit']) ?>
     </div>
 
     <div class="p-epa__tab js-tab" id="security">
         <div class="p-epa__tab-title">Password Changing</div>
 
-        <form class="js-form" data-validate="3">
-            <div class="p-epa__tab-iblock js-validateblock js-passParent">
-                <div class="js-passLine">
+        <div class="p-epa__tab-iblock js-validateblock js-passParent">
+            <div class="js-passLine">
+                <div class="p-epa__tab-iblock-icon js-passEye fa fa-eye">
+                </div>
+                <?= $form->field($model, 'old_password')->passwordInput([
+                    'class' => 'p-epa__tab-block-input js-passInput js-textValidation',
+                    'placeholder' => 'Old Password',
+                ]) ?>
+
+                <?php if ($eOldPass = $model->getFirstError('old_password')): ?>
+                    <div class="p-epa__tab-iblock-error js-validateblockError"
+                         style="display: block"><?= $eOldPass ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="js-passLine d-none">
+                <div class="p-epa__tab-iblock">
+                    <div class="p-epa__tab-iblock-icon js-passEye fa fa-eye-slash">
+                    </div>
+                    <input placeholder="Old Password" type="text"
+                           class="p-epa__tab-block-input js-notPassInput"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-epa__tab-iblock js-validateblock js-passParent">
+            <div class="js-passLine">
+                <div class="p-epa__tab-iblock-icon js-passEye fa fa-eye">
+                </div>
+
+                <?= $form->field($model, 'new_password')->passwordInput([
+                    'class' => 'p-epa__tab-block-input js-passInput js-passValidation js-passValidation1',
+                    'placeholder' => 'New Password',
+                ]) ?>
+            </div>
+            <div class="js-passLine d-none">
+                <div class="p-epa__tab-iblock">
+                    <div class="p-epa__tab-iblock-icon js-passEye fa fa-eye-slash">
+                    </div>
+                    <input placeholder="New Password" type="text"
+                           class="p-epa__tab-block-input js-notPassInput"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-epa__tab-iblock js-validateblock js-passParent">
+            <div class="js-passLine">
+                <div class="p-epa__tab-iblock">
                     <div class="p-epa__tab-iblock-icon js-passEye fa fa-eye">
                     </div>
-                    <input placeholder="Old Password" type="password"
-                           class="p-epa__tab-block-input js-passInput js-textValidation" />
-                </div>
-                <div class="js-passLine d-none">
-                    <div class="p-epa__tab-iblock">
-                        <div class="p-epa__tab-iblock-icon js-passEye fa fa-eye-slash">
-                        </div>
-                        <input placeholder="Old Password" type="text"
-                               class="p-epa__tab-block-input js-notPassInput" />
-                    </div>
-                </div>
 
-                <div class="p-epa__tab-iblock-error js-validateblockError">
-                    Please enter any words
+                    <?= $form->field($model, 'repeat_password')->passwordInput([
+                        'class' => 'p-epa__tab-block-input js-passInput js-passValidation js-passValidation2',
+                        'placeholder' => 'Confirm Password',
+                    ]) ?>
+                </div>
+            </div>
+            <div class="js-passLine d-none">
+                <div class="p-epa__tab-iblock">
+                    <div class="p-epa__tab-iblock-icon js-passEye fa fa-eye-slash">
+                    </div>
+                    <input placeholder="Confirm pasword" type="text"
+                           class="p-epa__tab-block-input js-notPassInput"/>
                 </div>
             </div>
 
-            <div class="p-epa__tab-iblock js-validateblock js-passParent">
-                <div class="js-passLine">
-                    <div class="p-epa__tab-iblock-icon js-passEye fa fa-eye">
-                    </div>
-                    <input placeholder="New Password" type="password"
-                           class="p-epa__tab-block-input js-passInput js-passValidation js-passValidation1" />
-                </div>
-                <div class="js-passLine d-none">
-                    <div class="p-epa__tab-iblock">
-                        <div class="p-epa__tab-iblock-icon js-passEye fa fa-eye-slash">
-                        </div>
-                        <input placeholder="New Password" type="text"
-                               class="p-epa__tab-block-input js-notPassInput" />
-                    </div>
-                </div>
-
-                <div class="p-epa__tab-iblock-error js-validateblockError">
-                    Please enter any words
-                </div>
+            <div class="p-epa__tab-iblock-error js-validateblockError">
+                Password dont match
             </div>
+        </div>
 
-            <div class="p-epa__tab-iblock js-validateblock js-passParent">
-                <div class="js-passLine">
-                    <div class="p-epa__tab-iblock">
-                        <div class="p-epa__tab-iblock-icon js-passEye fa fa-eye">
-                        </div>
-                        <input placeholder="Confirm pasword" type="password"
-                               class="p-epa__tab-block-input js-passInput js-passValidation js-passValidation2" />
-                    </div>
-                </div>
-                <div class="js-passLine d-none">
-                    <div class="p-epa__tab-iblock">
-                        <div class="p-epa__tab-iblock-icon js-passEye fa fa-eye-slash">
-                        </div>
-                        <input placeholder="Confirm pasword" type="text"
-                               class="p-epa__tab-block-input js-notPassInput" />
-                    </div>
-                </div>
-
-                <div class="p-epa__tab-iblock-error js-validateblockError">
-                    Password dont match
-                </div>
-            </div>
-
-            <input type="submit" class="p-epa__tab-submit js-submit" value="Apply changes" disabled />
-        </form>
+        <?= Html::submitButton('Apply changes', ['class' => 'p-epa__tab-submit']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
@@ -496,22 +504,13 @@ $specialitiesArray = explode(' ', $model->specialities);
 
 <?php
 $script = <<< JS
-    $('#adjunct-profile-form')
-    .on('beforeValidate', function(e, m, u) {
-        console.log('e, m');
-        console.log(e, m, u);
-    })
-    .on('afterValidate', function(e, m) {
-
+    $('#adjunct-profile-form').on('afterValidate', function(e, m) {
         $.each(m, function(key, errors){
-            
-            console.log(errors);
-            
             var id = '#' + key;
             if (typeof errors !== 'undefined' && errors.length > 0) {
-                $(id).parent().children('.p-epa__tab-iblock-error js-validateblockError').text(errors[0]).show();
+                $(id).parent().children('.p-epa__tab-iblock-error').text(errors[0]).show();
             } else {
-                $(id).parent().children('.p-epa__tab-iblock-error js-validateblockError').text('').hide();
+                $(id).parent().children('.p-epa__tab-iblock-error').text('').hide();
             }
         });
 

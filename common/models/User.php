@@ -338,20 +338,35 @@ class User extends ActiveRecord implements IdentityInterface
             $needSave = true;
         }
 
-        if ($profile->new_password) {
-            if (!$profile->repeat_password) {
-                $profile->addError('repeat_password', 'Please repeat password');
+        if ($this->isInstitution()) {
+            if ($profile->new_password) {
+                if (!$profile->repeat_password) {
+                    $profile->addError('repeat_password', 'Please repeat password');
 
-                return false;
+                    return false;
+                }
+
+                if ($profile->new_password === $profile->repeat_password) {
+                    $this->setPassword($profile->new_password);
+                    $needSave = true;
+                } else {
+                    $profile->addError('repeat_password', 'Password dont match');
+
+                    return false;
+                }
             }
-
-            if ($profile->new_password === $profile->repeat_password) {
-                $this->setPassword($profile->new_password);
-                $needSave = true;
-            } else {
-                $profile->addError('repeat_password', 'Password dont match');
-
-                return false;
+        } else {
+            if ($profile->old_password && $profile->new_password && $profile->repeat_password) {
+                if ($this->validatePassword($profile->old_password)) {
+                    if ($profile->new_password === $profile->repeat_password) {
+                        $this->setPassword($profile->new_password);
+                        $needSave = true;
+                    } else {
+                        $profile->addError('repeat_password', 'Password dont match');
+                    }
+                } else {
+                    $profile->addError('old_password', 'Wrong password');
+                }
             }
         }
 

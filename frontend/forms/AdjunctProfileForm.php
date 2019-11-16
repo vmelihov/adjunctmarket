@@ -37,6 +37,7 @@ class AdjunctProfileForm extends Model
     public $first_name;
     public $last_name;
     public $email;
+    public $old_password;
     public $new_password;
     public $repeat_password;
     public $image_file;
@@ -66,6 +67,7 @@ class AdjunctProfileForm extends Model
                     'first_name',
                     'last_name',
                     'email',
+                    'old_password',
                     'new_password',
                     'repeat_password',
                 ],
@@ -84,6 +86,10 @@ class AdjunctProfileForm extends Model
                 ],
                 'number'
             ],
+            ['new_password', 'string', 'min' => 8, 'skipOnEmpty' => true],
+            ['new_password', 'match', 'pattern' => '/[0-9]+/', 'message' => 'Password should contain at least 1 number.', 'skipOnEmpty' => true],
+            ['new_password', 'match', 'pattern' => '/[A-Z]+/', 'message' => 'Password should contain at least 1 character in uppercase', 'skipOnEmpty' => true],
+            ['repeat_password', 'compare', 'compareAttribute' => 'new_password', 'message' => "Passwords don't match", 'skipOnEmpty' => true],
         ];
     }
 
