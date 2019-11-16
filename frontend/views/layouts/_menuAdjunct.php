@@ -54,15 +54,6 @@ $unreadMessageCount = Helper::getUnreadMessageCount($user);
             <a href="<?= Url::to(['/site/profile']) ?>" class="g-header__content-user-menu-item-link">Profile</a>
         </div>
 
-        <div class="g-header__content-user-menu-out">
-            <?=
-            Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Log Out',
-                ['class' => 'g-header__content-user-menu-out-link logout']
-            )
-            . Html::endForm()
-            ?>
-        </div>
+        <?= $this->render('_logoutForm') ?>
     </div>
 </div>
