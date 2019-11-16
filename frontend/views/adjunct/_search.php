@@ -153,18 +153,18 @@ $education = $dictHelper->prepareEducation()->getResult();
                     Teaching experience
                 </div>
 
-                <label class="ui-radio g-mr30">
+                <label class="ui-radio g-mr30 js-showLink" data-show="expirienceBlock">
                     <input type="radio" name="yn"/>
                     <span class="ui-radio__decor"></span>
                     <span class="ui-radio__text">Yes</span>
                 </label>
-                <label class="ui-radio">
+                <label class="ui-radio js-hideLink" data-hide="expirienceBlock">
                     <input type="radio" name="yn"/>
                     <span class="ui-radio__decor"></span>
                     <span class="ui-radio__text">No</span>
                 </label>
             </div>
-            <div class="p-al__filter-content-block">
+            <div class="p-al__filter-content-block" id="expirienceBlock" style="display: none;">
                 <?= $form->field($model, 'teach_type_id')
                     ->radioList($teachingTypes, [
                         'item' => HtmlHelper::getCallbackRadioItem(),
