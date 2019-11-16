@@ -5,7 +5,6 @@ namespace frontend\forms;
 use common\models\Institution;
 use common\models\University;
 use common\models\User;
-use common\src\helpers\UserImageHelper;
 use yii\base\Exception;
 use yii\base\Model;
 use yii\base\UserException;
@@ -85,68 +84,7 @@ class InstitutionProfileForm extends Model
             throw new UserException('User undefined. id ' . $this->user_id);
         }
 
-        $needSave = false;
-
-        if ($this->email && $user->email != $this->email) {
-            if ($user->isEmailUniqueForOtherUsers($this->email)) {
-                $user->email = $this->email;
-                $needSave = true;
-            } else {
-                $this->addError('email', 'This email address has already been taken.');
-
-                return false;
-            }
-        }
-
-        if ($this->first_name && $user->first_name != $this->first_name) {
-            $user->first_name = $this->first_name;
-            $needSave = true;
-        }
-
-        if ($this->last_name && $user->last_name != $this->last_name) {
-            $user->last_name = $this->last_name;
-            $needSave = true;
-        }
-
-        if ($this->new_password) {
-            if (!$this->repeat_password) {
-                $this->addError('repeat_password', 'Please repeat password');
-
-                return false;
-            }
-
-            if ($this->new_password === $this->repeat_password) {
-                $user->setPassword($this->new_password);
-                $needSave = true;
-            }
-        }
-
-        if ($this->uploadedFile) {
-            $fileName = UserImageHelper::generateImageName($user) . '.' . $this->uploadedFile->extension;
-            $folder = UserImageHelper::getUserFolder($user->getId());
-
-            if ($user->image) {
-                UserImageHelper::unlinkUserImage($user);
-            }
-
-            if ($this->uploadedFile->saveAs($folder . '/' . $fileName)) {
-                $this->uploadedFile = null;
-                $user->image = $fileName;
-                $needSave = true;
-            } else {
-                $this->addError('image_file', 'Error saving image');
-
-                return false;
-            }
-        }
-
-        if ($needSave && !$user->save()) {
-            $this->addErrors($user->getErrors());
-
-            return false;
-        }
-
-        return true;
+        return $user->saveByProfile($this);
     }
 
     /**

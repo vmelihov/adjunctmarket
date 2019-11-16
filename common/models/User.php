@@ -1,8 +1,12 @@
 <?php
 namespace common\models;
 
+use common\src\helpers\UserImageHelper;
+use frontend\forms\AdjunctProfileForm;
+use frontend\forms\InstitutionProfileForm;
 use Yii;
 use yii\base\Exception;
+use yii\base\Model;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -302,5 +306,80 @@ class User extends ActiveRecord implements IdentityInterface
     public function isAdjunct(): bool
     {
         return $this->user_type === self::TYPE_ADJUNCT;
+    }
+
+    /**
+     * @param Model|InstitutionProfileForm|AdjunctProfileForm $profile
+     * @return bool
+     * @throws Exception
+     */
+    public function saveByProfile(Model $profile): bool
+    {
+        $needSave = false;
+
+        if ($profile->email && $this->email != $profile->email) {
+            if ($this->isEmailUniqueForOtherUsers($profile->email)) {
+                $this->email = $profile->email;
+                $needSave = true;
+            } else {
+                $profile->addError('email', 'This email address has already been taken.');
+
+                return false;
+            }
+        }
+
+        if ($profile->first_name && $this->first_name != $profile->first_name) {
+            $this->first_name = $profile->first_name;
+            $needSave = true;
+        }
+
+        if ($profile->last_name && $this->last_name != $profile->last_name) {
+            $this->last_name = $profile->last_name;
+            $needSave = true;
+        }
+
+        if ($profile->new_password) {
+            if (!$profile->repeat_password) {
+                $profile->addError('repeat_password', 'Please repeat password');
+
+                return false;
+            }
+
+            if ($profile->new_password === $profile->repeat_password) {
+                $this->setPassword($profile->new_password);
+                $needSave = true;
+            } else {
+                $profile->addError('repeat_password', 'Password dont match');
+
+                return false;
+            }
+        }
+
+        if ($profile->uploadedFile) {
+            $fileName = UserImageHelper::generateImageName($this) . '.' . $profile->uploadedFile->extension;
+            $folder = UserImageHelper::getUserFolder($this->getId());
+
+            if ($this->image) {
+                UserImageHelper::unlinkUserImage($this);
+            }
+
+            if ($profile->uploadedFile->saveAs($folder . '/' . $fileName)) {
+                $profile->uploadedFile = null;
+                $this->image = $fileName;
+                $needSave = true;
+            } else {
+                $profile->addError('image_file', 'Error saving image');
+
+                return false;
+            }
+        }
+
+        if ($needSave && !$this->save()) {
+            $profile->addErrors($this->getErrors());
+
+            return false;
+        }
+
+        return true;
     }
 }
