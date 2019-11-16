@@ -324,6 +324,7 @@ class SiteController extends Controller
 
             return $this->render($profile->getViewName(), [
                 'model' => $profile->getForm(),
+                'user' => $user,
             ]);
         }
 

@@ -32,6 +32,6 @@ class AdjunctProfile extends BaseProfile
      */
     public function getViewName(): string
     {
-        return 'adjunct';
+        return '@frontend/views/adjunct/profile';
     }
 }

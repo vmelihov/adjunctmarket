@@ -1,6 +1,5 @@
 <?php
 
-use common\models\Adjunct;
 use common\models\Area;
 use common\models\Education;
 use common\models\Specialty;
@@ -11,6 +10,7 @@ use common\models\User;
 use common\src\helpers\HtmlHelper;
 use common\src\helpers\UserImageHelper;
 use frontend\assets\AppAsset;
+use frontend\forms\AdjunctProfileForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -19,7 +19,7 @@ use yii\log\Logger;
 use yii\web\View;
 
 /* @var $this View */
-/* @var $model Adjunct */
+/* @var $model AdjunctProfileForm */
 /* @var $form ActiveForm */
 /* @var $user User */
 
@@ -34,14 +34,14 @@ try {
 
 $this->title = 'Adjunct profile';
 
-//var_dump($model->getAttributes());
-
 $specialities = ArrayHelper::map(Specialty::findWithFacultyName(), 'id', 'name', 'faculty');
 $teachingTypes = ArrayHelper::map(TeachingType::find()->all(), 'id', 'name');
 $teachingTimes = ArrayHelper::map(TeachingTime::find()->all(), 'id', 'name');
 $teachingPeriods = ArrayHelper::map(TeachingPeriod::find()->all(), 'id', 'name');
 $education = ArrayHelper::map(Education::find()->all(), 'id', 'name');
 $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
+
+$specialitiesArray = explode(' ', $model->specialities);
 ?>
 
 <div class="p-epa">
@@ -102,7 +102,8 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
 
                                         <ul>
                                             <?php foreach ($specialityArray as $specialityId => $speciality): ?>
-                                                <li data-name="<?= $specialityId ?>">
+                                                <li<?= in_array($specialityId, $specialitiesArray, false) ? ' class="chosen"' : '' ?>
+                                                        data-name="<?= $specialityId ?>">
                                                     <?= $speciality ?>
                                                 </li>
                                             <?php endforeach; ?>
@@ -113,7 +114,20 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
                         </div>
                     </div>
 
-                    <div class="ui-hardselect__body js-hardSelectBody"></div>
+                    <div class="ui-hardselect__body js-hardSelectBody" style="display: block">
+                        <?php foreach ($specialities as $faculty => $specialityArray):
+                            foreach ($specialityArray as $specialityId => $speciality):
+                                if (in_array($specialityId, $specialitiesArray, false)): ?>
+                                    <div class="ui-hardselect__body-item">
+                                        <?= $speciality ?>&nbsp;<i class="ui-hardselect__body-item-icon fal fa-times"
+                                                                   data-cat="<?= $faculty ?>"
+                                                                   data-item="<?= $specialityId ?>"></i>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </div>
+
                     <?= $form->field($model, 'specialities')->hiddenInput(['class' => 'js-hardSelectInput']) ?>
                 </div>
             </div>
@@ -124,12 +138,13 @@ $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
                 </div>
                 <div class="g-mb20">
                     <label class="ui-radio g-mr15 js-showLink" data-show="expirienceBlock">
-                        <input type="radio" name="exp" <?= $model->teaching_experience_type_id ? 'checked' : '' ?>/>
+                        <input type="radio" name="teaching_experience"
+                               value="1" <?= $model->teaching_experience_type_id ? 'checked' : '' ?>/>
                         <span class="ui-radio__decor"></span>
                         <span class="ui-radio__text">Yes</span>
                     </label>
                     <label class="ui-radio js-hideLink" data-hide="expirienceBlock">
-                        <input type="radio" name="exp" />
+                        <input type="radio" name="teaching_experience" value="0"/>
                         <span class="ui-radio__decor"></span>
                         <span class="ui-radio__text">No</span>
                     </label>

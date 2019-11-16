@@ -13,6 +13,7 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\ErrorAction;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 class AdjunctController extends Controller
 {
@@ -79,9 +80,12 @@ class AdjunctController extends Controller
      */
     public function actionIndex(): string
     {
+        if (!$user = Helper::getUserIdentity()) {
+            $this->goHome();
+        }
+
         $params = Yii::$app->request->getQueryParams();
         $page = Yii::$app->request->post('page', 0);
-        $user = Helper::getUserIdentity();
         $searchModel = new AdjunctSearch();
 
         $dataProvider = $searchModel->search($params, $page);
@@ -109,12 +113,18 @@ class AdjunctController extends Controller
 
     /**
      * @return string|Response
+     * @throws \yii\base\Exception
+     * @throws \yii\base\UserException
      */
     public function actionProfile()
     {
         $model = new AdjunctProfileForm();
 
         if ($post = Yii::$app->request->post()) {
+
+            $model->teaching_experience = $post['teaching_experience'] ?? 0;
+            $model->uploadedFile = UploadedFile::getInstance($model, 'image_file');
+
             if ($model->load($post) && $model->save()) {
                 Yii::$app->session->setFlash('success', 'Profile is saved success');
 

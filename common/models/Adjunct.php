@@ -21,6 +21,12 @@ use yii\db\ActiveRecord;
  * @property int $teach_time_id
  * @property int $teach_period_id
  * @property string $specialities
+ * @property string $phone
+ * @property int $location_id
+ * @property string $linledin
+ * @property string $whatsapp
+ * @property string $facebook
+ * @property string $documents
  *
  * @property Education $education
  * @property TeachingPeriod $teachPeriod
@@ -45,14 +51,16 @@ class Adjunct extends ActiveRecord
     public function rules(): array 
     {
         return [
-            [['age', 'sex', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id'], 'integer'],
+            [['age', 'sex', 'education_id', 'teach_type_id', 'teach_time_id', 'teach_period_id', 'teaching_experience_type_id', 'location_id'], 'integer'],
             [['title', 'description'], 'string', 'max' => 200],
-            [['teach_locations', 'specialities', 'teaching_experience_type_id'], 'string', 'max' => 255],
+            [['teach_locations', 'specialities'], 'string', 'max' => 255],
+            [['phone', 'linledin', 'facebook', 'documents'], 'string'],
             [['education_id'], 'exist', 'skipOnError' => true, 'targetClass' => Education::class, 'targetAttribute' => ['education_id' => 'id']],
             [['teach_period_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingPeriod::class, 'targetAttribute' => ['teach_period_id' => 'id']],
             [['teach_time_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingTime::class, 'targetAttribute' => ['teach_time_id' => 'id']],
             [['teach_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => TeachingType::class, 'targetAttribute' => ['teach_type_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['location'], 'exist', 'skipOnError' => true, 'targetClass' => Area::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -124,6 +132,14 @@ class Adjunct extends ActiveRecord
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getLocation(): ActiveQuery
+    {
+        return $this->hasOne(Area::class, ['id' => 'location_id']);
     }
 
     /**
