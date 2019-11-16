@@ -41,7 +41,7 @@ use yii\helpers\Html;
                 </div>
             </div>
         </div>
-        <div class="g-vlist__one-content-body js-body">
+        <div class="g-vlist__one-content-body js-body" style="display: none;">
             <?= nl2br(HTML::encode($model->description)) ?>
         </div>
     </div>
