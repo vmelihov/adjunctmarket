@@ -117,4 +117,13 @@ class Proposal extends ActiveRecord
 
         return $result;
     }
+
+    /**
+     * @param int $adjunctId
+     * @return ActiveRecord[]
+     */
+    public static function findByAdjunct(int $adjunctId): array
+    {
+        return self::find()->where(['adjunct_id' => $adjunctId])->all();
+    }
 }

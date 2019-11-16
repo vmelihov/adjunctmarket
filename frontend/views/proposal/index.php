@@ -1,39 +1,34 @@
 <?php
 
+use common\models\Proposal;
+use common\models\User;
+use frontend\assets\AppAsset;
 use yii\helpers\Html;
-use yii\grid\GridView;
+use yii\log\Logger;
+use yii\web\View;
 
-/* @var $this yii\web\View */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $this View */
+/* @var $proposals Proposal[] */
+/* @var $user User */
 
 $this->title = 'Proposals';
-$this->params['breadcrumbs'][] = $this->title;
+
+try {
+    $this->registerCssFile('@web/css/feed-auth.css', ['depends' => [AppAsset::class]]);
+} catch (Exception $e) {
+    Yii::getLogger()->log($e->getMessage(), Logger::LEVEL_ERROR);
+}
 ?>
-<div class="proposal-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="p-feed">
+    <h1 class="p-jobs__title"><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Proposal', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'letter',
-            'state',
-            'created',
-            'updated',
-            //'adjunct_id',
-            //'vacancy_id',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-
-
+    <div id="itemList" class="g-vlist">
+        <?php foreach ($proposals as $proposal) : ?>
+            <?= $this->render('@frontend/views/vacancy/_one_adjunct', [
+                'model' => $proposal->vacancy,
+                'adjunct' => $user->profile
+            ]) ?>
+        <?php endforeach; ?>
+    </div>
 </div>
