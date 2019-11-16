@@ -151,11 +151,17 @@ class Adjunct extends ActiveRecord
         return self::findOne(['user_id' => $userId]);
     }
 
+    /**
+     * @return array
+     */
     public function getSpecialitiesArray(): array
     {
         return json_decode($this->specialities, true);
     }
 
+    /**
+     * @return array
+     */
     public function getLocationsArray(): array
     {
         $decoded = json_decode($this->teach_locations, true);
@@ -171,6 +177,16 @@ class Adjunct extends ActiveRecord
         $locationIds = $this->getLocationsArray();
 
         return Area::find()->where(['in', 'id', $locationIds])->all();
+    }
+
+    /**
+     * @return array
+     */
+    public function getDocumentsArray(): array
+    {
+        $decoded = json_decode($this->documents, true);
+
+        return is_array($decoded) ? $decoded : [$decoded];
     }
 
     /**

@@ -46,6 +46,45 @@ class FileHelper
     }
 
     /**
+     * @param int $userId
+     * @return string
+     * @throws Exception
+     */
+    public static function getDocumentFolder(int $userId): string
+    {
+        $path = Yii::getAlias('@webroot/') . self::getDocumentRelativeFolder($userId);
+
+        return self::create($path);
+    }
+
+    /**
+     * @param int $userId
+     * @param string $filename
+     * @return string
+     */
+    public static function getDocumentUrl(int $userId, string $filename): string
+    {
+        return Url::to('@web/') . self::getDocumentRelativeFolder($userId) . '/' . $filename;
+    }
+
+    public static function prepareDocumentFileName(string $baseName, string $extension): string
+    {
+        return self::normalizeFileName($baseName) . '.' . $extension;
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    public static function normalizeFileName(string $name): string
+    {
+        $result = preg_replace('/\s+/', '_', $name);
+        $result = preg_replace('/\W/', '', $result);
+
+        return $result;
+    }
+
+    /**
      * @param string $path
      * @return string
      * @throws Exception
@@ -76,5 +115,14 @@ class FileHelper
     protected static function getVacancyRelativeFolder(int $userId, int $vacancyId): string
     {
         return self::getUserRelativeFolder($userId) . '/vacancy_' . $vacancyId;
+    }
+
+    /**
+     * @param int $userId
+     * @return string
+     */
+    protected static function getDocumentRelativeFolder(int $userId): string
+    {
+        return self::getUserRelativeFolder($userId) . '/documents';
     }
 }

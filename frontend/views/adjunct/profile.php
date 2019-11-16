@@ -7,6 +7,7 @@ use common\models\TeachingPeriod;
 use common\models\TeachingTime;
 use common\models\TeachingType;
 use common\models\User;
+use common\src\helpers\FileHelper;
 use common\src\helpers\HtmlHelper;
 use common\src\helpers\UserImageHelper;
 use frontend\assets\AppAsset;
@@ -52,7 +53,7 @@ $specialitiesArray = explode(' ', $model->specialities);
         <div class="p-epa__menu-link js-tabLink active" data-tab="general">
             General Settings
         </div>
-        <div class="p-epa__menu-link js-tabLink" data-tab="information">
+        <div id="ooooooo" class="p-epa__menu-link js-tabLink" data-tab="information">
             Information
         </div>
         <div class="p-epa__menu-link js-tabLink" data-tab="security">
@@ -307,7 +308,8 @@ $specialitiesArray = explode(' ', $model->specialities);
 
                             <?= $form->field($model, 'email')
                                 ->input('email', [
-                                    'class' => 'p-epa__tab-iblock-input js-textValidation',
+                                    'class' => 'p-epa__tab-block-input js-mailValidation',
+                                    'placeholder' => 'Work email address',
                             ]) ?>
                         </div>
                     </div>
@@ -319,8 +321,8 @@ $specialitiesArray = explode(' ', $model->specialities);
 
                             <?= $form->field($model, 'phone')
                                 ->input('tel', [
-                                    'placeholder' => 'Cellphone',
                                     'class' => 'p-epa__tab-block-input js-textValidation',
+                                    'placeholder' => 'Cellphone',
                             ]) ?>
                         </div>
                     </div>
@@ -394,30 +396,26 @@ $specialitiesArray = explode(' ', $model->specialities);
                 </div>
                 <div class="p-epa__tab-block-upload">
                     Upload Documents
-                    <?= $form->field($model, 'doc_files')->fileInput([
+                    <?= $form->field($model, 'doc_files[]')->fileInput([
                         'class' => 'p-epa__tab-block-upload-input',
+                        'multiple' => true,
                     ]) ?>
-                    <input type="file" value="" class="p-epa__tab-block-upload-input" />
                 </div>
             </div>
 
             <div class="p-epa__tab-block">
-                <div class="p-epa__tab-block-sertificate">
-                    <div class="p-epa__tab-block-sertificate-del fal fa-times"></div>
-                    <img src="https://diplomaclassics.com/images/Entities/document/v2/HarvLeadershipWestHoriz_H_original.png"
-                         alt="" class="p-epa__tab-block-sertificate-img" />
-                    <div class="p-epa__tab-block-sertificate-name">Harward_Diploma_Setificate.jpg</div>
-                </div>
-
-                <div class="p-epa__tab-block-sertificate">
-                    <div class="p-epa__tab-block-sertificate-del fal fa-times"></div>
-                    <img src="https://diplomaclassics.com/images/Entities/document/v2/HarvLeadershipWestHoriz_H_original.png"
-                         alt="" class="p-epa__tab-block-sertificate-img" />
-                    <div class="p-epa__tab-block-sertificate-name">Harward_Diploma_Setificate.jpg</div>
-                </div>
+                <?php foreach ($model->getDocuments() as $document): ?>
+                    <div class="p-epa__tab-block-sertificate">
+                        <a href="<?= Url::to(['adjunct/unlink', 'fileName' => $document]) ?>"
+                           class="p-epa__tab-block-sertificate-del fal fa-times"></a>
+                        <img src="<?= FileHelper::getDocumentUrl($user->getId(), $document) ?>"
+                             alt="" class="p-epa__tab-block-sertificate-img"/>
+                        <div class="p-epa__tab-block-sertificate-name"><?= $document ?></div>
+                    </div>
+                <?php endforeach; ?>
             </div>
 
-            <input type="submit" class="p-epa__tab-submit js-submit" value="Apply changes" disabled />
+        <input type="submit" class="p-epa__tab-submit js-submit" value="Apply changes"/>
     </div>
 
     <div class="p-epa__tab js-tab" id="security">
@@ -543,6 +541,9 @@ $script = <<< JS
         tabMenu.slideToggle();
         chosen.toggleClass("active");
     });
+    
+    
+    $('#ooooooo').click();
 JS;
 $this->registerJs($script, View::POS_READY);
 ?>

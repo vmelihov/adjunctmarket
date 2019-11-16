@@ -152,7 +152,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function isEmailUniqueForOtherUsers(string $newEmail): bool
     {
-        return !static::find()->where('id != :id and email = \':email\'', ['id' => $this->getId(), 'type' => $newEmail])->one();
+        return !static::find()->where('id != :id and email = :email', ['id' => $this->getId(), 'email' => $newEmail])->one();
     }
 
     /**

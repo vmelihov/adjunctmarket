@@ -54,16 +54,28 @@ class AdjunctProfileForm extends Model
             [
                 [
                     'user_id',
-//                    'education_id',
-//                    'teach_type_id',
-//                    'teach_time_id',
-//                    'teach_period_id',
-//                    'specialities',
                 ],
                 'required'
             ],
-            ['teach_locations', 'safe'],
-            [['title', 'description', 'specialities', 'phone'], 'trim'],
+            ['documents', 'safe'],
+            [
+                [
+                    'title',
+                    'description',
+                    'specialities',
+                    'teach_locations',
+                    'phone',
+                    'linledin',
+                    'facebook',
+                    'whatsapp',
+                    'first_name',
+                    'last_name',
+                    'email',
+                    'new_password',
+                    'repeat_password',
+                ],
+                'trim'
+            ],
             [
                 [
                     'id',
@@ -77,7 +89,7 @@ class AdjunctProfileForm extends Model
                 ],
                 'number'
             ],
-            ['confirm', 'compare', 'compareValue' => 1, 'message' => 'You must confirm'],
+//            ['confirm', 'compare', 'compareValue' => 1, 'message' => 'You must confirm'],
         ];
     }
 
@@ -128,6 +140,10 @@ class AdjunctProfileForm extends Model
         return $user->saveByProfile($this);
     }
 
+    /**
+     * @return bool
+     * @throws Exception
+     */
     protected function saveAdjunct(): bool
     {
         if ($this->id) {
@@ -138,9 +154,9 @@ class AdjunctProfileForm extends Model
             $adjunct = new Adjunct();
         }
 
-//        if (!$this->uploadDocuments($adjunct)) {
-//            return false;
-//        }
+        if (!$this->uploadDocuments($adjunct)) {
+            return false;
+        }
 
         $adjunct->user_id = $this->user_id;
         $adjunct->title = $this->title;
@@ -158,7 +174,7 @@ class AdjunctProfileForm extends Model
         $adjunct->linledin = $this->linledin;
         $adjunct->facebook = $this->facebook;
         $adjunct->whatsapp = $this->whatsapp;
-        $adjunct->documents = $this->getArrayAsString(explode(' ', $this->documents));
+        $adjunct->documents = json_encode($this->documents);
 
         return $adjunct->save();
     }
@@ -170,15 +186,14 @@ class AdjunctProfileForm extends Model
      */
     protected function uploadDocuments(Adjunct $adjunct): bool
     {
-        $user = $adjunct->getUser();
-
-        $files = UploadedFile::getInstances($this, 'files');
+        $user = $adjunct->user;
         $newFiles = [];
+        $files = UploadedFile::getInstances($this, 'doc_files');
 
         foreach ($files as $file) {
 
-            $fileName = 'doc_' . $this->normalizeFileName($file->baseName) . '.' . $file->extension;
-            $folder = FileHelper::getUserFolder($user->id);
+            $fileName = FileHelper::prepareDocumentFileName($file->baseName, $file->extension);
+            $folder = FileHelper::getDocumentFolder($user->getId());
 
             if ($file->saveAs($folder . '/' . $fileName)) {
                 $newFiles[] = $fileName;
@@ -192,15 +207,6 @@ class AdjunctProfileForm extends Model
         }
 
         return true;
-
-    }
-
-    protected function normalizeFileName(string $name): string
-    {
-        $result = preg_replace('/\s+/', '_', $name);
-        $result = preg_replace('/\W/', '', $result);
-
-        return $result;
     }
 
     /**
@@ -208,15 +214,15 @@ class AdjunctProfileForm extends Model
      */
     protected function mergeFiles(array $newFiles): void
     {
-        $this->documents = json_encode(array_merge($this->getDocumentsArray(), $newFiles));
+        $this->documents = array_merge($this->getDocuments(), $newFiles);
     }
 
     /**
      * @return array
      */
-    protected function getDocumentsArray(): array
+    public function getDocuments(): array
     {
-        return json_decode($this->documents, true) ?? [];
+        return $this->documents ?? [];
     }
 
 }
