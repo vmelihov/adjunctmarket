@@ -43,6 +43,7 @@ $education = ArrayHelper::map(Education::find()->all(), 'id', 'name');
 $areas = ArrayHelper::map(Area::find()->all(), 'id', 'nameWithState');
 
 $specialitiesArray = explode(' ', $model->specialities);
+var_dump($model->teaching_experience_type_id);
 ?>
 
 <div class="p-epa">

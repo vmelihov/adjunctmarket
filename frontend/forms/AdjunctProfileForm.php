@@ -104,6 +104,10 @@ class AdjunctProfileForm extends Model
             return false;
         }
 
+        if ($this->teaching_experience == 0) {
+            $this->teaching_experience_type_id = null;
+        }
+
         $saveProfileResult = $this->saveAdjunct();
         $saveUserResult = $this->saveUser();
 
@@ -164,7 +168,7 @@ class AdjunctProfileForm extends Model
         $adjunct->teach_type_id = $this->teach_type_id;
         $adjunct->teach_time_id = $this->teach_time_id;
         $adjunct->teach_period_id = $this->teach_period_id;
-        $adjunct->teaching_experience_type_id = $this->teaching_experience ? $this->teaching_experience_type_id : null;
+        $adjunct->teaching_experience_type_id = $this->teaching_experience_type_id;
         $adjunct->teach_locations = $this->getArrayAsString(explode(' ', $this->teach_locations));
         $adjunct->specialities = $this->getArrayAsString(explode(' ', $this->specialities));
 
