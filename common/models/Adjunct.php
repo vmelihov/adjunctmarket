@@ -34,6 +34,7 @@ use yii\db\ActiveRecord;
  * @property TeachingType $teachType
  * @property TeachingType $teachingExperienceType
  * @property User $user
+ * @property Area $location
  */
 class Adjunct extends ActiveRecord
 {

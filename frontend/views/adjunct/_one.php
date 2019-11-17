@@ -21,19 +21,37 @@ use yii\helpers\Html;
             <a href="" class="p-al__list-one-content-block-name">
                 <?= Html::encode($adjunct->user->getUsername()) ?>
             </a>
-            <div class="p-al__list-one-content-block-status m-busy">Busy</div>
+            <!--            <div class="p-al__list-one-content-block-status m-busy">Busy</div>-->
             <div class="p-al__list-one-content-block-place">
-                Washington DC
+                <?= $adjunct->location->name ?>
             </div>
         </div>
         <div class="p-al__list-one-content-block m-tel">
-            <a href="telTo:+1800882992" class="p-al__list-one-content-block-tel">+1 800 882 992</a>
+            <a href="telTo:+<?= $adjunct->phone ?>" class="p-al__list-one-content-block-tel"><?= $adjunct->phone ?></a>
             <div class="p-al__list-one-content-block-tel-title">Cellphone</div>
         </div>
         <div class="p-al__list-one-content-block m-social">
-            <a href="" class="p-al__list-one-content-block-social fab fa-linkedin-in"></a>
-            <a href="" class="p-al__list-one-content-block-social fab fa-facebook-f"></a>
-            <a href="" class="p-al__list-one-content-block-social fab fa-whatsapp"></a>
+            <?php if ($adjunct->linledin): ?>
+                <a href="<?= $adjunct->linledin ?>" target="_blank"
+                   class="p-al__list-one-content-block-social fab fa-linkedin-in"></a>
+            <?php else: ?>
+                <span class="p-al__list-one-content-block-social fab fa-linkedin m-none"></span>
+            <?php endif; ?>
+
+            <?php if ($adjunct->facebook): ?>
+                <a href="<?= $adjunct->facebook ?>" target="_blank"
+                   class="p-al__list-one-content-block-social fab fa-facebook-f"></a>
+            <?php else: ?>
+                <span class="p-al__list-one-content-block-social fab fa-facebook m-none"></span>
+            <?php endif; ?>
+
+            <?php if ($adjunct->whatsapp): ?>
+                <a href="<?= $adjunct->whatsapp ?>" target="_blank"
+                   class="p-al__list-one-content-block-social fab fa-whatsapp"></a>
+            <?php else: ?>
+                <span class="p-al__list-one-content-block-social fab fa-whatsapp m-none"></span>
+            <?php endif; ?>
+
         </div>
         <div class="p-al__list-one-content-block m-links">
             <?php if ($chat = Chat::findByInstitutionAndAdjunct($user->getId(), $adjunct->user->id)): ?>
