@@ -24,7 +24,7 @@ use yii\helpers\Url;
             </a>
             <!--            <div class="p-al__list-one-content-block-status m-busy">Busy</div>-->
             <div class="p-al__list-one-content-block-place">
-                <?= $adjunct->location->name ?>
+                <?= $adjunct->location ? $adjunct->location->name : '' ?>
             </div>
         </div>
         <div class="p-al__list-one-content-block m-tel">
