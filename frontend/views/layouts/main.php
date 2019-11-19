@@ -89,6 +89,12 @@ if ($user) {
     </div>
 </footer>
 
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <img class="js-modalImg p-pa__modal-img" alt="" src=""/>
+    </div>
+</div>
+
 <?php $this->endBody() ?>
 </body>
 </html>

@@ -35,6 +35,7 @@ use yii\db\ActiveRecord;
  * @property TeachingType $teachingExperienceType
  * @property User $user
  * @property Area $location
+ * @property Specialty[] $specialityArray
  */
 class Adjunct extends ActiveRecord
 {
@@ -161,6 +162,16 @@ class Adjunct extends ActiveRecord
     }
 
     /**
+     * @return Specialty[]
+     */
+    public function getSpecialityArray(): array
+    {
+        $ids = $this->getSpecialitiesArray();
+
+        return Specialty::find()->where(['in', 'id', $ids])->all();
+    }
+
+    /**
      * @return array
      */
     public function getLocationsArray(): array
@@ -225,5 +236,23 @@ class Adjunct extends ActiveRecord
         }
 
         return $res;
+    }
+
+    /**
+     * @return Institution[]
+     */
+    public function getImInFavorites(): array
+    {
+        $result = [];
+
+        $institutions = Institution::find()->select('user_id, favorite_adjuncts')->all();
+        foreach ($institutions as $inst) {
+            if (in_array($this->id, $inst->getFavoriteAdjunctsArray(), false)) {
+                $result[] = $inst;
+            }
+
+        }
+
+        return $result;
     }
 }

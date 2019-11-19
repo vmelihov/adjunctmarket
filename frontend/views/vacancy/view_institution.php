@@ -110,7 +110,8 @@ foreach ($proposals as $prop) {
                     <img class="p-sj__aside-adjunct-ava"
                          src="<?= UserImageHelper::getUrl($adjunct->user) ?>"
                          alt=""/>
-                    <a class="p-sj__aside-adjunct-name" href=""><?= Html::encode($adjunct->user->getUsername()) ?></a>
+                    <a class="p-sj__aside-adjunct-name"
+                       href="<?= Url::to(['/adjunct/view', 'id' => $adjunct->id]) ?>"><?= Html::encode($adjunct->user->getUsername()) ?></a>
                 </div>
             <?php endforeach; ?>
         </div>

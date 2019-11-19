@@ -5,6 +5,7 @@ use common\models\Chat;
 use common\models\User;
 use common\src\helpers\UserImageHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /** @var $adjunct Adjunct */
 /** @var $user User */
@@ -18,7 +19,7 @@ use yii\helpers\Html;
                 <img src="<?= UserImageHelper::getUrl($adjunct->user) ?>"
                      alt="" class="p-al__list-one-content-block-ava-img">
             </div>
-            <a href="" class="p-al__list-one-content-block-name">
+            <a href="<?= Url::to(['/adjunct/view', 'id' => $adjunct->id]) ?>" class="p-al__list-one-content-block-name">
                 <?= Html::encode($adjunct->user->getUsername()) ?>
             </a>
             <!--            <div class="p-al__list-one-content-block-status m-busy">Busy</div>-->
@@ -51,7 +52,6 @@ use yii\helpers\Html;
             <?php else: ?>
                 <span class="p-al__list-one-content-block-social fab fa-whatsapp m-none"></span>
             <?php endif; ?>
-
         </div>
         <div class="p-al__list-one-content-block m-links">
             <?php if ($chat = Chat::findByInstitutionAndAdjunct($user->getId(), $adjunct->user->id)): ?>

@@ -59,11 +59,12 @@ class Specialty extends ActiveRecord
     }
 
     /**
+     * @param string $separator
      * @return string
      */
-    public function getNameWithFaculty(): string
+    public function getNameWithFaculty(string $separator = ', '): string
     {
-        return $this->faculty->name . ', ' . $this->name;
+        return $this->faculty->name . $separator . $this->name;
     }
 
     public static function findWithFacultyName(): array

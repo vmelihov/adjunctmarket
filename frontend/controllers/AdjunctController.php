@@ -117,6 +117,21 @@ class AdjunctController extends Controller
     }
 
     /**
+     * @param int $id
+     * @return string
+     */
+    public function actionView(int $id): string
+    {
+        $user = Helper::getUserIdentity();
+        $adjunct = Adjunct::findOne($id);
+
+        return $this->render('view', [
+            'adjunct' => $adjunct,
+            'user' => $user,
+        ]);
+    }
+
+    /**
      * @return string|Response
      * @throws Exception
      * @throws UserException

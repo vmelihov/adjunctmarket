@@ -391,6 +391,7 @@ $specialitiesArray = explode(' ', $model->specialities);
                 <?= $form->field($model, 'whatsapp')
                     ->textInput([
                         'class' => 'p-epa__tab-iblock-input',
+                        'placeholder' => 'https://link.com',
                     ])
                 ?>
             </div>

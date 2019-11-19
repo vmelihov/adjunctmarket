@@ -178,7 +178,7 @@ JS;
                             <img src="<?= UserImageHelper::getUrl($institution) ?>" alt=""
                                  class="p-sja-proposals__content-one-header-left-ava-img">
                         </div>
-                        <a href="" class="p-sja-proposals__content-one-header-left-name">
+                        <a class="p-sja-proposals__content-one-header-left-name">
                             <?= Html::encode($institution->getUsername()) ?>
                         </a>
 
