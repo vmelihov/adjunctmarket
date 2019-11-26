@@ -20,7 +20,7 @@ try {
 }
 ?>
 
-<div class="p-feed">
+<div class="p-feed container">
     <h1 class="p-jobs__title"><?= Html::encode($this->title) ?></h1>
 
     <div id="itemList" class="g-vlist">
