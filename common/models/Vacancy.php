@@ -264,4 +264,16 @@ class Vacancy extends ActiveRecord
 
         return true;
     }
+
+    /**
+     * @param int $limit
+     * @return self[]
+     */
+    public static function getNew(int $limit = 5): array
+    {
+        return self::find()->where(['deleted' => 0])
+            ->orderBy(['created' => SORT_DESC])
+            ->limit($limit)
+            ->all();
+    }
 }

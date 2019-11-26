@@ -156,7 +156,7 @@ class Adjunct extends ActiveRecord
     /**
      * @return array
      */
-    public function getSpecialitiesArray(): array
+    public function getSpecialityIdsArray(): array
     {
         return json_decode($this->specialities, true);
     }
@@ -166,9 +166,23 @@ class Adjunct extends ActiveRecord
      */
     public function getSpecialityArray(): array
     {
-        $ids = $this->getSpecialitiesArray();
+        $ids = $this->getSpecialityIdsArray();
 
         return Specialty::find()->where(['in', 'id', $ids])->all();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getSpecialityNameArray(): array
+    {
+        $result = [];
+
+        foreach ($this->getSpecialityArray() as $speciality) {
+            $result[] = $speciality->name;
+        }
+
+        return $result;
     }
 
     /**
@@ -229,7 +243,7 @@ class Adjunct extends ActiveRecord
         foreach ($res as $key => $item) {
             if (
                 ($vacancy->area_id && !in_array($vacancy->area_id, $item->getLocationsArray()))
-                || ($vacancy->specialty_id && !in_array($vacancy->specialty_id, $item->getSpecialitiesArray()))
+                || ($vacancy->specialty_id && !in_array($vacancy->specialty_id, $item->getSpecialityIdsArray()))
             ) {
                 unset($res[$key]);
             }
@@ -254,5 +268,18 @@ class Adjunct extends ActiveRecord
         }
 
         return $result;
+    }
+
+    /**
+     * @param int $limit
+     * @return self[]
+     */
+    public static function getNew(int $limit = 5): array
+    {
+        return self::find()->joinWith('user u')
+            ->where(['u.status' => User::STATUS_ACTIVE])
+            ->orderBy(['u.created_at' => SORT_DESC])
+            ->limit($limit)
+            ->all();
     }
 }
