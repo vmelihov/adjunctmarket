@@ -5,7 +5,8 @@
 
 $this->title = 'My Yii Application';
 ?>
-<div class="g-content">
+
+<div class="g-content container">
     <h1>H1 header medium 26px</h1>
     <h2>H2 header medium 22px</h2>
     <h3>H3 header medium 18px</h3>
