@@ -12,7 +12,7 @@ use yii\web\View;
 
 $this->title = 'Chat List';
 ?>
-    <div id="chatList" class="g-chat-wrap js-chat" style="display: none">
+<div id="chatList" class="g-chat-wrap js-chat" style="display: none">
     <div class="g-chat">
         <div class="g-chat__header">
             <div class="g-chat__header-aside">

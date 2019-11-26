@@ -39,7 +39,7 @@ $proposalForm->state = 1;
 $proposal = $model->getProposalForAdjunct($user->getId());
 ?>
 
-<div class="p-sja">
+    <div class="p-sja container">
     <div class="p-sja__settings">
         <div class="p-sja__settings-ava">
             <img src="<?= UserImageHelper::getUrl($institution) ?>" alt="" class="p-sja__settings-ava-img"/>

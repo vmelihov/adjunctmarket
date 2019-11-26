@@ -29,151 +29,154 @@ foreach ($proposals as $prop) {
 }
 ?>
 
-    <div class="p-sj">
-        <div class="p-sj__content">
-            <div class="p-sj__content-title">
-                <?= Html::encode($model->title) ?>
-            </div>
+    <div class="container">
+        <div class="p-sj">
+            <div class="p-sj__content">
+                <div class="p-sj__content-title">
+                    <?= Html::encode($model->title) ?>
+                </div>
 
-            <div class="p-sj__content-text">
-                <?= nl2br(Html::encode($model->description)) ?>
-            </div>
+                <div class="p-sj__content-text">
+                    <?= nl2br(Html::encode($model->description)) ?>
+                </div>
 
-            <div class="p-sj__content-params">
-                <div class="p-sj__content-params-one">
-                    <span class="p-sj__content-params-one-title">Category:</span>
-                    <span class="p-sj__content-params-one-text">
+                <div class="p-sj__content-params">
+                    <div class="p-sj__content-params-one">
+                        <span class="p-sj__content-params-one-title">Category:</span>
+                        <span class="p-sj__content-params-one-text">
                         <?= Html::encode($model->specialty->faculty->name) ?> /
                         <?= Html::encode($model->specialty->name) ?>
                     </span>
+                    </div>
+
+                    <?php if ($model->teachType): ?>
+                        <div class="p-sj__content-params-one">
+                            <span class="p-sj__content-params-one-title">Teaching experience:</span>
+                            <span class="p-sj__content-params-one-text"><?= Html::encode($model->teachType->name) ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($model->education): ?>
+                        <div class="p-sj__content-params-one">
+                            <span class="p-sj__content-params-one-title">Education:</span>
+                            <span class="p-sj__content-params-one-text"><?= Html::encode($model->education->name) ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($model->teachPeriod): ?>
+                        <div class="p-sj__content-params-one">
+                            <span class="p-sj__content-params-one-title">Type of teaching:</span>
+                            <span class="p-sj__content-params-one-text"><?= Html::encode($model->teachPeriod->name) ?></span>
+                        </div>
+                    <?php endif; ?>
+
+
+                    <?php if ($model->teachTime): ?>
+                        <div class="p-sj__content-params-one">
+                            <span class="p-sj__content-params-one-title">Time of teaching:</span>
+                            <span class="p-sj__content-params-one-text"><?= Html::encode($model->teachTime->name) ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($model->area): ?>
+                        <div class="p-sj__content-params-one">
+                            <span class="p-sj__content-params-one-title">Location:</span>
+                            <span class="p-sj__content-params-one-text"><?= Html::encode($model->area->name) ?></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
-                <?php if ($model->teachType): ?>
-                    <div class="p-sj__content-params-one">
-                        <span class="p-sj__content-params-one-title">Teaching experience:</span>
-                        <span class="p-sj__content-params-one-text"><?= Html::encode($model->teachType->name) ?></span>
+                <div class="p-sj__content-posted">
+                    <div class="p-sj__content-posted-title">
+                        Posted:
                     </div>
-                <?php endif; ?>
-
-                <?php if ($model->education): ?>
-                    <div class="p-sj__content-params-one">
-                        <span class="p-sj__content-params-one-title">Education:</span>
-                        <span class="p-sj__content-params-one-text"><?= Html::encode($model->education->name) ?></span>
+                    <div class="p-sj__content-posted-text">
+                        <?= date('g:m A m/d/y', $model->created) ?>
+                        (last changes <?= date('g:m A m/d/y', $model->updated) ?>)
                     </div>
-                <?php endif; ?>
-
-                <?php if ($model->teachPeriod): ?>
-                    <div class="p-sj__content-params-one">
-                        <span class="p-sj__content-params-one-title">Type of teaching:</span>
-                        <span class="p-sj__content-params-one-text"><?= Html::encode($model->teachPeriod->name) ?></span>
-                    </div>
-                <?php endif; ?>
-
-
-                <?php if ($model->teachTime): ?>
-                    <div class="p-sj__content-params-one">
-                        <span class="p-sj__content-params-one-title">Time of teaching:</span>
-                        <span class="p-sj__content-params-one-text"><?= Html::encode($model->teachTime->name) ?></span>
-                    </div>
-                <?php endif; ?>
-
-                <?php if ($model->area): ?>
-                    <div class="p-sj__content-params-one">
-                        <span class="p-sj__content-params-one-title">Location:</span>
-                        <span class="p-sj__content-params-one-text"><?= Html::encode($model->area->name) ?></span>
-                    </div>
-                <?php endif; ?>
-            </div>
-
-            <div class="p-sj__content-posted">
-                <div class="p-sj__content-posted-title">
-                    Posted:
                 </div>
-                <div class="p-sj__content-posted-text">
-                    <?= date('g:m A m/d/y', $model->created) ?>
-                    (last changes <?= date('g:m A m/d/y', $model->updated) ?>)
+
+                <div class="p-sj__content-btns">
+                    <a href="<?= Url::to(['update', 'id' => $model->id]) ?>" class="p-sj__content-btns-one">Edit
+                        vacancy</a>
+                    <a href="<?= Url::to(['unpublish', 'id' => $model->id]) ?>"
+                       class="p-sj__content-btns-one">Unpublish</a>
                 </div>
             </div>
 
-            <div class="p-sj__content-btns">
-                <a href="<?= Url::to(['update', 'id' => $model->id]) ?>" class="p-sj__content-btns-one">Edit vacancy</a>
-                <a href="<?= Url::to(['unpublish', 'id' => $model->id]) ?>" class="p-sj__content-btns-one">Unpublish</a>
-            </div>
-        </div>
-
-        <div class="p-sj__aside">
-            <div class="p-sj__aside-title">
-                Suitable Adjuncts
-            </div>
-            <?php foreach ($suitableAdjuncts as $adjunct): ?>
-                <div class="p-sj__aside-adjunct">
-                    <img class="p-sj__aside-adjunct-ava"
-                         src="<?= UserImageHelper::getUrl($adjunct->user) ?>"
-                         alt=""/>
-                    <a class="p-sj__aside-adjunct-name"
-                       href="<?= Url::to(['/adjunct/view', 'id' => $adjunct->id]) ?>"><?= Html::encode($adjunct->user->getUsername()) ?></a>
+            <div class="p-sj__aside">
+                <div class="p-sj__aside-title">
+                    Suitable Adjuncts
                 </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-
-    <div class="p-sj-proposals">
-        <div class="p-sj-proposals__title">
-            Adjuncts Proposals
-        </div>
-
-        <div class="p-sj-proposals__filter">
-            <div class="list-group" id="list-tab" role="tablist">
-                <a class="p-sj-proposals__filter-btn active" id="all-link" data-toggle="list" href="#all"
-                   role="tab" aria-controls="all">
-                    All <span class="p-sj-proposals__filter-btn-mobi">Proposals</span> (<?= count($proposals) ?>)
-                </a>
-                <a class="p-sj-proposals__filter-btn" id="saved-link" data-toggle="list" href="#saved"
-                   role="tab" aria-controls="saved">
-                    Saved (<?= count($savedProposal) ?>)
-                </a>
-            </div>
-
-            <div class="p-sj-proposals__filter-show">
-                <label class="ui-checkbox">
-                    <input id="showSuitable" type="checkbox" name=""/>
-                    <span class="ui-checkbox__decor"></span>
-                    <span class="ui-checkbox__text m-mbHide">Show only suitable</span>
-                    <span class="ui-checkbox__text m-mbShow">Only suitable</span>
-                </label>
-            </div>
-        </div>
-        <div class="tab-content p-sj-proposals__content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-link">
-                <?php $i = 1;
-                foreach ($proposals as $proposal): ?>
-                    <?= $this->render('_proposal', [
-                        'proposal' => $proposal,
-                        'vacancy' => $model,
-                        'userId' => $user->getId(),
-                        'num' => $i++,
-                        'isSuitable' => in_array($proposal->adjunct_id, $suitableAdjunctsIds, true),
-                        'isSavedTab' => false,
-                    ]) ?>
-                <?php endforeach; ?>
-                <div class="p-sj-proposals__content-more" id="loadMore">Load More</div>
-            </div>
-            <div class="tab-pane fade" id="saved" role="tabpanel" aria-labelledby="saved-link">
-                <?php $i = 1;
-                foreach ($savedProposal as $proposal): ?>
-                    <?= $this->render('_proposal', [
-                        'proposal' => $proposal,
-                        'vacancy' => $model,
-                        'userId' => $user->getId(),
-                        'num' => $i++,
-                        'isSuitable' => in_array($proposal->adjunct_id, $suitableAdjunctsIds, true),
-                        'isSavedTab' => true,
-                    ]) ?>
+                <?php foreach ($suitableAdjuncts as $adjunct): ?>
+                    <div class="p-sj__aside-adjunct">
+                        <img class="p-sj__aside-adjunct-ava"
+                             src="<?= UserImageHelper::getUrl($adjunct->user) ?>"
+                             alt=""/>
+                        <a class="p-sj__aside-adjunct-name"
+                           href="<?= Url::to(['/adjunct/view', 'id' => $adjunct->id]) ?>"><?= Html::encode($adjunct->user->getUsername()) ?></a>
+                    </div>
                 <?php endforeach; ?>
             </div>
         </div>
-    </div>
 
+        <div class="p-sj-proposals">
+            <div class="p-sj-proposals__title">
+                Adjuncts Proposals
+            </div>
+
+            <div class="p-sj-proposals__filter">
+                <div class="list-group" id="list-tab" role="tablist">
+                    <a class="p-sj-proposals__filter-btn active" id="all-link" data-toggle="list" href="#all"
+                       role="tab" aria-controls="all">
+                        All <span class="p-sj-proposals__filter-btn-mobi">Proposals</span> (<?= count($proposals) ?>)
+                    </a>
+                    <a class="p-sj-proposals__filter-btn" id="saved-link" data-toggle="list" href="#saved"
+                       role="tab" aria-controls="saved">
+                        Saved (<?= count($savedProposal) ?>)
+                    </a>
+                </div>
+
+                <div class="p-sj-proposals__filter-show">
+                    <label class="ui-checkbox">
+                        <input id="showSuitable" type="checkbox" name=""/>
+                        <span class="ui-checkbox__decor"></span>
+                        <span class="ui-checkbox__text m-mbHide">Show only suitable</span>
+                        <span class="ui-checkbox__text m-mbShow">Only suitable</span>
+                    </label>
+                </div>
+            </div>
+            <div class="tab-content p-sj-proposals__content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-link">
+                    <?php $i = 1;
+                    foreach ($proposals as $proposal): ?>
+                        <?= $this->render('_proposal', [
+                            'proposal' => $proposal,
+                            'vacancy' => $model,
+                            'userId' => $user->getId(),
+                            'num' => $i++,
+                            'isSuitable' => in_array($proposal->adjunct_id, $suitableAdjunctsIds, true),
+                            'isSavedTab' => false,
+                        ]) ?>
+                    <?php endforeach; ?>
+                    <div class="p-sj-proposals__content-more" id="loadMore">Load More</div>
+                </div>
+                <div class="tab-pane fade" id="saved" role="tabpanel" aria-labelledby="saved-link">
+                    <?php $i = 1;
+                    foreach ($savedProposal as $proposal): ?>
+                        <?= $this->render('_proposal', [
+                            'proposal' => $proposal,
+                            'vacancy' => $model,
+                            'userId' => $user->getId(),
+                            'num' => $i++,
+                            'isSuitable' => in_array($proposal->adjunct_id, $suitableAdjunctsIds, true),
+                            'isSavedTab' => true,
+                        ]) ?>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 $ajaxUrl = Url::to(['vacancy/proposal']);
 $script = <<< JS

@@ -21,7 +21,7 @@ $this->title = 'Adjuncts List';
 $user = Helper::getUserIdentity();
 ?>
 
-<div class="p-al">
+<div class="p-al container">
     <h1 class="p-al__title"><?= Html::encode($this->title) ?></h1>
 
     <div class="p-al__filter">

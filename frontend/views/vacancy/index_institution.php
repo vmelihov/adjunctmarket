@@ -31,7 +31,7 @@ try {
 $user = Helper::getUserIdentity();
 $favorites = $user->profile->getFavoriteAdjuncts();
 ?>
-<div class="p-prflinst">
+<div class="p-prflinst container">
     <div class="p-prflinst__filter">
         <h1 class="p-prflinst__filter-title">My Vacancies</h1>
         <div class="p-prflinst__filter-vacancies js-vacancies">

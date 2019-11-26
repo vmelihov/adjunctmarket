@@ -31,7 +31,7 @@ $dictionaryHelper = new DictionaryHelper();
 $universities = $dictionaryHelper->prepareUniversity()->getResult();
 ?>
 
-    <div class="p-predit">
+    <div class="p-predit container">
         <div class="p-predit__content">
         <?php $form = ActiveForm::begin([
             'id' => 'institution-profile-form',

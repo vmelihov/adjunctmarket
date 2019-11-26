@@ -22,7 +22,7 @@ try {
     Yii::getLogger()->log($e->getMessage(), Logger::LEVEL_ERROR);
 }
 ?>
-<div class="p-feed">
+<div class="p-feed container">
     <h1 class="p-jobs__title"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_search', ['model' => $searchModel]) ?>
