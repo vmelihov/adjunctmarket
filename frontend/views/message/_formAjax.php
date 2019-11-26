@@ -56,6 +56,10 @@ $formParams['fieldConfig'] = [
             success: function (data) {
                 if (data.success === true) {
                     $('#chatAjax').html(data.body.html);
+
+                    let chatScroll = $('#chatAjax .js-niceScroll');
+                    chatScroll.niceScroll().resize();
+                    chatScroll.scrollTop(chatScroll.get(0).scrollHeight, -1);
                 }
             }
         });
