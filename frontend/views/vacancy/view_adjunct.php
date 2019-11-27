@@ -31,15 +31,21 @@ if ($chat = Chat::findByInstitutionAndAdjunct($model->institution_user_id, $user
     $onClick = 'createChat(' . $model->institution_user_id . ')';
 }
 
-$proposalForm = new ProposalForm();
-$proposalForm->adjunct_id = $user->getId();
-$proposalForm->vacancy_id = $model->id;
-$proposalForm->state = 1;
-
 $proposal = $model->getProposalForAdjunct($user->getId());
+$proposalForm = new ProposalForm();
+
+if ($proposal) {
+    $proposalForm->setAttributes($proposal->getAttributes());
+    $proposalView = '@frontend/views/proposal/edit';
+} else {
+    $proposalForm->adjunct_id = $user->getId();
+    $proposalForm->vacancy_id = $model->id;
+    $proposalForm->state = 1;
+    $proposalView = '@frontend/views/proposal/create';
+}
 ?>
 
-    <div class="p-sja container">
+<div class="p-sja container">
     <div class="p-sja__settings">
         <div class="p-sja__settings-ava">
             <img src="<?= UserImageHelper::getUrl($institution) ?>" alt="" class="p-sja__settings-ava-img"/>
@@ -135,100 +141,93 @@ $proposal = $model->getProposalForAdjunct($user->getId());
     </div>
 </div>
 
-<?php if (!$proposal): ?>
-    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="p-sja__modal">
-                <div class="p-sja__modal-header">
-                    <div class="p-sja__modal-header-title">
-                        Your Proposal
-                    </div>
-                    <div class="p-sja__modal-header-close fal fa-times" data-dismiss="modal" aria-label="Close"></div>
-                </div>
-                <div class="p-sja__modal-content">
-                    <?= $this->render('@frontend/views/proposal/create', ['model' => $proposalForm]) ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <?php
-    $script = <<< JS
-    $(".js-fav").on("click", function () {
-        $(this).toggleClass("fas");
-    });
-JS;
-    $this->registerJs($script, yii\web\View::POS_READY);
-    ?>
-
-<?php else: ?>
-
+<?php if ($proposal): ?>
     <?php $institution = $proposal->vacancy->institution; ?>
 
-    <div class="p-sja-proposals">
-        <div class="p-sja-proposals__title">
-            Your Proposal
-        </div>
+    <div class="container">
+        <div class="p-sja-proposals">
+            <div class="p-sja-proposals__title">
+                Your Proposal
+            </div>
 
-        <div class="p-sja-proposals__content">
-            <div class="p-sja-proposals__content-one">
-                <div class="p-sja-proposals__content-one-header">
-                    <div class="p-sja-proposals__content-one-header-left">
-                        <div class="p-sja-proposals__content-one-header-left-ava">
-                            <img src="<?= UserImageHelper::getUrl($institution) ?>" alt=""
-                                 class="p-sja-proposals__content-one-header-left-ava-img">
-                        </div>
-                        <a class="p-sja-proposals__content-one-header-left-name">
-                            <?= Html::encode($institution->getUsername()) ?>
-                        </a>
-
-                        <?php /*
-                    <div class="p-sja-proposals__content-one-header-left-date">
-                        12:10 PM 03.25.2019
-                    </div>
-                    */ ?>
-                    </div>
-
-                    <?php if ($chat): ?>
-                        <div class="p-sja-proposals__content-one-header-right">
-                            <div class="p-sja-proposals__content-one-header-right-item">
-                                <a href="#" onclick="<?= $onClick ?>"
-                                   class="p-sja-proposals__content-one-header-right-item-link">
-                                    <span class="fal fa-envelope"></span>
-                                    <span class="p-sja-proposals__content-one-header-right-item-link-text"><?= $countUnreadMessages ?> new message</span>
-                                </a>
+            <div class="p-sja-proposals__content">
+                <div class="p-sja-proposals__content-one">
+                    <div class="p-sja-proposals__content-one-header">
+                        <div class="p-sja-proposals__content-one-header-left">
+                            <div class="p-sja-proposals__content-one-header-left-ava">
+                                <img src="<?= UserImageHelper::getUrl($institution) ?>" alt=""
+                                     class="p-sja-proposals__content-one-header-left-ava-img">
                             </div>
+                            <a class="p-sja-proposals__content-one-header-left-name">
+                                <?= Html::encode($institution->getUsername()) ?>
+                            </a>
                         </div>
-                    <?php endif; ?>
 
-                </div>
+                        <?php if ($chat): ?>
+                            <div class="p-sja-proposals__content-one-header-right">
+                                <div class="p-sja-proposals__content-one-header-right-item">
+                                    <a href="#" onclick="<?= $onClick ?>"
+                                       class="p-sja-proposals__content-one-header-right-item-link">
+                                        <span class="fal fa-envelope"></span>
+                                        <span class="p-sja-proposals__content-one-header-right-item-link-text"><?= $countUnreadMessages ?> new message</span>
+                                    </a>
+                                </div>
+                            </div>
+                        <?php endif; ?>
 
-                <div class="p-sja-proposals__content-one-content">
-                    <div class="p-sja-proposals__content-one-content-text">
-                        <?= nl2br(Html::encode($proposal->letter)) ?>
                     </div>
-                    <?php if ($attaches = $proposal->getAttachesUrlArray()): ?>
-                        <div class="p-sja-proposals__content-one-content-attachments">
-                            Attachments:
-                            <?php foreach ($attaches as $name => $url): ?>
-                                <?= "<a href=\"$url\" download>$name</a>;" ?>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
 
-                <div class="p-sja-proposals__content-one-footer">
-                    <a href="<?= Url::to(['proposal/edit', 'id' => $proposal->id]) ?>"
-                       class="p-sja-proposals__content-one-footer-edit">
-                        Edit Proposal
-                    </a>
-                    <a href="<?= Url::to(['proposal/delete', 'id' => $proposal->id]) ?>"
-                       class="p-sja-proposals__content-one-footer-delete">
-                        Delete Proposal
-                    </a>
+                    <div class="p-sja-proposals__content-one-content">
+                        <div class="p-sja-proposals__content-one-content-text">
+                            <?= nl2br(Html::encode($proposal->letter)) ?>
+                        </div>
+                        <?php if ($attaches = $proposal->getAttachesUrlArray()): ?>
+                            <div class="p-sja-proposals__content-one-content-attachments">
+                                Attachments:
+                                <?php foreach ($attaches as $name => $url): ?>
+                                    <?= "<a href=\"$url\" download>$name</a>;" ?>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="p-sja-proposals__content-one-footer">
+                        <a href="" class="p-sja-proposals__content-one-footer-edit" data-toggle="modal"
+                           data-target="#modal">Edit Proposal</a>
+
+                        <a href="<?= Url::to(['proposal/delete', 'id' => $proposal->id]) ?>"
+                           class="p-sja-proposals__content-one-footer-delete">
+                            Delete Proposal
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
 <?php endif; ?>
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="p-sja__modal">
+            <div class="p-sja__modal-header">
+                <div class="p-sja__modal-header-title">
+                    Your Proposal
+                </div>
+                <div class="p-sja__modal-header-close fal fa-times" data-dismiss="modal" aria-label="Close"></div>
+            </div>
+            <div class="p-sja__modal-content">
+                <?= $this->render($proposalView, ['model' => $proposalForm]) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+$script = <<< JS
+$(".js-fav").on("click", function () {
+    $(this).toggleClass("fas");
+});
+JS;
+$this->registerJs($script, yii\web\View::POS_READY);
+?>
