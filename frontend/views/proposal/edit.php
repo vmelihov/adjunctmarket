@@ -61,12 +61,12 @@ try {
         </div>
 
         <?= $form->field($model, 'id')->hiddenInput() ?>
-<?= $form->field($model, 'state')->hiddenInput() ?>
-<?= $form->field($model, 'adjunct_id')->hiddenInput() ?>
-<?= $form->field($model, 'vacancy_id')->hiddenInput() ?>
-<?= $form->field($model, 'attaches')->hiddenInput() ?>
+        <?= $form->field($model, 'state')->hiddenInput() ?>
+        <?= $form->field($model, 'adjunct_id')->hiddenInput() ?>
+        <?= $form->field($model, 'vacancy_id')->hiddenInput() ?>
+        <?= $form->field($model, 'attaches')->hiddenInput() ?>
 
-        <?= Html::submitButton('Save', ['class' => 'p-sja__modal-content-submit']) ?>
+        <?= Html::submitButton('Edit', ['class' => 'p-sja__modal-content-submit']) ?>
 
         <?php ActiveForm::end(); ?>
 

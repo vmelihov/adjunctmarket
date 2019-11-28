@@ -37,11 +37,13 @@ $proposalForm = new ProposalForm();
 if ($proposal) {
     $proposalForm->setAttributes($proposal->getAttributes());
     $proposalView = '@frontend/views/proposal/edit';
+    $proposalTitle = 'Edit Proposal';
 } else {
     $proposalForm->adjunct_id = $user->getId();
     $proposalForm->vacancy_id = $model->id;
     $proposalForm->state = 1;
     $proposalView = '@frontend/views/proposal/create';
+    $proposalTitle = 'Your Proposal';
 }
 ?>
 
@@ -212,7 +214,7 @@ if ($proposal) {
         <div class="p-sja__modal">
             <div class="p-sja__modal-header">
                 <div class="p-sja__modal-header-title">
-                    Your Proposal
+                    <?= $proposalTitle ?>
                 </div>
                 <div class="p-sja__modal-header-close fal fa-times" data-dismiss="modal" aria-label="Close"></div>
             </div>
