@@ -92,6 +92,10 @@ function openChat(chatId) {
                 $('#chatList').addClass("m-chatOpened");
                 $('#opponentName').text(result.opponent.name);
                 $('#opponentAvatar').attr('src', result.opponent.img);
+                $('.js-niceScroll').niceScroll().resize();
+                
+                let chatScroll = $('#chatAjax .js-niceScroll');
+                chatScroll.scrollTop(chatScroll.get(0).scrollHeight, -1);
             }
         }
     });
@@ -111,6 +115,8 @@ function createChat(userId) {
         }
     });
 }
+
+$('.js-niceScroll').niceScroll();
 
 JS;
 $this->registerJs($script, View::POS_END);
