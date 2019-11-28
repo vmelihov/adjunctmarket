@@ -153,7 +153,7 @@ $newVacancies = Vacancy::getNew(4);
                         <?= Html::encode($adjunct->user->getUsername()) ?>
                     </div>
                     <div class="p-main__instructors-list-one-place">
-                        <?= Html::encode($adjunct->location->name) ?>
+                        <?= $adjunct->location_id ? Html::encode($adjunct->location->name) : '' ?>
                     </div>
                     <div class="p-main__instructors-list-one-cat">
                         <?= implode(', ', $adjunct->getSpecialityNameArray()) ?>
