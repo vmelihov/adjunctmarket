@@ -29,7 +29,7 @@ AppAsset::register($this);
 
 <div class="g-singlepage">
 
-    <header class="g-header">
+    <header class="g-header" id="header">
         <div class="container">
             <div class="g-header__mobi-link js-activeOnOff" data-id="header">
                 <span class="fal fa-bars"></span>
