@@ -157,11 +157,12 @@ class AdjunctProfileForm extends Model
             $adjunct = new Adjunct();
         }
 
+        $adjunct->user_id = $this->user_id;
+
         if (!$this->uploadDocuments($adjunct)) {
             return false;
         }
 
-        $adjunct->user_id = $this->user_id;
         $adjunct->title = $this->title;
         $adjunct->description = $this->description;
         $adjunct->education_id = $this->education_id;
@@ -177,6 +178,7 @@ class AdjunctProfileForm extends Model
         $adjunct->linledin = $this->linledin;
         $adjunct->facebook = $this->facebook;
         $adjunct->whatsapp = $this->whatsapp;
+        $this->documents = empty($this->documents) ? [] : $this->documents;
         $adjunct->documents = json_encode($this->documents);
 
         $result = $adjunct->save();

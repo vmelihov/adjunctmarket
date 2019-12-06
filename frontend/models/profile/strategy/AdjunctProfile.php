@@ -29,6 +29,8 @@ class AdjunctProfile extends BaseProfile
             $form->teach_locations = json_decode($attributes['teach_locations'], true);
             $form->specialities = implode(' ', json_decode($attributes['specialities'], true));
             $form->documents = json_decode($attributes['documents'], true);
+        } else {
+            $form->save();
         }
 
         return $form;

@@ -61,10 +61,6 @@ class SiteController extends Controller
                 $user->generatePasswordResetToken();
 
                 if ($user->save()) {
-
-                    $profile = ProfileBuilder::build($user);
-                    $profile->getForm()->save();
-
                     Yii::$app->user->login($user);
 
                     return $this->actionProfile();
@@ -284,10 +280,6 @@ class SiteController extends Controller
             throw new BadRequestHttpException($e->getMessage());
         }
         if ($user = $model->verifyEmail()) {
-
-            $profile = ProfileBuilder::build($user);
-            $profile->getForm()->save();
-
             if (Yii::$app->user->login($user)) {
                 Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
                 return $this->actionProfile();

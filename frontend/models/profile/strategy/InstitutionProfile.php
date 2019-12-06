@@ -23,6 +23,8 @@ class InstitutionProfile extends BaseProfile
 
         if ($user->profile) {
             $form->setAttributes($user->profile->getAttributes());
+        } else {
+            $form->save();
         }
 
         return $form;
