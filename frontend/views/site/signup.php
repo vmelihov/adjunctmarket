@@ -48,7 +48,7 @@ $this->title = 'Registration';
         <div class="form-group">
             <div class="p-reg__form-profile-type">
                 <div class="p-reg__form-profile-type-one active js-profileType" data-value="1">
-                    Adjunct
+                    Instructor
                 </div>
                 <div class="p-reg__form-profile-type-one js-profileType" data-value="2">
                     Institution
@@ -87,7 +87,7 @@ $this->title = 'Registration';
 
                         <?= $form->field($model, 'first_name')->textInput([
                             'class' => 'p-reg__form-iblock-input js-textValidation',
-                            'placeholder' => 'Enter your first name',
+                            'placeholder' => 'First name',
                         ]) ?>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ $this->title = 'Registration';
 
                         <?= $form->field($model, 'last_name')->textInput([
                             'class' => 'p-reg__form-iblock-input js-textValidation',
-                            'placeholder' => 'Enter your last name',
+                            'placeholder' => 'Last name',
                         ]) ?>
                     </div>
                 </div>
@@ -196,7 +196,7 @@ $this->title = 'Registration';
             </div>
 
             <div class="p-reg__form-read-text">
-                I have read and agree to the AdjunktMarket <a href="" target="_blank">Terms and Conditions</a>
+                I have read and agree to the Instructors Hub <a href="" target="_blank">Terms and Conditions</a>
                 of Use and <a href="" target="_blank">Privacy Policy</a>.
             </div>
         </div>
