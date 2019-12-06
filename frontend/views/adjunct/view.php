@@ -40,7 +40,7 @@ $this->title = 'Adjunct - ' . $adjunctName;
                 </a>
                 <!--            <div class="p-pa__header-block-status m-busy">Busy</div>-->
                 <div class="p-pa__header-block-place">
-                    <?= $adjunct->location->name ?>
+                    <?= $adjunct->location ? $adjunct->location->name : '' ?>
                 </div>
             </div>
             <div class="p-pa__header-block m-tel">
